@@ -22,11 +22,13 @@ An online judge for completing c++ coding challenges. Users can browse coding ch
 
 ##Roles
 #####Brady
-######ReadMe.md Owner
+######ReadMe.md Owner  
   * Manage this file
-######Google Drive Owner
-  * Admininister files on Google Drive
-######Test Owner
+
+######Google Drive Owner  
+  * Admininister files on Google Drive  
+
+######Test Owner  
   * Set up automated testing on Jira
   * Manage peoples testing
   * Set up continous integration testing
