@@ -7,7 +7,7 @@ UNSW comp4920 Major Project "D[tbd] V[tbd] online Judge"
 
 ##Resources
 [SQLite3 Tutorial](http://www.tutorialspoint.com/sqlite/index.htm)  
-[Git Tutorial](https://www.atlassian.com/git/)
+[Git Tutorial](https://www.atlassian.com/git/)  
 [Flask Tutorial](http://flask.pocoo.org/docs/0.10/tutorial/introduction/)
 
 ##Idea
