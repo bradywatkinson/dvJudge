@@ -32,6 +32,9 @@ An online judge for completing c++ coding challenges. Users can browse coding ch
   * Set up automated testing on Jira
   * Manage peoples testing
   * Set up continous integration testing
+
+#####Database Owner
+  * Admin DB
 	
 #####Stanley	
 ######Jira Owner
