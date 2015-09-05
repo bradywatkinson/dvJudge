@@ -22,4 +22,4 @@ dvJudge is a Distributed Virtual Judge. Essentially it takes the role of many of
 1. Content discovery based on community rating
 2. "Playlists" and Competition hosting
 
-Test edit 
+Test edit2
