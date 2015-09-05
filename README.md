@@ -19,3 +19,34 @@ An online judge for completing c++ coding challenges. Users can browse coding ch
 3. "Playlists" for personal/teaching purposes
 4. Competition hosting
 5. Including additional languages such as Java
+
+##Roles
+#####Brady	
+######Google Drive Owner
+  * Admininister files on Google Drive
+######Test Owner
+  * "Set up automated testing on Jira
+  * Manage peoples testing"
+	
+#####Stanley	
+######Jira Owner
+  * Jira Admin
+  * Manage Jira including addons, tasks and angile tracking
+######Github Owner	
+	
+	
+#####Stannis	
+######Webserver Owner
+  * Investigate Webserver technology
+	
+#####Tara	
+######Epics Owner
+  * Writing the epics and ensuring all the User Stories match to them correctly
+	
+	
+#####Daniel	
+######Project Plan Owner
+  * Ensuring the project plan is complete
+  * Distributing each part of the project plan
+  * Final document checking
+  * Beautifying"
