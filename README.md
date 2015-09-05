@@ -21,23 +21,27 @@ An online judge for completing c++ coding challenges. Users can browse coding ch
 5. Including additional languages such as Java
 
 ##Roles
-#####Brady	
+#####Brady
+######ReadMe.md Owner
+  * Manage this file
 ######Google Drive Owner
   * Admininister files on Google Drive
 ######Test Owner
-  * "Set up automated testing on Jira
-  * Manage peoples testing"
+  * Set up automated testing on Jira
+  * Manage peoples testing
+  * Set up continous integration testing
 	
 #####Stanley	
 ######Jira Owner
   * Jira Admin
   * Manage Jira including addons, tasks and angile tracking
-######Github Owner	
+######Github Owner
+  * do github things
 	
 	
 #####Stannis	
-######Webserver Owner
-  * Investigate Webserver technology
+######Flask Owner
+  * Ensure central flask server is all G
 	
 #####Tara	
 ######Epics Owner
@@ -50,3 +54,4 @@ An online judge for completing c++ coding challenges. Users can browse coding ch
   * Distributing each part of the project plan
   * Final document checking
   * Beautifying"
+######Front End Owner - Jinja
