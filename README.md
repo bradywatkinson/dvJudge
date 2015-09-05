@@ -3,6 +3,7 @@ UNSW comp4920 Major Project "Distributed Virtual Judge"
 
 ##Resources
 [Google Drive](https://drive.google.com/drive/folders/0BxD6wDvDG5hRfklTaUxrM0VNV2pqcm9sazFiNjhHQ3paSHRNN3JnODlLazU2d3B1Yjh6WDA)  
+[Jira](https://dvjudge.atlassian.net/projects/DVJ/summary)
 
 
 ##Orignal Spec
