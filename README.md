@@ -8,6 +8,7 @@ UNSW comp4920 Major Project "D[tbd] V[tbd] online Judge"
 ##Resources
 [SQLite3 Tutorial](http://www.tutorialspoint.com/sqlite/index.htm)  
 [Git Tutorial](https://www.atlassian.com/git/)
+[Flask Tutorial](http://flask.pocoo.org/docs/0.10/tutorial/introduction/)
 
 ##Idea
 An online judge for completing c++ coding challenges. Users can browse coding challenges and attempt questions by uploading their code through the website and the judge will judge their resutls and tell them whether they have passed
