@@ -33,7 +33,7 @@ An online judge for completing c++ coding challenges. Users can browse coding ch
   * Manage peoples testing
   * Set up continous integration testing
 
-#####Database Owner
+######Database Owner
   * Admin DB
 	
 #####Stanley	
