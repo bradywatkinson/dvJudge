@@ -60,3 +60,12 @@ An online judge for completing c++ coding challenges. Users can browse coding ch
   * Final document checking
   * Beautifying"
 ######Front End Owner - Jinja
+
+## Developer Setup
+  - Install Flask
+  - Pull the code from git
+  - run `python deploy.py` to setup the database on your machine
+  - run `python dvjudge.py` to start the webserver
+  - Navigate to http://localhost:5000
+
+
