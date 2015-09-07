@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
+  <dd><a href="upload">UPLOAD CODE</a>
   {% if session.logged_in %}
     <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
       <dl>
