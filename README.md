@@ -1,6 +1,13 @@
 # dvJudge
 UNSW comp4920 Major Project "D[tbd] V[tbd] online Judge"
 
+## Developer Setup
+  - Install Flask
+  - Pull the code from git
+  - run `python deploy.py` to setup the database on your machine
+  - run `python dvjudge.py` to start the webserver
+  - Navigate to http://localhost:5000
+
 ##Project Details
 [Google Drive](https://drive.google.com/drive/folders/0BxD6wDvDG5hRfklTaUxrM0VNV2pqcm9sazFiNjhHQ3paSHRNN3JnODlLazU2d3B1Yjh6WDA)  
 [Jira](https://dvjudge.atlassian.net/projects/DVJ/summary)
@@ -22,8 +29,6 @@ An online judge for completing c++ coding challenges. Users can browse coding ch
 
 ##Roles
 #####Brady
-######ReadMe.md Owner  
-  * Manage this file
 
 ######Google Drive Owner  
   * Admininister files on Google Drive  
@@ -39,18 +44,23 @@ An online judge for completing c++ coding challenges. Users can browse coding ch
 #####Stanley	
 ######Jira Owner
   * Jira Admin
-  * Manage Jira including addons, tasks and angile tracking
+  * Manage Jira including addons, tasks and angile tracking  
+
 ######Github Owner
   * do github things
 	
 	
 #####Stannis	
-######Flask Owner
-  * Ensure central flask server is all G
+######Website Design
+  * designe website skeleton to be used as website template
+  * ensure all website elements integrate effectively
 	
 #####Tara	
 ######Epics Owner
   * Writing the epics and ensuring all the User Stories match to them correctly
+  * Assigning stories to epics
+  * Assigning stories to people
+  * Assigning stories to sprints
 	
 	
 #####Daniel	
@@ -58,14 +68,9 @@ An online judge for completing c++ coding challenges. Users can browse coding ch
   * Ensuring the project plan is complete
   * Distributing each part of the project plan
   * Final document checking
-  * Beautifying"
-######Front End Owner - Jinja
-
-## Developer Setup
-  - Install Flask
-  - Pull the code from git
-  - run `python deploy.py` to setup the database on your machine
-  - run `python dvjudge.py` to start the webserver
-  - Navigate to http://localhost:5000
+  
 
 
+
+
+contact Brady about changes to this page
