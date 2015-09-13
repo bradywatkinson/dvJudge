@@ -1,2 +1,3 @@
-from dvjudge import init_db
+from dvjudge import init_db, populate_db
 init_db()
+populate_db()

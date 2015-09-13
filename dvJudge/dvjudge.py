@@ -26,7 +26,13 @@ def init_db():
     with closing(connect_db()) as db:
         with app.open_resource('schema.sql', mode='r') as f:
             db.cursor().executescript(f.read())
-        db.commit() 
+        db.commit()
+
+def populate_db():
+    with closing(connect_db()) as db:
+        with app.open_resource('db_populate.sql', mode='r') as f:
+           db.cursor().executescript(f.read())
+        db.commit()
 
 @app.before_request
 def before_request():
@@ -54,49 +60,6 @@ def add_entry():
     flash('New entry was successfully posted')
     return redirect(url_for('show_entries'))
 
-@app.route('/upload_code', methods=['POST'])
-def upload_code():
-    if not session.get('logged_in'):
-        abort(401)
-    # Grab the source code from the form and put it in a file
-    f = open('code.c', 'w')
-    f.write (request.form['text'])
-    f.close()
-
-    # Compile it 
-    result = os.system('gcc code.c &> output')
-    os.system('rm code.c') # clean up
-
-    # GCC had a compile error... send it back to the user
-    if result != 0:
-        f = open('output', 'r')
-        result = f.read()
-        f.close()
-        
-        # Clean up
-        os.system('rm output')
-        
-        # Render upload_code, pass the code back as well.
-        return render_template('upload_code.html', result="COMPILE ERROR:\n" + result, code=request.form['text'])
-    else:
-        # Run the program and capture it's output
-        os.system('./a.out > output')
-
-        # Clean up
-        os.system('rm a.out')
-
-        # Lets test it against '1 2 3 4 5'
-        result = os.system('diff -b output problems/1/solution &> /dev/null')
-       
-        # Clean up 
-        os.system('rm output')
-
-        # If result is 0, great, solved 
-        if result == 0:
-            return render_template('upload_code.html', result="SOLVED!", code=request.form['text'])
-        else:
-            return render_template('upload_code.html', result="WRONG ANSWER!", code=request.form['text'])
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
@@ -117,12 +80,59 @@ def logout():
     flash('You were logged out')
     return redirect(url_for('show_entries'))
 
-@app.route('/upload')
+def make_dicts(cursor, row):
+    return dict((cur.description[idx][0], value)
+                for idx, value in enumerate(row))
+
+def query_db(query, args=(), one=False):
+    cur = g.db.execute(query, args)
+    rv = cur.fetchall()
+    cur.close()
+    return (rv[0] if rv else None) if one else rv
+
+# For Uploading problems
+@app.route('/upload', methods=['GET', 'POST'])
 def upload():
-    error = None
-    if not session.get('logged_in'):
+    if not session['logged_in']:
         abort(401)
-    return render_template('upload_code.html', error=error) 
+    
+    # Someone is trying to submit a new problem
+    if request.method == 'POST':
+        name = request.form.get('name')
+        description = request.form.get('description')
+        # TODO: Validate?
+        add_problem (name, description) 
+        flash ("Problem added successfully")
+
+    return render_template('upload_problem.html') 
+
+def add_problem(name, description):
+    g.db.execute ("""insert into challenges (name,description,input,output,sample_input,sample_output)
+                    values (?, ?, 'test', 'test', null, null)""", [name, description])
+    g.db.commit()
+
+@app.route('/browse', methods=['GET'])
+def browse():
+    cur = query_db('select id, name from challenges')
+    challenges = [dict(id=row[0],name=row[1]) for row in cur]
+    return render_template('browse.html', challenges=challenges)
+
+@app.route('/browse/<problem_id>', methods=['GET'])
+def browse_specific_problem(problem_id):
+    cur = query_db('select id, description, name from challenges where id = ?', [problem_id], one=True)
+    if cur is not None:
+        name = cur[2]
+        description = cur[1]
+    else:
+        abort(404)
+    problem_info = {'problem_id': problem_id, 'name': name, 'description': description}
+    return render_template('problem.html', problem_info=problem_info)
+
+@app.route('/submit', methods=['POST'])
+def submit_specific_problem():
+    flash ("Successfully submitted for problem " + request.args.get('problem_id'))
+    # TODO: No validation
+    return browse() 
 
 if __name__ == '__main__':
     app.run()

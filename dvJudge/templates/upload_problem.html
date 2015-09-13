@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block body %}
+  {% if session.logged_in %}
+    <form action="{{ url_for('upload') }}" method=post class=upload-problem>
+      <dl>
+        <dt>New Problem<br>
+          <hr>
+          Problem Name:
+          <input type="text" name="name"><br>
+          <hr>
+          Problem Description:<br>
+          <textarea name="description" rows=20 cols=60></textarea>
+        <input type=submit value=Submit>
+      </dl>
+    </form>
+  {% endif %}
+  {% if result %}
+    <div>
+      <pre> {{ result }} </pre>
+    </div>
+  {% endif %}
+{% endblock %}

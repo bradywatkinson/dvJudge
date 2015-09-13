@@ -48,41 +48,26 @@ class FlaskrTestCase(unittest.TestCase):
         assert '&lt;Hello&gt;' in rv.data
         assert '<strong>HTML</strong> allowed here' in rv.data
 
-    # test invalid code causes error
-    def test_problem1_compile_error(self):
+    def test_upload_problem(self):
         self.login('admin', 'default')
-        rv = self.app.post('/upload_code', data=dict(text='sdafjlkajsdflkasdflkj'))
-        assert 'COMPILE ERROR:' in rv.data
-        assert 'WRONG ANSWER!' not in rv.data
-        assert 'SOLVED!' not in rv.data
+        rv = self.app.post('/upload', data=dict(
+            name='testproblemname',
+            description='testproblemdescription'
+        ), follow_redirects=True)
+        rv = self.app.get('/browse')
+        assert ('testproblemname') in rv.data
+        assert ('notproblemname') not in rv.data
 
-    def test_problem1_right_answer(self):
+    def test_submit_solution(self):
         self.login('admin', 'default')
-        rv = self.app.post('/upload_code', data=dict(text=
-             """#include <stdio.h>
-                #include <stdlib.h>
-
-                int main (void) {
-                    printf ("1 2 3 4 5");
-                    return 0;
-                }"""))
-        assert 'COMPILE ERROR:' not in rv.data
-        assert 'WRONG ANSWER!' not in rv.data
-        assert 'SOLVED!' in rv.data
-
-    def test_problem1_wrong_answer(self):
-        self.login('admin', 'default')
-        rv = self.app.post('/upload_code', data=dict(text=
-             """#include <stdio.h>
-                #include <stdlib.h>
-
-                int main (void) {
-                    printf ("bacon pancakes");
-                    return 0;
-                }"""))
-        assert 'COMPILE ERROR:' not in rv.data
-        assert 'WRONG ANSWER!' in rv.data
-        assert 'SOLVED!' not in rv.data
+        rv = self.app.post('/upload', data=dict(
+            name='problem name test',
+            description='this is a problem'
+        ), follow_redirects=True)
+        
+        rv = self.app.get('/browse/1')
+        assert ('problem name test') in rv.data
+        assert ('this is a problem') in rv.data
 
 if __name__ == '__main__':
     unittest.main()

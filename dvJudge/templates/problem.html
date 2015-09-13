@@ -1,9 +1,10 @@
 {% extends "layout.html" %}
 {% block body %}
   {% if session.logged_in %}
-    <form action="{{ url_for('upload_code') }}" method=post class=upload-code>
+    <form action="{{ url_for('submit_specific_problem', problem_id=problem_info.problem_id) }}" method=post class=problem>
       <dl>
-        <dt>Paste some C code that prints out exactly '1 2 3 4 5':
+        <dt> {{ problem_info.name }}
+          <p> {{ problem_info.description }}
         {% if code %}
           <dd><textarea name=text rows=20 cols=60>{{ code }}</textarea>
         {% else %} 
