@@ -26,7 +26,13 @@ def init_db():
     with closing(connect_db()) as db:
         with app.open_resource('schema.sql', mode='r') as f:
             db.cursor().executescript(f.read())
-        db.commit() 
+        db.commit()
+
+def populate_db():
+    with closing(connect_db()) as db:
+        with app.open_resource('do_populate.sql', mode='r') as f:
+           db.cursor().executescript(f.read())
+        db.commit()
 
 @app.before_request
 def before_request():
@@ -58,6 +64,7 @@ def add_entry():
 def upload_code():
     if not session.get('logged_in'):
         abort(401)
+
     # Grab the source code from the form and put it in a file
     f = open('code.c', 'w')
     f.write (request.form['text'])
@@ -117,12 +124,35 @@ def logout():
     flash('You were logged out')
     return redirect(url_for('show_entries'))
 
+def make_dicts(cursor, row):
+    return dict((cur.description[idx][0], value)
+                for idx, value in enumerate(row))
+
+def query_db(query, args=(), one=False):
+    cur = g.db.execute(query, args)
+    rv = cur.fetchall()
+    cur.close()
+    return (rv[0] if rv else None) if one else rv
+
 @app.route('/upload')
 def upload():
+
+    challenge = query_db('''select name, description, input, output, sample_input, sample_output
+                            from challenges where id = 1''',one=True)
+    # g.db.row_factory = make_dicts(challenge,1)
+    name = challenge[0]
+    description = challenge[1]
+
     error = None
     if not session.get('logged_in'):
         abort(401)
-    return render_template('upload_code.html', error=error) 
+    return render_template('upload_code.html', error=error, name=name, description=description) 
+
+@app.route('/browse')
+def browse():
+    cur = query_db('select id, name from challenges')
+    challenges = [dict(id=row[0],name=row[1]) for row in cur]
+    return render_template('browse.html', challenges=challenges)
 
 if __name__ == '__main__':
     app.run()
