@@ -1,9 +1,8 @@
 {% extends "layout.html" %}
 {% block body %}
   <ul class=challenges>
-  {% for challenge in challenges %}
-    <li><h2>{{ challenges.id }}</h2>
-      {{ challenges.name }}
+  {% for problem in challenges %}
+    <li><h2><a href="browse/{{ problem.id }}">{{ problem.id }} - {{ problem.name }}</a></h2>
   {% endfor %}
   </ul>
 {% endblock %}
