@@ -69,9 +69,3 @@ An online judge for completing c++ coding challenges. Users can browse coding ch
   * Ensuring the project plan is complete
   * Distributing each part of the project plan
   * Final document checking
-  
-
-
-
-
-contact Brady about changes to this page
