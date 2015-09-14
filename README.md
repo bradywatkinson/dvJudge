@@ -69,17 +69,9 @@ An online judge for completing c++ coding challenges. Users can browse coding ch
   * Ensuring the project plan is complete
   * Distributing each part of the project plan
   * Final document checking
-<<<<<<< HEAD
-<<<<<<< HEAD
-  * Beautifying"
-######Front End Owner - Jinja
-=======
   
 
 
 
 
 contact Brady about changes to this page
->>>>>>> 39f9476... Update README.md
-=======
->>>>>>> dca92f2ea4574f2f5fa20a8d280b662957d78d93
