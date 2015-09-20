@@ -13,3 +13,6 @@ insert into users (username, email, password)
 
 insert into users (username, email, password)
 	values ('typical', 'typical@hotmail.com', 'typical');
+
+insert into users (username, email, password)
+	values ('admin', 'admin@hotmail.com', 'default');

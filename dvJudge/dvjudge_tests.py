@@ -10,6 +10,7 @@ class FlaskrTestCase(unittest.TestCase):
         dvjudge.app.config['TESTING'] = True
         self.app = dvjudge.app.test_client()
         dvjudge.init_db()
+        dvjudge.populate_db()
 
     def tearDown(self):
         os.close(self.db_fd)
@@ -34,9 +35,9 @@ class FlaskrTestCase(unittest.TestCase):
         rv = self.logout()
         assert 'You were logged out' in rv.data
         rv = self.login('adminx', 'default')
-        assert 'Invalid username' in rv.data
+        assert "Username and password do not match" in rv.data
         rv = self.login('admin', 'defaultx')
-        assert 'Invalid password' in rv.data
+        assert "Username and password do not match" in rv.data
 
     def test_messages(self):
         self.login('admin', 'default')
@@ -65,7 +66,7 @@ class FlaskrTestCase(unittest.TestCase):
             description='this is a problem'
         ), follow_redirects=True)
         
-        rv = self.app.get('/browse/1')
+        rv = self.app.get('/browse/4')
         assert ('problem name test') in rv.data
         assert ('this is a problem') in rv.data
 

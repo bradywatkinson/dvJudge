@@ -70,9 +70,9 @@ def login():
                 flash('You were logged in')
                 return redirect(url_for('show_entries'))
             else:
-                error += "Username and password don't match"
+                error += "Username and password do not match"
         else:
-            error += "Username and password don't match"
+            error += "Username and password do not match"
 
     return render_template('login.html', error=error)
 
@@ -93,13 +93,13 @@ def signup():
         email = request.form['email']
         confirmemail = request.form['confirmemail']
         if not email or email != request.form['confirmemail']:
-            error += "Emails don't match\n"
+            error += "Emails do not match\n"
         #check if passwords match up
         password = request.form['password']
         if len(password) < MIN_PASSWORD_LENGTH:
             error += "Passwords need to be 6 characters or longer"
         if not password or password != request.form['confirmpassword']:
-            error += "Passwords don't match\n"
+            error += "Passwords do not match\n"
         #if form entry was not succesful return errors
         if error != "":
             print "error message is " + error
