@@ -70,7 +70,7 @@ def logout():
 
 @app.route('/myprofile')
 def myprofile():
-    if session['user']:
+    if 'user' in session:
         return render_template('userprofile.html', username=session['user'])
     else:
         flash('You need to login before you can access this page')
