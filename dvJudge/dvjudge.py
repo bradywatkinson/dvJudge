@@ -169,13 +169,16 @@ def browse_search():
 
 @app.route('/browse/<problem_id>', methods=['GET'])
 def browse_specific_problem(problem_id):
-    cur = query_db('select id, description, name from challenges where id = ?', [problem_id], one=True)
+    cur = query_db('select * from challenges where id = ?', [problem_id], one=True)
     if cur is not None:
-        name = cur[2]
-        description = cur[1]
+        name        = cur[1]
+        description = cur[2]
+        sample_tests= cur[5]
+        input_desc  = cur[6]
+        output_desc = cur[7]
     else:
         abort(404)
-    problem_info = {'problem_id': problem_id, 'name': name, 'description': description}
+    problem_info = {'problem_id': problem_id, 'name': name, 'description': description, 'sample_tests': sample_tests, 'input_desc': input_desc, 'output_desc': output_desc}
     return render_template('problem.html', problem_info=problem_info)
 
 @app.route('/submit', methods=['POST'])
