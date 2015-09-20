@@ -99,7 +99,7 @@ def signup():
 
             flash('You were logged in')
             return redirect(url_for('show_mainpage'))
-    return render_template('login.html', error=error)
+    return render_template('signup.html', error=error)
 
 
 @app.route('/logout')

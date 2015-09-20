@@ -2,13 +2,21 @@
 {% block body %}
   <h2>Login</h2>
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
-  <form action="{{ url_for('login') }}" method=post>
-    <dl>
-      <dt>Username:
-      <dd><input type=text name=username id="exampleInputEmail1" placeholder="Email" required>
-      <dt>Password:
-      <dd><input type=password name=password id="exampleInputPassword1" placeholder="Password" required>
-      <dd><input type=submit value=Login>
-    </dl>
-  </form>
+  <div class="form-group">
+    <form action="{{ url_for('login') }}" method=post>
+      <dl>
+        <div class="form-group">
+          <dt>Username:
+          <dd><input type=text name=username id="exampleInputEmail1" placeholder="Email" required>
+        </div>
+        <div class="form-group">
+          <dt>Password:
+          <dd><input type=password name=password id="exampleInputPassword1" placeholder="Password" required>
+        </div>
+        <div class="form-group">
+          <dd><input type=submit value=Login>
+        </div>
+      </dl>
+    </form>
+  </div>
 {% endblock %}
