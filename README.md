@@ -4,8 +4,8 @@ UNSW comp4920 Major Project "D[tbd] V[tbd] online Judge"
 ## Developer Setup
   - Install Flask
   - Pull the code from git
-  - run `python deploy.py` to setup the database on your machine
-  - run `python dvjudge.py` to start the webserver
+  - run `python dvjudge/deploy.py` to setup the database on your machine
+  - run `python runserver.py` to start the webserver
   - Navigate to http://localhost:5000
 
 ##Project Details
@@ -50,7 +50,6 @@ An online judge for completing c++ coding challenges. Users can browse coding ch
 ######Github Owner
   * do github things
 	
-	
 #####Stannis	
 ######Website Design
   * designe website skeleton to be used as website template
@@ -63,15 +62,8 @@ An online judge for completing c++ coding challenges. Users can browse coding ch
   * Assigning stories to people
   * Assigning stories to sprints
 	
-	
 #####Daniel	
 ######Project Plan Owner
   * Ensuring the project plan is complete
   * Distributing each part of the project plan
   * Final document checking
-  
-
-
-
-
-contact Brady about changes to this page

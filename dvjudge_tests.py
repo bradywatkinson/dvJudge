@@ -1,20 +1,20 @@
 import os
-import dvjudge 
+from dvjudge import core 
 import unittest
 import tempfile
 
 class FlaskrTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.db_fd, dvjudge.app.config['DATABASE'] = tempfile.mkstemp()
-        dvjudge.app.config['TESTING'] = True
-        self.app = dvjudge.app.test_client()
-        dvjudge.init_db()
-        dvjudge.populate_db()
+        self.db_fd, core.app.config['DATABASE'] = tempfile.mkstemp()
+        core.app.config['TESTING'] = True
+        self.app = core.app.test_client()
+        core.init_db()
+        core.populate_db()
 
     def tearDown(self):
         os.close(self.db_fd)
-        os.unlink(dvjudge.app.config['DATABASE'])
+        os.unlink(core.app.config['DATABASE'])
 
     def login(self, username, password):
         return self.app.post('/login', data=dict(

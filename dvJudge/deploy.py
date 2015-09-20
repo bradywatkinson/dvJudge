@@ -1,3 +1,3 @@
-from dvjudge import init_db, populate_db
+from core import init_db, populate_db
 init_db()
 populate_db()
