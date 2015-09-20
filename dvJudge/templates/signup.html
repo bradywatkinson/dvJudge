@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h2>Sign up</h2>
+  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+  <form action="{{ url_for('signup') }}" method=post>
+    <dl>
+      <dt>Username:
+      <dd><input type=text name=username value='{{username}}' required minlength="6" maclength="20">
+      <dt>Email:
+      <dd><input type=email name=email value='{{email}}' required autocomplete="on">
+      <dt>Confirm Email:
+      <dd><input type=email name=confirmemail value='{{confirmemail}}' required autocomplete="on">
+      <dt>Password:
+      <dd><input type=password name=password required>
+      <dt>Confirm Password:
+      <dd><input type=password name=confirmpassword required>
+      <dd><input type=submit value=signup>
+    </dl>
+  </form>
+{% endblock %}
