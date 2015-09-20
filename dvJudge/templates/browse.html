@@ -1,8 +1,46 @@
+
 {% extends "layout.html" %}
 {% block body %}
-  <ul class=challenges>
-  {% for problem in challenges %}
-    <li><h2><a href="browse/{{ problem.id }}">{{ problem.id }} - {{ problem.name }}</a></h2>
-  {% endfor %}
-  </ul>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Example of Bootstrap 3 Tables with Alternate Background</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<style type="text/css">
+    .bs-example{
+      margin: 20px;
+    }
+</style>
+</head>
+<body>
+<div class="bs-example">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Submitter</th>
+                <th>Completed</th>
+            </tr>
+        </thead>
+        <tbody>
+          <ul class=challenges>
+          {% for problem in challenges %}
+          <tr>
+            <td><b><a href="browse/{{ problem.id }}">{{ problem.id }}</a></b></td>
+            <td><a href="browse/{{ problem.id }}">{{ problem.name }}</a></td>
+            <td>Stanley</td>
+            <td>Nope</td>
+          </tr>
+          {% endfor %}
+          </ul>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>                                   
+{% endblock %}                             

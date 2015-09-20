@@ -17,6 +17,7 @@ UNSW comp4920 Major Project "D[tbd] V[tbd] online Judge"
 [Git Tutorial](https://www.atlassian.com/git/)  
 [Flask Documentation (including tutorial)](http://flask.pocoo.org/docs/0.10/)  
 [Jinja Documentation](http://jinja.pocoo.org/docs/dev/templates/)  
+[Bootstrap Documentation](http://getbootstrap.com/css/)  
 
 ##Idea
 An online judge for completing c++ coding challenges. Users can browse coding challenges and attempt questions by uploading their code through the website and the judge will judge their resutls and tell them whether they have passed

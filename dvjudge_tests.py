@@ -1,5 +1,6 @@
 import os
-from dvjudge import core 
+from dvjudge import init_db, populate_db
+from dvjudge import core
 import unittest
 import tempfile
 
@@ -9,8 +10,8 @@ class FlaskrTestCase(unittest.TestCase):
         self.db_fd, core.app.config['DATABASE'] = tempfile.mkstemp()
         core.app.config['TESTING'] = True
         self.app = core.app.test_client()
-        core.init_db()
-        core.populate_db()
+        init_db()
+        populate_db()
 
     def tearDown(self):
         os.close(self.db_fd)
@@ -65,21 +66,24 @@ class FlaskrTestCase(unittest.TestCase):
     def test_upload_problem(self):
         self.login('admin', 'default')
         rv = self.app.post('/upload', data=dict(
-            name='testproblemname',
+            challenge_name='testproblemname',
             description='testproblemdescription'
         ), follow_redirects=True)
         rv = self.app.get('/browse')
         assert ('testproblemname') in rv.data
         assert ('notproblemname') not in rv.data
 
+    # creates a new challenge and checks that it is
+    # browseable. NOTE: this relies on only 2 challenges
+    # already in the db
     def test_submit_solution(self):
         self.login('admin', 'default')
         rv = self.app.post('/upload', data=dict(
-            name='problem name test',
+            challenge_name='problem name test',
             description='this is a problem'
         ), follow_redirects=True)
         
-        rv = self.app.get('/browse/4')
+        rv = self.app.get('/browse/3')
         assert ('problem name test') in rv.data
         assert ('this is a problem') in rv.data
 
@@ -87,19 +91,19 @@ class FlaskrTestCase(unittest.TestCase):
         # Add some problems via upload problem
         self.login('admin', 'default')
         rv = self.app.post('/upload', data=dict(
-            name='1 - Count to N',
+            challenge_name='1 - Count to N',
             description='testproblemdescription'
         ), follow_redirects=True)
         rv = self.app.post('/upload', data=dict(
-            name='2 - Sum to N',
+            challenge_name='2 - Sum to N',
             description='testproblemdescription'
         ), follow_redirects=True)
         rv = self.app.post('/upload', data=dict(
-            name='3 - Sum to N^2',
+            challenge_name='3 - Sum to N^2',
             description='testproblemdescription'
         ), follow_redirects=True)
         rv = self.app.post('/upload', data=dict(
-            name='4 - Subtract 5 from N',
+            challenge_name='4 - Subtract 5 from N',
             description='testproblemdescription'
         ), follow_redirects=True)
         

@@ -14,6 +14,7 @@ create table challenges (
 	description text not null,
 	input text,
 	output text,
-	sample_input text,
-	sample_output text
+	sample_tests text,
+	input_desc text,
+	output_desc text
 );

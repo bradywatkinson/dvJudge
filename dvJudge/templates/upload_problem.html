@@ -1,22 +1,78 @@
 {% extends "layout.html" %}
 {% block body %}
   {% if session.logged_in %}
-    <form action="{{ url_for('upload') }}" method=post class=upload-problem>
-      <dl>
-        <dt>New Problem<br>
-          <hr>
-          Problem Name:
-          <input type="text" name="name"><br>
-          <hr>
-          Problem Description:<br>
-          <textarea name="description" rows=20 cols=60></textarea>
-        <input type=submit value=Submit>
-      </dl>
-    </form>
-  {% endif %}
-  {% if result %}
-    <div>
-      <pre> {{ result }} </pre>
+
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Upload Challenge</h1>
+        
+        <ul class="nav nav-tabs">
+          <li class="active"><a data-toggle="tab" href="#Desc">Upload Challenge</a></li>
+          <li><a data-toggle="tab" href="#IO">Sample Upload</a></li>
+        </ul>
+
+        <div class="tab-content">
+          <div id="Desc" class="tab-pane fade in active">
+            <p>Use this form to upload a challenge to the dvJudge Community! Uploaded challenges can be accessed from the "Community Challenge" page</p>
+          </div>
+          <div id="IO" class="tab-pane fade">
+            <p><b>Name:</b> Summing 1..n</p>
+          </div>
+        </div>
+
+      </div>
     </div>
+
+  <div class="container">
+    <form action="{{ url_for('upload') }}" method=post class=upload-problem, class="form-horizontal">
+      <div class="form-group">
+        <label for="challenge_name" class="col-sm-2 control-label">Challenge Name</label>
+        <div class="col-sm-10">
+          <input name="challenge_name" class="form-control" id="challenge_name" placeholder="Challenge Name">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="description" class="col-sm-2 control-label">Description</label>
+        <div class="col-sm-10">
+          <textarea name="description" class="form-control" rows="3" id="description" placeholder="Description..."></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="input_" class="col-sm-2 control-label">Input</label>
+        <div class="col-sm-10">
+          <textarea name="input_" class="form-control" rows="3" id="input_" placeholder="The input..."></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="output_" class="col-sm-2 control-label">Ouput</label>
+        <div class="col-sm-10">
+          <textarea name="output_" class="form-control" rows="3" id="output_" placeholder="What you expect"></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="tnput_desc" class="col-sm-2 control-label">Input Description</label>
+        <div class="col-sm-10">
+          <input name="input_desc" class="form-control" id="tnput_desc" placeholder="Input Description">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="output_desc" class="col-sm-2 control-label">Output Description</label>
+        <div class="col-sm-10">
+          <input name="output_desc" class="form-control" id="output_desc" placeholder="Output Description">
+        </div>
+      </div>
+      <label for="tests" class="col-sm-2 control-label">Sample Tests</label>
+        <div class="col-sm-10">
+          <textarea name="tests" class="form-control" rows="3" id="tests" placeholder="Add Sample Tests Here"></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-8">
+          <button type="submit" class="btn btn-default">Submit</button>
+      </div>
+
+    </form>
+  </div>
   {% endif %}
+
 {% endblock %}
