@@ -11,6 +11,7 @@ DEBUG = True
 SECRET_KEY = 'development key'
 USERNAME = 'admin'
 PASSWORD = 'default'
+MIN_PASSWORD_LENGTH = 6
 
 # create our little application :)
 app = Flask(__name__)
@@ -20,7 +21,6 @@ app.config.from_envvar('DVJUDGE_SETTINGS', silent=True)
 
 def connect_db():
     return sqlite3.connect(app.config['DATABASE'])
-
 
 def init_db():
     with closing(connect_db()) as db:
@@ -73,6 +73,39 @@ def login():
             flash('You were logged in')
             return redirect(url_for('show_entries'))
     return render_template('login.html', error=error)
+
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    error = ""
+    if request.method == 'POST':
+        #check if duplicate username
+        username = request.form['username']
+        username_search = g.db.execute("select * from users where username='%s' " % (username)) #ensure it is not open to sql injection
+        if not username or username_search.rowcount != 0:
+            error += "Username is already taken\n"
+            for search_result in username_search:
+                error += search_result + "\n"
+        #check if emails match up
+        email = request.form['email']
+        if not email or email != request.form['confirmemail']:
+            error += "Emails don't match\n"
+        #check if passwords match up
+        password = request.form['password']
+        if len(password) < MIN_PASSWORD_LENGTH:
+            error += "Passwords need to be 6 characters or longer"
+        if not password or password != request.form['confirmpassword']:
+            error += "Passwords don't match\n"
+        #if form entry was not succesful return errors
+        if error != "":
+            print "error message is " + error
+            return render_template('signup.html', error=error, username=username, email=email, confirmemail=confirmemail)
+        else:
+            #submit info to the database
+            return_value = g.db.execute("insert into users (username, email, password) values ('%s', '%s', '%s')" % (username, email, password))
+            flash('You successfully created an account')
+            return redirect(url_for('show_entries'))
+    return render_template('signup.html', error=error)
 
 @app.route('/logout')
 def logout():
