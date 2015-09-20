@@ -1,15 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
 
-<script type="text/javascript">
-$(document).ready(function(){ 
-    $("#myTab a").click(function(e){
-      e.preventDefault();
-      $(this).tab('show');
-    });
-});
-</script>
-
   <div class="container">
     
 
@@ -24,7 +15,6 @@ $(document).ready(function(){
 
         <div class="tab-content">
           <div id="Desc" class="tab-pane fade in active">
-            <h3>HOME</h3>
             <p>{{ problem_info.description }}</p>
           </div>
           <div id="IO" class="tab-pane fade">
