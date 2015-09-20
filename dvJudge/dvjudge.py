@@ -72,12 +72,13 @@ def login():
         if user_pass:
             if username == user_pass[0] and password == user_pass[1]:
                 session['logged_in'] = True
+                session['user'] = username
                 flash('You were logged in')
                 return redirect(url_for('show_entries'))
             else:
                 error += "Username and password don't match"
         else:
-            error += "Username and password don't match %s, %s, %s" % (username, password, user_pass)
+            error += "Username and password don't match"
 
     return render_template('login.html', error=error)
 
@@ -113,14 +114,24 @@ def signup():
             #submit info to the database
             return_value = g.db.execute("insert into users (username, email, password) values ('%s', '%s', '%s')" % (username, email, password))
             flash('You successfully created an account')
+            session['logged_in'] = True
+            session['user'] = username      
             return redirect(url_for('show_entries'))
     return render_template('signup.html', error=error)
 
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
+    session.pop('user', None)
     flash('You were logged out')
     return redirect(url_for('show_entries'))
+
+@app.route('/myprofile')
+def myprofile():
+    if not session['user']:
+        flash('You need to login before you can access this page')
+        return redirect(url_for('show_entries'))
+
 
 def make_dicts(cursor, row):
     return dict((cur.description[idx][0], value)
