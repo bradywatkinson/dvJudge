@@ -1,9 +1,19 @@
 {% extends "layout.html" %}
 {% block body %}
-  {% if session.logged_in %}
+  <div class="container">
     <form action="{{ url_for('submit_specific_problem', problem_id=problem_info.problem_id) }}" method=post class=problem>
+
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Hello, world!</h1>
+        <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more »</a></p>
+      </div>
+    </div>
+
+
       <dl>
-        <dt> {{ problem_info.name }}
+        <h1> {{ problem_info.name }} </h1>
           <p> {{ problem_info.description }}
         {% if code %}
           <dd><textarea name=text rows=20 cols=60>{{ code }}</textarea>
@@ -13,8 +23,11 @@
         <dd><input type=submit value=Submit>
       </dl>
     </form>
-  {% endif %}
-  {% if result %}
-    <pre> {{ result }} </pre>
-  {% endif %}
+    {% if session.logged_in %}
+      <h2> "You are Logged In" </h2>
+    {% endif %}
+    {% if result %}
+      <pre> {{ result }} </pre>
+    {% endif %}
+  </div>
 {% endblock %}
