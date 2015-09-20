@@ -6,15 +6,14 @@
     <form action="{{ url_for('login') }}" method=post>
       <dl>
         <div class="form-group">
-          <dt>Username:
-          <dd><input type=text name=username id="exampleInputEmail1" placeholder="Email" required>
+          <dd><input type=text name=username id="exampleInputEmail1" placeholder="Username" class="form-control" required>
         </div>
         <div class="form-group">
-          <dt>Password:
-          <dd><input type=password name=password id="exampleInputPassword1" placeholder="Password" required>
+          <dd><input type=password name=password id="exampleInputPassword1" placeholder="Password" class="form-control" required>
         </div>
         <div class="form-group">
-          <dd><input type=submit value=Login>
+          <dd><input type=submit class="btn btn-default" value=Login>
+          <a class="btn btn-default" href="/signup" role="button">Sign Up</a>
         </div>
       </dl>
     </form>
