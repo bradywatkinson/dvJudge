@@ -62,16 +62,23 @@ def add_entry():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    error = None
+    error = ""
     if request.method == 'POST':
-        if request.form['username'] != app.config['USERNAME']:
-            error = 'Invalid username'
-        elif request.form['password'] != app.config['PASSWORD']:
-            error = 'Invalid password'
+        #retrieve username and password
+        username = request.form['username']
+        password = request.form['password']
+        cur = g.db.execute("select username, password from users where username='%s' " % username)
+        user_pass = cur.fetchone()
+        if user_pass:
+            if username == user_pass[0] and password == user_pass[1]:
+                session['logged_in'] = True
+                flash('You were logged in')
+                return redirect(url_for('show_entries'))
+            else:
+                error += "Username and password don't match"
         else:
-            session['logged_in'] = True
-            flash('You were logged in')
-            return redirect(url_for('show_entries'))
+            error += "Username and password don't match %s, %s, %s" % (username, password, user_pass)
+
     return render_template('login.html', error=error)
 
 
@@ -81,13 +88,15 @@ def signup():
     if request.method == 'POST':
         #check if duplicate username
         username = request.form['username']
-        username_search = g.db.execute("select * from users where username='%s' " % (username)) #ensure it is not open to sql injection
-        if not username or username_search.rowcount != 0:
+        cursor = g.db.cursor()
+        cursor.execute("select exists(select 1 from users where username='%s') " % (username)) #ensure it is not open to sql injection
+        if not cursor.fetchone():
             error += "Username is already taken\n"
             for search_result in username_search:
                 error += search_result + "\n"
         #check if emails match up
         email = request.form['email']
+        confirmemail = request.form['confirmemail']
         if not email or email != request.form['confirmemail']:
             error += "Emails don't match\n"
         #check if passwords match up

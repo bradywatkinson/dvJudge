@@ -7,3 +7,9 @@ insert into challenges (name,description,input,output,sample_input,sample_output
 
 insert into challenges (name,description,input,output,sample_input,sample_output)
 	values ('Sum to N^2','Create a program that prints sum 1^2..n^2',"4","30",null,null);
+
+insert into users (username, email, password)
+	values ('dannyeei', 'danielslater811@hotmail.com', 'daniel');
+
+insert into users (username, email, password)
+	values ('typical', 'typical@hotmail.com', 'typical');
