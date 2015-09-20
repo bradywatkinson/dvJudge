@@ -72,6 +72,9 @@ class FlaskrTestCase(unittest.TestCase):
         assert ('testproblemname') in rv.data
         assert ('notproblemname') not in rv.data
 
+    # creates a new challenge and checks that it is
+    # browseable. NOTE: this relies on only 2 challenges
+    # already in the db
     def test_submit_solution(self):
         self.login('admin', 'default')
         rv = self.app.post('/upload', data=dict(
@@ -79,7 +82,7 @@ class FlaskrTestCase(unittest.TestCase):
             description='this is a problem'
         ), follow_redirects=True)
         
-        rv = self.app.get('/browse/4')
+        rv = self.app.get('/browse/3')
         assert ('problem name test') in rv.data
         assert ('this is a problem') in rv.data
 

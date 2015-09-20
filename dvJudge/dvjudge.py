@@ -117,11 +117,6 @@ def myprofile():
         flash('You need to login before you can access this page')
         return redirect(url_for('show_mainpage'))
 
-
-def make_dicts(cursor, row):
-    return dict((cur.description[idx][0], value)
-                for idx, value in enumerate(row))
-
 def query_db(query, args=(), one=False):
     cur = g.db.execute(query, args)
     rv = cur.fetchall()
@@ -145,8 +140,8 @@ def upload():
     return render_template('upload_problem.html') 
 
 def add_problem(name, description):
-    g.db.execute ("""insert into challenges (name,description,input,output,sample_input,sample_output)
-                    values (?, ?, 'test', 'test', null, null)""", [name, description])
+    g.db.execute ("""insert into challenges (name,description,input,output,sample_tests,input_desc,output_desc)
+                    values (?, ?, 'test', 'test', null, null, null)""", [name, description])
     g.db.commit()
 
 @app.route('/browse', methods=['GET'])

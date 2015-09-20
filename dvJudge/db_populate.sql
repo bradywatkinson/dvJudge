@@ -9,11 +9,7 @@ insert into challenges (name,description,input,output,sample_tests,input_desc,ou
 insert into challenges (name,description,input,output,sample_tests,input_desc,output_desc)
 	values ('Sum to N','Create a program that prints sum 1..n',"4","10","Input: 10 \n Output: 55","A single integer — the (comparatic) something of something","A single integer — the sum of the integers from 1..n");
 
-
 -- Accounts
-insert into challenges (name,description,input,output,sample_input,sample_output)
-	values ('Sum to N^2','Create a program that prints sum 1^2..n^2',"4","30",null,null);
-
 insert into users (username, email, password)
 	values ('dannyeei', 'danielslater811@hotmail.com', 'daniel');
 
