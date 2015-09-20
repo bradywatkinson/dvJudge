@@ -6,21 +6,21 @@ from flask import Flask, request, session, g, redirect, url_for, \
 import os
 
 # configuration
-DATABASE = '/tmp/dvjudge.db'
-DEBUG = True
-SECRET_KEY = 'development key'
-USERNAME = 'admin'
-PASSWORD = 'default'
+#DATABASE = '/tmp/dvjudge.db'
+#DEBUG = True
+#SECRET_KEY = 'development key'
+#USERNAME = 'admin'
+#PASSWORD = 'default'
 
 # create our little application :)
 app = Flask(__name__)
-app.config.from_object(__name__)
+#app.config.from_object(__name__)
+#Load server settings from config file
+app.config.from_pyfile('settings.cfg', silent=True)
 
-app.config.from_envvar('DVJUDGE_SETTINGS', silent=True)
-
+####### Database functions ##########
 def connect_db():
     return sqlite3.connect(app.config['DATABASE'])
-
 
 def init_db():
     with closing(connect_db()) as db:
@@ -43,6 +43,7 @@ def teardown_request(exception):
     db = getattr(g, 'db', None)
     if db is not None:
         db.close()
+#############################################
 
 @app.route('/')
 def show_entries():
