@@ -70,5 +70,55 @@ class FlaskrTestCase(unittest.TestCase):
         assert ('problem name test') in rv.data
         assert ('this is a problem') in rv.data
 
+    def test_browse_search(self):
+        # Add some problems via upload problem
+        self.login('admin', 'default')
+        rv = self.app.post('/upload', data=dict(
+            name='1 - Count to N',
+            description='testproblemdescription'
+        ), follow_redirects=True)
+        rv = self.app.post('/upload', data=dict(
+            name='2 - Sum to N',
+            description='testproblemdescription'
+        ), follow_redirects=True)
+        rv = self.app.post('/upload', data=dict(
+            name='3 - Sum to N^2',
+            description='testproblemdescription'
+        ), follow_redirects=True)
+        rv = self.app.post('/upload', data=dict(
+            name='4 - Subtract 5 from N',
+            description='testproblemdescription'
+        ), follow_redirects=True)
+        
+        # Now try searching for Subtract 
+        rv = self.app.post('/browse', data=dict(
+            searchterm='Subtract'
+        ), follow_redirects=True)
+
+        assert ('1 - Count to N') not in rv.data
+        assert ('2 - Sum to N') not in rv.data
+        assert ('4 - Subtract 5 from N') in rv.data
+        assert ('3 - Sum to N^2') not in rv.data
+
+        # Now try searching for nothing (i.e. show all)
+        rv = self.app.post('/browse', data=dict(
+            searchterm=''
+        ), follow_redirects=True)
+
+        assert ('1 - Count to N') in rv.data
+        assert ('2 - Sum to N') in rv.data
+        assert ('3 - Sum to N^2') in rv.data
+        assert ('4 - Subtract 5 from N') in rv.data
+        
+        # Now try searching for special character '^'
+        rv = self.app.post('/browse', data=dict(
+            searchterm='^'
+        ), follow_redirects=True)
+
+        assert ('1 - Count to N') not in rv.data
+        assert ('2 - Sum to N') not in rv.data
+        assert ('3 - Sum to N^2') in rv.data
+        assert ('4 - Subtract 5 from N') not in rv.data
+
 if __name__ == '__main__':
     unittest.main()

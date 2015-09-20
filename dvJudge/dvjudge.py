@@ -142,7 +142,7 @@ def query_db(query, args=(), one=False):
 # For Uploading problems
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
-    if not session['logged_in']:
+    if 'logged_in' not in session or session['logged_in'] == False:
         abort(401)
     
     # Someone is trying to submit a new problem
@@ -165,6 +165,18 @@ def browse():
     cur = query_db('select id, name from challenges')
     challenges = [dict(id=row[0],name=row[1]) for row in cur]
     return render_template('browse.html', challenges=challenges)
+
+@app.route('/browse', methods=['POST'])
+def browse_search():
+    name = request.form.get('searchterm')
+    cur = query_db('select id, name from challenges')
+    # Produce an array of hashes that looks something like:
+    # [{id->'1', name->'some problem name'}, {other hash}]  
+    challenges = [dict(id=row[0],name=row[1]) for row in cur]
+    # Iterate over challenges, and only keep hashes (i.e. problems) where the names match up
+    results = [challenge for challenge in challenges if name.lower() in challenge["name"].lower()]
+    # Pass only those on
+    return render_template('browse.html', challenges=results, searchterm=request.form.get('searchterm'))
 
 @app.route('/browse/<problem_id>', methods=['GET'])
 def browse_specific_problem(problem_id):
