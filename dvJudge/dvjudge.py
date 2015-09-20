@@ -96,7 +96,7 @@ def signup():
             error += "Emails do not match\n"
         #check if passwords match up
         password = request.form['password']
-        if len(password) < MIN_PASSWORD_LENGTH:
+        if len(password) < 6:
             error += "Passwords need to be 6 characters or longer"
         if not password or password != request.form['confirmpassword']:
             error += "Passwords do not match\n"

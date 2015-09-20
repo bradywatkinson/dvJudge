@@ -39,6 +39,33 @@ class FlaskrTestCase(unittest.TestCase):
         rv = self.login('admin', 'defaultx')
         assert "Username and password do not match" in rv.data
 
+    def test_user_signup_works(self):
+        self.app.post('/signup')
+        rv = self.app.post('/signup', data=dict(
+                    username='username',
+                    password='password',
+                    confirmpassword='password',
+                    email='dan@hotmail.com',
+                    confirmemail='dan@hotmail.com'
+                    ), follow_redirects=True)
+        assert 'Username is already taken' not in rv.data
+        assert 'Passwords need to be 6 characters or longer' not in rv.data
+        assert 'Emails do not match' not in rv.data
+        assert 'Passwords do not match' not in rv.data
+
+    def test_user_signup_no_work(self):
+        self.app.post('/signup')
+        rv = self.app.post('/signup', data=dict(
+                    username='admin',
+                    password='password',
+                    confirmpassword='spassword',
+                    email='dan@hotmail.com',
+                    confirmemail='dain@hotmail.com'
+                    ), follow_redirects=True)
+        assert 'Passwords need to be 6 characters or longer' not in rv.data
+        assert 'Emails do not match' in rv.data
+        assert 'Passwords do not match' in rv.data
+
     def test_messages(self):
         self.login('admin', 'default')
         rv = self.app.post('/add', data=dict(
