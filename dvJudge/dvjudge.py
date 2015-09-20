@@ -39,20 +39,8 @@ def teardown_request(exception):
 #############################################
 
 @app.route('/')
-def show_entries():
-    cur = g.db.execute('select title, text from entries order by id desc')
-    entries = [dict(title=row[0], text=row[1]) for row in cur.fetchall()]
-    return render_template('show_entries.html', entries=entries)
-
-@app.route('/add', methods=['POST'])
-def add_entry():
-    if not session.get('logged_in'):
-        abort(401)
-    g.db.execute('insert into entries (title, text) values (?, ?)',
-                 [request.form['title'], request.form['text']])
-    g.db.commit()
-    flash('New entry was successfully posted')
-    return redirect(url_for('show_entries'))
+def show_mainpage():
+    return render_template('show_mainpage.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -68,7 +56,7 @@ def login():
                 session['logged_in'] = True
                 session['user'] = username
                 flash('You were logged in')
-                return redirect(url_for('show_entries'))
+                return redirect(url_for('show_mainpage'))
             else:
                 error += "Username and password do not match"
         else:
@@ -102,23 +90,24 @@ def signup():
             error += "Passwords do not match\n"
         #if form entry was not succesful return errors
         if error != "":
-            print "error message is " + error
             return render_template('signup.html', error=error, username=username, email=email, confirmemail=confirmemail)
         else:
             #submit info to the database
             return_value = g.db.execute("insert into users (username, email, password) values ('%s', '%s', '%s')" % (username, email, password))
             flash('You successfully created an account')
             session['logged_in'] = True
-            session['user'] = username      
-            return redirect(url_for('show_entries'))
-    return render_template('signup.html', error=error)
+
+            flash('You were logged in')
+            return redirect(url_for('show_mainpage'))
+    return render_template('login.html', error=error)
+
 
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
     session.pop('user', None)
     flash('You were logged out')
-    return redirect(url_for('show_entries'))
+    return redirect(url_for('show_mainpage'))
 
 @app.route('/myprofile')
 def myprofile():
@@ -126,7 +115,7 @@ def myprofile():
         return render_template('userprofile.html', username=session['user'])
     else:
         flash('You need to login before you can access this page')
-        return redirect(url_for('show_entries'))
+        return redirect(url_for('show_mainpage'))
 
 
 def make_dicts(cursor, row):

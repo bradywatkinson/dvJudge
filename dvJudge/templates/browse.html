@@ -1,14 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
   <ul class=challenges>
-  <form action="{{ url_for('browse') }}" method=post class=browse-problem>
-    Search:
-      {% if searchterm %} 
-        <input type="text" name="searchterm" value="{{searchterm}}">
-      {% else %}
-        <input type="text" name="searchterm">
-      {% endif %}
-  </form>
   {% for problem in challenges %}
     <li><h2><a href="browse/{{ problem.id }}">{{ problem.id }} - {{ problem.name }}</a></h2>
   {% endfor %}

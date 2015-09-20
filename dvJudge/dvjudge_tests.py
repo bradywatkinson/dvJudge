@@ -16,10 +16,6 @@ class FlaskrTestCase(unittest.TestCase):
         os.close(self.db_fd)
         os.unlink(dvjudge.app.config['DATABASE'])
 
-    def test_empty_db(self):
-        rv = self.app.get('/')
-        assert 'No entries here so far' in rv.data
-
     def login(self, username, password):
         return self.app.post('/login', data=dict(
                     username=username,
@@ -65,16 +61,6 @@ class FlaskrTestCase(unittest.TestCase):
         assert 'Passwords need to be 6 characters or longer' not in rv.data
         assert 'Emails do not match' in rv.data
         assert 'Passwords do not match' in rv.data
-
-    def test_messages(self):
-        self.login('admin', 'default')
-        rv = self.app.post('/add', data=dict(
-            title='<Hello>',
-            text='<strong>HTML</strong> allowed here'
-        ), follow_redirects=True)
-        assert 'No entries here so far' not in rv.data
-        assert '&lt;Hello&gt;' in rv.data
-        assert '<strong>HTML</strong> allowed here' in rv.data
 
     def test_upload_problem(self):
         self.login('admin', 'default')
