@@ -122,7 +122,9 @@ def logout():
 
 @app.route('/myprofile')
 def myprofile():
-    if not session['user']:
+    if session['user']:
+        return render_template('userprofile.html', username=session['user'])
+    else:
         flash('You need to login before you can access this page')
         return redirect(url_for('show_entries'))
 
