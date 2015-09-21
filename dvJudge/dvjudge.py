@@ -1,9 +1,11 @@
 # all the imports
 from contextlib import closing
 import sqlite3
+import os
+import hashlib
+import uuid
 from flask import Flask, request, session, g, redirect, url_for, \
      abort, render_template, flash
-import os
 
 # create our little application :)
 app = Flask(__name__)
@@ -49,10 +51,11 @@ def login():
         #retrieve username and password
         username = request.form['username']
         password = request.form['password']
-        cur = g.db.execute("select username, password from users where username='%s' " % username)
+        cur = g.db.execute("select username, password, salt from users where username='%s' " % username)
         user_pass = cur.fetchone()
         if user_pass:
-            if username == user_pass[0] and password == user_pass[1]:
+            hashed_password = hashlib.sha512(password + user_pass[2]).hexdigest()
+            if username == user_pass[0] and hashed_password == user_pass[1]:
                 session['logged_in'] = True
                 session['user'] = username
                 flash('You were logged in')
@@ -72,11 +75,10 @@ def signup():
         #check if duplicate username
         username = request.form['username']
         cursor = g.db.cursor()
-        cursor.execute("select exists(select 1 from users where username='%s') " % (username)) #ensure it is not open to sql injection
-        if not cursor.fetchone():
+        cursor.execute("select * from users where username='%s'" % (username))
+        value = cursor.fetchone()
+        if value != None:
             error += "Username is already taken\n"
-            for search_result in username_search:
-                error += search_result + "\n"
         #check if emails match up
         email = request.form['email']
         confirmemail = request.form['confirmemail']
@@ -92,11 +94,15 @@ def signup():
         if error != "":
             return render_template('signup.html', error=error, username=username, email=email, confirmemail=confirmemail)
         else:
+            #hash password and salt
+            salt = uuid.uuid4().hex
+            hashed_password = hashlib.sha512(password + salt).hexdigest()
             #submit info to the database
-            return_value = g.db.execute("insert into users (username, email, password) values ('%s', '%s', '%s')" % (username, email, password))
+            g.db.execute("insert into users (username, email, password, salt) values ('%s', '%s', '%s', '%s')" % (username, email, hashed_password, salt))
+            g.db.commit()
             flash('You successfully created an account')
             session['logged_in'] = True
-
+            session['user'] = username
             flash('You were logged in')
             return redirect(url_for('show_mainpage'))
     return render_template('signup.html', error=error)

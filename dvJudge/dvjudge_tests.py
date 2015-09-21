@@ -48,6 +48,9 @@ class FlaskrTestCase(unittest.TestCase):
         assert 'Passwords need to be 6 characters or longer' not in rv.data
         assert 'Emails do not match' not in rv.data
         assert 'Passwords do not match' not in rv.data
+        rv = self.logout()
+        rv = self.login('username', 'password')
+        assert 'You were logged in' in rv.data
 
     def test_user_signup_no_work(self):
         self.app.post('/signup')
@@ -58,6 +61,7 @@ class FlaskrTestCase(unittest.TestCase):
                     email='dan@hotmail.com',
                     confirmemail='dain@hotmail.com'
                     ), follow_redirects=True)
+        assert 'Username is already taken' in rv.data
         assert 'Passwords need to be 6 characters or longer' not in rv.data
         assert 'Emails do not match' in rv.data
         assert 'Passwords do not match' in rv.data

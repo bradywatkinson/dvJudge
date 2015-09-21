@@ -4,7 +4,8 @@ create table users (
 	id integer primary key autoincrement,
 	username text not null,
 	email text not null,
-	password text not null
+	password text not null,
+	salt text not null
 );
 
 drop table if exists challenges;
