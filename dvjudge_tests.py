@@ -83,7 +83,7 @@ class FlaskrTestCase(unittest.TestCase):
             description='this is a problem'
         ), follow_redirects=True)
         
-        rv = self.app.get('/browse/3')
+        rv = self.app.get('/browse/problem%20name%20test')
         assert ('problem name test') in rv.data
         assert ('this is a problem') in rv.data
 

@@ -1,4 +1,4 @@
-from flask import render_template, request
+from flask import render_template, request, abort
 from dvjudge import app
 from core import query_db
 
@@ -20,10 +20,11 @@ def browse_search():
     # Pass only those on
     return render_template('browse.html', challenges=results, searchterm=request.form.get('searchterm'))
 
-@app.route('/browse/<problem_id>', methods=['GET'])
-def browse_specific_problem(problem_id):
-    cur = query_db('select * from challenges where id = ?', [problem_id], one=True)
+@app.route('/browse/<problem_name>', methods=['GET'])
+def browse_specific_problem(problem_name): 
+    cur = query_db('select * from challenges where name = ?', [problem_name], one=True)
     if cur is not None:
+        problem_id  = cur[0]
         name        = cur[1]
         description = cur[2]
         sample_tests= cur[5]

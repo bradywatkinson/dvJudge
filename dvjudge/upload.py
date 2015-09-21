@@ -1,5 +1,6 @@
 from flask import render_template, request, session, abort, g, flash
 from dvjudge import app
+from core import query_db
 
 # For Uploading problems
 @app.route('/upload', methods=['GET', 'POST'])
@@ -17,8 +18,16 @@ def upload():
         input_desc      = request.form.get('input_desc')
         output_desc     = request.form.get('output_desc')
 
-        add_problem (challenge_name, description, input_, output_, tests,input_desc, output_desc) 
-        flash ("Problem added successfully")
+        # Check if the challenge_name already exists in the db
+        cur = query_db('select * from challenges where name = ?', [challenge_name], one=True)
+        if cur is None:
+            add_problem (challenge_name, description, input_, output_, tests,input_desc, output_desc) 
+            flash ("Problem added successfully")
+        # If the challenge_name is not fresh, leave the user's details in the page
+        else:
+            flash ("There is already a challenge with that name")
+            render_template('upload_problem.html', challenge_name=challenge_name, description=description, input_=input_,
+                            output_=output_, tests=tests, input_desc=input_desc, output_desc=output_desc)
 
     return render_template('upload_problem.html') 
 
