@@ -63,6 +63,19 @@ class FlaskrTestCase(unittest.TestCase):
         assert 'Emails do not match' in rv.data
         assert 'Passwords do not match' in rv.data
 
+    def test_login_landing_page(self):
+        rv = self.app.get('/')
+        assert ('SIGN UP TODAY') in rv.data
+        assert ('textarea') in rv.data
+        assert ('VIEW YOUR PROGRESS') not in rv.data
+        assert ('Upload Code') not in rv.data
+        self.login('admin', 'default')
+        rv = self.app.get('/')
+        assert ('VIEW YOUR PROGRESS') in rv.data
+        assert ('Upload Code') in rv.data
+        assert ('textarea') not in rv.data
+        assert ('SIGN UP TODAY') not in rv.data
+
     def test_upload_problem(self):
         self.login('admin', 'default')
         rv = self.app.post('/upload', data=dict(

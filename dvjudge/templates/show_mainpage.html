@@ -1,10 +1,60 @@
 {% extends "layout.html" %}
 {% block body %}
-    <div class="jumbotron">
-      <div class="container">
-        <h1>Welcome</h1>
-      </div>
+<head>
+<style type="text/css">
+    .bs-example{
+        margin: 20px;
+    }
+</style>
+</head>
+
+
+{% if not session.logged_in %}
+<div class="jumbotron">
+    <div class="container-fluid">
+        <h1>Learn to Solve</h1>
+        <p>DVJudge is a platform for preparing technical coding interviews. Pick from an expanding library, code and submit your solution to see if you have solved it correctly. </p>
+        <p><a href="{{ url_for('signup') }}" target="_blank" class="btn btn-primary">SIGN UP TODAY</a></p>
     </div>
-  <dd><a href="upload">UPLOAD CODE</a>
-  <dd><a href="browse">BROWSE PROBLEMS</a>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div align="center" class="col-xs-6">
+        <br><br><br>
+        <h3><a href="{{ url_for('browse') }}"><b>Browse</b></a> some of the current<br> problems in our database</h3>
+    </div>
+    <div align="center" class="col-xs-5">
+        <h4>*Insert Sample Problem Here*</h4>
+        <textarea rows="10" class="form-control"></textarea>
+        <br>
+        <div align="right"><button type="submit" class="btn btn-primary">Submit</button></div>
+    </div>
+    </div>
+{% else %}
+<div class="jumbotron">
+    <div class="container-fluid">
+        <h1>Welcome {{ session.user }}!</h1>
+        <br>
+        <p><a href="{{ url_for('myprofile') }}" target="_blank" class="btn btn-primary">VIEW YOUR PROGRESS</a></p>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div align="center" class="col-xs-6">
+            <h3><a href="{{ url_for('browse') }}">Browse Problems</a></h3>
+        </div>
+        <div align="center" class="col-xs-6">
+            <h3><a href="{{ url_for('upload') }}">Upload Code</a></h3>
+        </div>
+    </div>
+{% endif %}
+<hr>
+    <div class="row">
+        <div class="col-xs-12">
+            <footer>
+                <div align="center"><p>Copyright © 2015 DVJudge</p></div>
+            </footer>
+        </div>
+    </div>
+</div>
 {% endblock %}
