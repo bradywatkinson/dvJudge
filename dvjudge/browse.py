@@ -1,4 +1,4 @@
-from flask import render_template, request, abort
+from flask import render_template, session, request, abort
 from dvjudge import app
 from core import query_db
 
@@ -33,4 +33,20 @@ def browse_specific_problem(problem_name):
     else:
         abort(404)
     problem_info = {'problem_id': problem_id, 'name': name, 'description': description, 'sample_tests': sample_tests, 'input_desc': input_desc, 'output_desc': output_desc}
-    return render_template('problem.html', problem_info=problem_info)
+    
+    #Check if it's a redirect from submission and the program 
+    #has produced output
+    #Stored in session cookie
+    if 'output' in session:
+        info = session['output']
+        session.pop('output', None)
+    else:
+        info = None
+    #check for submitted code from user
+    if 'code' in session:
+        code = session['code']
+        session.pop('code', None)
+    else:
+        code = None
+
+    return render_template('problem.html', problem_info=problem_info, output=info, code = code )

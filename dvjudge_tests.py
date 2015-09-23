@@ -85,6 +85,7 @@ class FlaskrTestCase(unittest.TestCase):
         rv = self.app.get('/browse')
         assert ('testproblemname') in rv.data
         assert ('notproblemname') not in rv.data
+    
 
     # creates a new challenge and checks that it is
     # browseable. NOTE: this relies on only 2 challenges
@@ -149,6 +150,33 @@ class FlaskrTestCase(unittest.TestCase):
         assert ('2 - Sum to N') not in rv.data
         assert ('3 - Sum to N^2') in rv.data
         assert ('4 - Subtract 5 from N') not in rv.data
+        
+        #testing code submission
+    def  test_code_submission(self):
+        self.login('admin','default')
+        #submit code with errors
+        rv = self.app.post('/submit?problem_id=1',data=dict(
+            text="printf"
+            ),follow_redirects=True)
+        assert('error') in rv.data
+        assert('printf') in rv.data
+
+        #submit valid code
+        rv = self.app.post('/submit?problem_id=1',data=dict(
+            text="int main(){return 0;}"
+            ),follow_redirects=True)
+        assert('Program output') in rv.data
+        #test another challenge for submission
+        rv = self.app.post('/submit?problem_id=2',data=dict(
+            text="int main(){return 0;}"
+            ),follow_redirects=True)
+        assert('Program output') in rv.data
+
+        rv = self.app.post('/submit?problem_id=2',data=dict(
+            text="printf"
+            ),follow_redirects=True)
+        assert('error') in rv.data
+        assert('printf') in rv.data
 
 if __name__ == '__main__':
     unittest.main()

@@ -20,9 +20,13 @@
             <p>{{ problem_info.sample_tests }}</p>
           </div>
         </div>
-
       </div>
     </div>
+    {% if output %}
+     <div class="container">
+        <h1>{{ output }}</h1>
+    </div>
+    {% endif %}
     <div class="container">
       <!-- Example row of columns -->
       <form action="{{ url_for('submit_specific_problem', problem_id=problem_info.problem_id) }}" method=post class=problem>
