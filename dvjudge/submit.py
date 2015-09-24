@@ -44,7 +44,9 @@ def submit_specific_problem():
         test.write("This is a testfile")
         test.close()
         test = open('./test/testfile','r')
-        run = subprocess.Popen('./submissions/submission', stdin=test, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        #include timeout for tjandra
+        run = subprocess.Popen(['gtimeout','5s','./submissions/submission'], stdin=test, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        #run = subprocess.Popen('./submissions/submission', stdin=test, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         test.close()
 
         output = run.communicate()[0]
