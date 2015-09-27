@@ -152,7 +152,7 @@ class FlaskrTestCase(unittest.TestCase):
         assert ('4 - Subtract 5 from N') not in rv.data
         
         #testing code submission
-    def  test_code_submission(self):
+    def test_code_submission(self):
         self.login('admin','default')
         #submit code with errors
         rv = self.app.post('/submit?problem_id=1',data=dict(
@@ -177,6 +177,25 @@ class FlaskrTestCase(unittest.TestCase):
             ),follow_redirects=True)
         assert('error') in rv.data
         assert('printf') in rv.data
+   
+    # Test database imported submissions are displaying properly 
+    def test_view_all_submissions(self):
+        self.login('dannyeei', 'daniel')
+        rv = self.app.get('/submissions', follow_redirects=True)
+        # Check if we can see our 3 problems that are pre-populated
+        assert('Accepted') in rv.data
+        assert('Incorrect') in rv.data
+        assert('Compile Error') in rv.data
+        assert('Something Else') not in rv.data
+
+    # Test database imported specific submission is working as intended
+    def test_specific_submission(self):
+        self.login('dannyeei', 'daniel')
+        rv = self.app.get('/submissions/1', follow_redirects=True)
+        assert('Accepted') in rv.data
+        assert('This is a status info') in rv.data
+        assert('I would have like a compile error or something in here') in rv.data
+        assert('Blab blah you failed some testcases man') not in rv.data
 
 if __name__ == '__main__':
     unittest.main()

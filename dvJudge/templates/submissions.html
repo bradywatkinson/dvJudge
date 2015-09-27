@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="bs-example">
+  <h1>Your submissions:</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Submit Time</th>
+                <th>Question</th>
+                <th>Result</th>
+                <th>Run Time</th>
+                <th>Language</th>
+            </tr>
+        </thead>
+        <tbody>
+          <ul class=challenges>
+          {% for submission in submissions %}
+          <tr>
+            <td>{{ submission.id }}</td>
+            <td>{{ submission.timestamp }}</a></td>
+            <td><a href="browse/{{ submission.problem_name }}">{{ submission.problem_name }}</td>
+            <td><a href="submissions/{{ submission.id }}">{{ submission.status }}</td>
+            <td>1337 Seconds</td>
+            <td>Probably C</td>
+          </tr>
+          {% endfor %}
+          </ul>
+        </tbody>
+    </table>
+</div>
+{% endblock %}                             

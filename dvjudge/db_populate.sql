@@ -19,3 +19,11 @@ insert into users (username, email, password, salt)
 insert into users (username, email, password, salt)
 	values ('admin', 'admin@hotmail.com', '0b491227c0328e4c87c03fe4749b0b3a78d6da7094f5ef249b99caa759c6f1b1b6c952abb73e9448c5468fb7635f2d90a2f83b14e466c95b19b100fb9aec3c19', 'yumyumsaltinmytum');
 
+insert into submissions (user_id, challenge_id, status, status_info)
+    values ('1', 1, 'Accepted', 'This is a status info\nI would have like a compile error or something in here');
+
+insert into submissions (user_id, challenge_id, status, status_info)
+    values ('1', 2, 'Incorrect', 'Blab blah you failed some testcases man');
+
+insert into submissions (user_id, challenge_id, status, status_info)
+    values ('1', 1, 'Compile Error', 'Do you even C?');

@@ -19,3 +19,15 @@ create table challenges (
 	input_desc text,
 	output_desc text
 );
+
+drop table if exists submissions;
+create table submissions (
+	id integer primary key autoincrement,
+    user_id integer not null,
+    challenge_id integer not null,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+	status text not null,
+    status_info text not null
+);
+
+
