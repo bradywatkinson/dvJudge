@@ -56,10 +56,14 @@ def submit_specific_problem():
             run = subprocess.Popen(['gtimeout','5s','./'+username+'/'+ username], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             #run = subprocess.Popen('./submissions/submission', stdin=test, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
+
             prog_output = run.communicate(test)[0]
             # the number of inputs must correspond to the number of outputs in the database
             #otherwise an error will occur 
             expected = outputs.pop(0)
+            expected = " ".join(expected.split())
+            prog_output = " ".join(prog_output.split())
+            print prog_output
             if prog_output != expected:
                 output = "Test failed.\nProvided input: " + test +"\n"+"Expected output: "+ expected+"\n"+\
                  "Program output:" + prog_output
