@@ -3,10 +3,10 @@ from dvjudge import app
 from core import query_db
 
 # For Uploading problems
-@app.route('/upload', methods=['GET', 'POST'])
+@app.route('/community/upload', methods=['GET', 'POST'])
 def upload():
-    if 'logged_in' not in session or session['logged_in'] == False:
-        abort(401)
+    #if 'logged_in' not in session or session['logged_in'] == False:
+    #    abort(401)
     
     # Someone is trying to submit a new problem
     if request.method == 'POST':
@@ -32,6 +32,6 @@ def upload():
     return render_template('upload_problem.html') 
 
 def add_problem(challenge_name, description, input_, output_, tests,input_desc, output_desc): 
-    g.db.execute ("""insert into challenges (name,description,input,output,sample_tests,input_desc,output_desc)
-                    values (?, ?, ?, ?, ?, ?, ?)""", [challenge_name, description, input_, output_, tests, input_desc, output_desc])
+    g.db.execute ("""insert into challenges (name,description,input,output,sample_tests,input_desc,output_desc,com_flag)
+                    values (?, ?, ?, ?, ?, ?, ?, 1)""", [challenge_name, description, input_, output_, tests, input_desc, output_desc])
     g.db.commit()

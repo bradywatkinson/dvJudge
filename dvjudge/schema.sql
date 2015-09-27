@@ -17,5 +17,6 @@ create table challenges (
 	output text,
 	sample_tests text,
 	input_desc text,
-	output_desc text
+	output_desc text,
+	com_flag integer
 );

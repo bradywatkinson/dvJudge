@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-  {% if session.logged_in %}
+  
 
     <div class="jumbotron">
       <div class="container">
@@ -23,6 +23,7 @@
       </div>
     </div>
 
+  {% if session.logged_in %}
   <div class="container">
     <form action="{{ url_for('upload') }}" method=post class=upload-problem, class="form-horizontal">
       <div class="form-group">
@@ -77,6 +78,9 @@
 
     </form>
   </div>
+  {% else %}
+    <div class="container">
+      <p> You need to be <a href="/login"> logged in </a> to create a challenge </p>
   {% endif %}
 
 {% endblock %}
