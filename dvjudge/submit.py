@@ -3,63 +3,74 @@ from dvjudge import app
 from core import query_db
 import subprocess
 import os.path
+import random
 @app.route('/submit', methods=['POST'])
 def submit_specific_problem():
-    #flash ("Successfully submitted for problem " + request.args.get('problem_id'))
+    #if user is logged in the compiled file will be under the username
+    if 'user' in session:
+        username = session['user']
+    else:
+        username = 'default'
+
     #do database stuff
     problem_id = request.args.get('problem_id')
     cur = query_db('select * from challenges where id = ?', [problem_id], one=True)
     if cur is not None:
+        problem_id  = cur[0]
         name        = cur[1]
         description = cur[2]
+        input_tests = cur[3]
+        expected_output=cur[4]
         sample_tests= cur[5]
         input_desc  = cur[6]
         output_desc = cur[7]
+
     else:
         abort(404)
     problem_info = {'problem_id': problem_id, 'name': name, 'description': description, 'sample_tests': sample_tests, 'input_desc': input_desc, 'output_desc': output_desc}
     
+
     # get the code from the form
     code = request.form['text']
     # create a directory for current submission
-    directory = subprocess.Popen(['mkdir', 'submissions'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    directory = subprocess.Popen(['mkdir', username], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     directory.wait()
     #open a file to dump code for submission submission
-    submission = open('./submissions/submission.c','w')
+    submission = open('./'+username+'/'+ username +'.c','w')
     submission.write(code)
     submission.close()
 
     #compile the code with gcc
-    compiled = subprocess.Popen(['gcc', '-o', './submissions/submission', './submissions/submission.c'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    compiled = subprocess.Popen(['gcc', '-o', './'+username+'/'+ username , './'+username+'/'+ username +'.c'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     compiled.wait()
 
     #if the file has compiled run it otherwise display the warning
-    if os.path.isfile('./submissions/submission'):
+    if os.path.isfile('./'+username+'/'+ username):
+        output = "All tests passed. "
         # run with tests
-        # create a fake testfile since we don't have tests now
-        create = subprocess.Popen(['mkdir', 'test'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        create = subprocess.Popen(['touch', './test/testfile'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        create.wait()
-        test = open('./test/testfile','w')
-        test.write("This is a testfile")
-        test.close()
-        test = open('./test/testfile','r')
-        #include timeout for tjandra
-        run = subprocess.Popen(['gtimeout','5s','./submissions/submission'], stdin=test, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        #run = subprocess.Popen('./submissions/submission', stdin=test, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        test.close()
+        tests = input_tests.split('|')
+        outputs = expected_output.split('|')
+        for test in tests:
+            #output = output+ "Testing "+test+"\n"
+            #include timeout for tjandra
+            run = subprocess.Popen(['gtimeout','5s','./'+username+'/'+ username], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            #run = subprocess.Popen('./submissions/submission', stdin=test, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
-        output = run.communicate()[0]
-        output = 'Program output: '+ output
+            prog_output = run.communicate(test)[0]
+            # the number of inputs must correspond to the number of outputs in the database
+            #otherwise an error will occur 
+            expected = outputs.pop(0)
+            if prog_output != expected:
+                output = "Test failed.\nProvided input: " + test +"\n"+"Expected output: "+ expected+"\n"+\
+                 "Program output:" + prog_output
+                break;
+       
     else: 
         error_warning = compiled.communicate()[0]
-        output='Error message: '+ error_warning
+        output='Error message: '+ error_warning+ "\n"
 
     #clean up
-    subprocess.Popen(['rm', '-rf', 'submissions'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    subprocess.Popen(['rm', '-rf', 'test'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)   
-    
-    output = unicode(output, 'utf-8') 
+    subprocess.Popen(['rm', '-rf', username], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)   
     session['output'] = output
     session['code'] = code
     return redirect(url_for('browse_specific_problem', problem_name=name))

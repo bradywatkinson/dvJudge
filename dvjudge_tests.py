@@ -158,6 +158,7 @@ class FlaskrTestCase(unittest.TestCase):
         rv = self.app.post('/submit?problem_id=1',data=dict(
             text="printf"
             ),follow_redirects=True)
+
         assert('error') in rv.data
         assert('printf') in rv.data
 
@@ -177,6 +178,55 @@ class FlaskrTestCase(unittest.TestCase):
             ),follow_redirects=True)
         assert('error') in rv.data
         assert('printf') in rv.data
+
+        #passing all the tests
+        rv = self.app.post('/submit?problem_id=1',data=dict(
+            text='''#include <stdio.h> 
+                    int main(){
+                        int num; 
+                        scanf("%d",&num);
+                        for(int i = 0; i < num; i++){ 
+                            printf("%d", i+1); 
+                            if(i < num-1){
+                                printf(" ");
+                            }
+                        }
+                    }'''
+            ),follow_redirects=True)
+        assert("All tests passed") in rv.data
+
+        rv = self.app.post('/submit?problem_id=1',data=dict(
+            text='''#include <stdio.h> 
+                    int main(){
+                        int num; 
+                        scanf("%d",&num);
+                        for(int i = 0; i < num; i++){ 
+                            printf("%d", i+1)
+                            if(i < num-1){
+                                printf(" ");
+                            }
+                        }
+                    }'''
+            ),follow_redirects=True)
+        assert("Error") in rv.data
+
+        rv = self.app.post('/submit?problem_id=1',data=dict(
+            text='''#include <stdio.h> 
+                    int main(){
+                        int num; 
+                        scanf("%d",&num);
+                        for(int i = 0; i < num; i++){ 
+                            printf("%d", i+1);
+                            if(i < num-1){
+                                printf("-");
+                            }
+                        }
+                    }'''
+            ),follow_redirects=True)
+        assert("Test failed") in rv.data
+        assert("Provided input") in rv.data
+        assert("Expected output") in rv.data
+        assert("Program output") in rv.data
    
     # Test database imported submissions are displaying properly 
     def test_view_all_submissions(self):
@@ -196,6 +246,7 @@ class FlaskrTestCase(unittest.TestCase):
         assert('This is a status info') in rv.data
         assert('I would have like a compile error or something in here') in rv.data
         assert('Blab blah you failed some testcases man') not in rv.data
+        
 
 if __name__ == '__main__':
     unittest.main()
