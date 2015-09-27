@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block body %}
+  <div class="container">
+  <div class="jumbotron"><h1>Submission {{ id }}<h1></div>
+  <h2>Submitted by: {{ user_id }} on {{ timestamp }}<h2>
+  <h3>Problem: {{ problem_name }}<h3>
+  <h4>Status: {{ status }}</h4>
+  <hr>
+  <h4>Status Details:</h4>
+  <pre>{{ status_info }}</pre>
+  </div>
+{% endblock %}                             
