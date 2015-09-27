@@ -18,16 +18,21 @@ class FlaskrTestCase(unittest.TestCase):
         os.unlink(core.app.config['DATABASE'])
 
     def login(self, username, password):
-        return self.app.post('/login', data=dict(
+        rv =  self.app.post('/login_signup_form', data=dict(
+                    submit='signin',
                     username=username,
-                    password=password
+                    password=password,
+                    page='show_mainpage'
                     ), follow_redirects=True)
+        #print rv.data
+        return rv
 
     def logout(self):
         return self.app.get('/logout', follow_redirects=True)
 
     def test_login_logout(self):
         rv = self.login('admin', 'default')
+        #print rv.data
         assert 'You were logged in' in rv.data
         rv = self.logout()
         assert 'You were logged out' in rv.data
@@ -37,13 +42,13 @@ class FlaskrTestCase(unittest.TestCase):
         assert "Username and password do not match" in rv.data
 
     def test_user_signup_works(self):
-        self.app.post('/signup')
-        rv = self.app.post('/signup', data=dict(
+        self.app.get('/show_mainpage')
+        rv = self.app.post('/login_signup_form', data=dict(
+                    submit='signup',
                     username='username',
                     password='password',
                     confirmpassword='password',
                     email='dan@hotmail.com',
-                    confirmemail='dan@hotmail.com'
                     ), follow_redirects=True)
         assert 'Username is already taken' not in rv.data
         assert 'Passwords need to be 6 characters or longer' not in rv.data
@@ -51,21 +56,20 @@ class FlaskrTestCase(unittest.TestCase):
         assert 'Passwords do not match' not in rv.data
 
     def test_user_signup_no_work(self):
-        self.app.post('/signup')
-        rv = self.app.post('/signup', data=dict(
+        self.app.get('/show_mainpage')
+        rv = self.app.post('/login_signup_form', data=dict(
+                    submit='signup',
                     username='admin',
                     password='password',
                     confirmpassword='spassword',
                     email='dan@hotmail.com',
-                    confirmemail='dain@hotmail.com'
                     ), follow_redirects=True)
         assert 'Passwords need to be 6 characters or longer' not in rv.data
-        assert 'Emails do not match' in rv.data
-        assert 'Passwords do not match' in rv.data
+        #assert 'Emails do not match' in rv.data
+        #assert 'Passwords do not match' in rv.data
 
     def test_login_landing_page(self):
         rv = self.app.get('/')
-        assert ('SIGN UP TODAY') in rv.data
         assert ('textarea') in rv.data
         assert ('VIEW YOUR PROGRESS') not in rv.data
         assert ('Upload Code') not in rv.data

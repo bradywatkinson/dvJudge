@@ -5,6 +5,7 @@ from core import query_db
 # For Uploading problems
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
+    session['page'] = "upload"
     if 'logged_in' not in session or session['logged_in'] == False:
         abort(401)
     

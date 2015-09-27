@@ -8,6 +8,7 @@ from dvjudge import app
 
 @app.route('/')
 def show_mainpage():
+    session['page'] = "show_mainpage"
     return render_template('show_mainpage.html')
 
 def make_dicts(cursor, row):

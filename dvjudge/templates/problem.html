@@ -2,7 +2,6 @@
 {% block body %}
   <div class="container">
     <div class="jumbotron">
-      <div class="container">
         <h1>{{ problem_info.name }}</h1>
         
         <ul class="nav nav-tabs">
@@ -20,25 +19,23 @@
             <p>{{ problem_info.sample_tests }}</p>
           </div>
         </div>
-      </div>
     </div>
-    {% if output %}
+  {% if output %}
      <div class="container">
         <h1>{{ output }}</h1>
     </div>
-    {% endif %}
-    <div class="container">
-      <!-- Example row of columns -->
-      <form action="{{ url_for('submit_specific_problem', problem_id=problem_info.problem_id) }}" method=post class=problem>
-        <div class="form-group">
-          {% if code %}
-            <dd><textarea name=text rows=20 cols=60>{{ code }}</textarea>
-          {% else %}  
-            <dd><textarea name=text rows=20 cols=60></textarea>
-          {% endif %}
-          <p><input type=submit value=submit class="btn btn-default" role="button"></p>
-        </div>
-      </form>
-      
+  {% endif %}
+  <div class="container">
+    <!-- Example row of columns -->
+    <form action="{{ url_for('submit_specific_problem', problem_id=problem_info.problem_id) }}" method=post class=problem>
+      <div class="form-group">
+        {% if code %}
+          <dd><textarea name=text rows=20 cols=60>{{ code }}</textarea>
+        {% else %}
+          <dd><textarea name=text rows=20 cols=60></textarea>
+        {% endif %}
+        <p><input type=submit value=submit class="btn btn-default" role="button"></p>
+      </div>
+    </form>
   </div>
 {% endblock %}
