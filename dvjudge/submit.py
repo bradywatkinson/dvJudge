@@ -1,16 +1,19 @@
 from flask import render_template, session, request, flash, url_for, redirect, abort
 from dvjudge import app
-from core import query_db
+from core import query_db, insert_db
 import subprocess
 import os.path
 import random
 @app.route('/submit', methods=['POST'])
 def submit_specific_problem():
+    skip = False
     #if user is logged in the compiled file will be under the username
     if 'user' in session:
         username = session['user']
+        user_id = query_db('select id from users where username = ?',[username], one=True)[0]
     else:
         username = 'default'
+        skip = True
 
     #do database stuff
     problem_id = request.args.get('problem_id')
@@ -20,7 +23,7 @@ def submit_specific_problem():
         name        = cur[1]
         description = cur[2]
         input_tests = cur[3]
-        expected_output=cur[4]
+        expected_output = cur[4]
         sample_tests= cur[5]
         input_desc  = cur[6]
         output_desc = cur[7]
@@ -46,6 +49,7 @@ def submit_specific_problem():
 
     #if the file has compiled run it otherwise display the warning
     if os.path.isfile('./'+username+'/'+ username):
+        status = 'Accepted'
         output = "All tests passed. "
         # run with tests
         tests = input_tests.split('|')
@@ -63,15 +67,21 @@ def submit_specific_problem():
             expected = outputs.pop(0)
             expected = " ".join(expected.split())
             prog_output = " ".join(prog_output.split())
-            print prog_output
             if prog_output != expected:
                 output = "Test failed.\nProvided input: " + test +"\n"+"Expected output: "+ expected+"\n"+\
                  "Program output:" + prog_output
+                status = 'Incorrect'
                 break;
        
     else: 
         error_warning = compiled.communicate()[0]
         output='Error message: '+ error_warning+ "\n"
+        status = 'Compile Error'
+
+    # if not a default user, the one that is just trying out the website
+    if not skip:
+        insert_db("insert into submissions (user_id, challenge_id, status, status_info)\
+    values (?, ?, ?, ?);",[user_id,problem_id,status,output])
 
     #clean up
     subprocess.Popen(['rm', '-rf', username], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)   

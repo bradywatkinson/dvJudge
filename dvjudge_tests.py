@@ -162,11 +162,17 @@ class FlaskrTestCase(unittest.TestCase):
         assert('error') in rv.data
         assert('printf') in rv.data
 
+        rv = self.app.get('/submissions/4', follow_redirects=True)
+        assert('Status: Compile Error') in rv.data
+
         #submit valid code
         rv = self.app.post('/submit?problem_id=1',data=dict(
             text="int main(){return 0;}"
             ),follow_redirects=True)
         assert('Program output') in rv.data
+
+        rv = self.app.get('/submissions/5', follow_redirects=True)
+        assert('Status: Incorrect') in rv.data
         #test another challenge for submission
         rv = self.app.post('/submit?problem_id=2',data=dict(
             text="int main(){return 0;}"
