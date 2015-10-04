@@ -2,6 +2,14 @@ from flask import render_template, session, request, abort
 from dvjudge import app
 from core import query_db
 
+
+@app.route('/playlist', methods=['GET'])
+def show_playlist():
+    cur = query_db('select id, name from challenges')
+    challenges = [dict(id=row[0],name=row[1]) for row in cur]
+    return render_template('playlist.html', challenges=challenges)
+
+
 @app.route('/browse', methods=['GET'])
 def browse():
     cur = query_db('select id, name from challenges')
