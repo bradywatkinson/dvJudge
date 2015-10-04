@@ -11,7 +11,7 @@ def login():
         #retrieve username and password
         username = request.form['username']
         password = request.form['password']
-        cur = g.db.execute("select username, password, salt from users where username='%s' " % username)
+        cur = g.db.execute("select username, password, salt from users where username=? ", [username])
         user_pass = cur.fetchone()
         if user_pass:
             hashed_password = hashlib.sha512(password + user_pass[2]).hexdigest()
@@ -34,7 +34,7 @@ def signup():
         #check if duplicate username
         username = request.form['username']
         cursor = g.db.cursor()
-        cursor.execute("select * from users where username='%s'" % (username))
+        cursor.execute("select * from users where username=?", [username])
         value = cursor.fetchone()
         if value != None:
             error += "Username is already taken\n"
@@ -57,7 +57,7 @@ def signup():
             salt = uuid.uuid4().hex
             hashed_password = hashlib.sha512(password + salt).hexdigest()
             #submit info to the database
-            g.db.execute("insert into users (username, email, password, salt) values ('%s', '%s', '%s', '%s')" % (username, email, hashed_password, salt))
+            g.db.execute("insert into users (username, email, password, salt) values (?, ?, ?, ?)", [username, email, hashed_password, salt])
             g.db.commit()
             flash('You successfully created an account')
             session['logged_in'] = True
