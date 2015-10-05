@@ -4,7 +4,19 @@
     <div class="jumbotron">
       <div class="container">
         <h1>{{ problem_info.name }}</h1>
-        
+        {% if session.logged_in %} 
+        <div class="dropdown" style="float: right;">
+          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            Playlist
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            {% for playlist in playlists %}
+              <li><a href="/playlists/{{ playlist.id }}?add={{ problem_info.problem_id }}">Add to "{{ playlist.name }}"</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %} 
         <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="#Desc">Description</a></li>
           <li><a data-toggle="tab" href="#IO">Input/Output</a></li>

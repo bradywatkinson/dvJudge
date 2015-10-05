@@ -24,9 +24,12 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li><a href="/browse">Challenges<span class="sr-only">(current)</span></a></li>
-          {% if session.logged_in %}
-            <li><a href="/submissions">Submissions</a></li>
-          {% endif %}
+        {% if session.logged_in %}
+          <li><a href="/submissions">Submissions</a></li>
+        {% endif %}
+        {% if session.logged_in %}
+          <li><a href="/playlists">Playlists</a></li>
+        {% endif %}
       </ul>
       <form class="navbar-form navbar-left" role="search" action="{{ url_for('browse') }}" method=post>
         <div class="form-group">

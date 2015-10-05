@@ -1,4 +1,4 @@
-from flask import render_template, session, request, abort
+from flask import render_template, session, request, abort, g
 from dvjudge import app
 from core import query_db
 
@@ -57,4 +57,63 @@ def browse_specific_problem(problem_name):
     else:
         code = None
 
-    return render_template('problem.html', problem_info=problem_info, output=info, code = code )
+    # Prepare playlist information for the dropdown if user logged in
+    playlists = {} 
+    if 'user' in session:
+       username = session['user']
+       # Convert user session to user ID
+       cur = query_db('select id from users where username = ?', [username], one=True)
+       if cur is not None:
+           # Retrieve the playlists available to this user
+           cur = query_db('select * from playlists where owner_id = ?', [cur[0]])
+            
+           # Build a dictionary to pass to the page later
+           playlists = [dict(id=row[0],name=row[1]) for row in cur]
+       else:
+           abort(401)
+        
+    return render_template('problem.html', problem_info=problem_info, output=info, code=code, playlists=playlists)
+
+@app.route('/playlists')
+def show_playlists():
+    if 'user' in session:
+       username = session['user']
+       # Convert user session to user ID
+       cur = query_db('select id from users where username = ?', [username], one=True)
+       if cur is not None:
+           # Retrieve the playlists available to this user
+           cur = query_db('select * from playlists where owner_id = ?', [cur[0]])
+            
+           # Build a dictionary to pass to the page later
+           # Dictionary contains playlist name, id, and which challenges belong to it
+           playlists = [dict(id=row[0],name=row[1],challenges=row[2]) for row in cur]
+
+           # Passing playlists.html all the playilst info in a hash
+           return render_template('playlists.html', playlists=playlists)
+       else:
+           abort(401)
+    else:
+        abort(401)
+
+@app.route('/new_playlist', methods=['POST'])
+def create_playlist():
+    if request.form['playlist_name'] is None:
+        abort(400)
+    else:
+        playlist_name = request.form['playlist_name']
+
+    if 'user' in session:
+        username = session['user']
+        cur = query_db('select id from users where username = ?', [username], one=True)
+        if cur is not None:
+            user_id = cur[0]
+            g.db.execute('insert into playlists (name, owner_id, challenges) values (?, ?, "")', [playlist_name, user_id])
+            g.db.commit()
+            # Render template something something?
+            return "New playlist created with name " + playlist_name
+        else:
+            abort(401)
+    else:
+        abort(401)
+
+        

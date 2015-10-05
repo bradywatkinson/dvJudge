@@ -171,7 +171,7 @@ class FlaskrTestCase(unittest.TestCase):
             ),follow_redirects=True)
         assert('Program output') in rv.data
 
-        rv = self.app.get('/submissions/5', follow_redirects=True)
+        rv = self.app.get('/submissions/6', follow_redirects=True)
         assert('Status: Incorrect') in rv.data
         #test another challenge for submission
         rv = self.app.post('/submit?problem_id=2',data=dict(
@@ -253,6 +253,34 @@ class FlaskrTestCase(unittest.TestCase):
         assert('I would have like a compile error or something in here') in rv.data
         assert('Blab blah you failed some testcases man') not in rv.data
         
+    # Test a challenge shows the correct "add to playlist" buttons in the dropdown
+    def test_add_to_playlist(self):
+        self.login('dannyeei', 'daniel')
+        rv = self.app.get('/browse/Sum%20to%20N', follow_redirects=True)
+        assert("Create a program that prints sum 1..n") in rv.data
+        assert("Add to \"my playlist first ever\"") in rv.data
+        assert("Add to \"my second playlist ever\"") in rv.data
 
+    # Test creating playlists works
+    def test_create_playlist(self):
+        self.login('dannyeei', 'daniel')
+        rv = self.app.get('/browse/Sum%20to%20N', follow_redirects=True)
+        assert("Create a program that prints sum 1..n") in rv.data
+        assert("Add to \"my playlist first ever\"") in rv.data
+        assert("Add to \"my second playlist ever\"") in rv.data
+        assert("Add to \"AUTOMATED TEST\"") not in rv.data
+
+        # Add new playlist
+        rv = self.app.post('/new_playlist', data=dict(
+                    playlist_name="AUTOMATED TEST",
+                    ), follow_redirects=True)
+
+        # Now check we have three now 
+        rv = self.app.get('/browse/Sum%20to%20N', follow_redirects=True)
+        assert("Create a program that prints sum 1..n") in rv.data
+        assert("Add to \"my playlist first ever\"") in rv.data
+        assert("Add to \"my second playlist ever\"") in rv.data
+        assert("Add to \"AUTOMATED TEST\"") in rv.data
+        
 if __name__ == '__main__':
     unittest.main()
