@@ -39,9 +39,19 @@
         <pre>{{ output }}</pre>
     </div>
     {% endif %}
+
     <div class="container">
       <!-- Example row of columns -->
       <form action="{{ url_for('submit_specific_problem', problem_id=problem_info.problem_id) }}" method=post class=problem>
+        <select name = 'language' class="language_menu">
+          {% for item in problem_info.languages%} 
+            {% if item == in_use %}
+              <option selected='selected'>{{ item }}<option>
+            {% else %}
+              <option>{{ item }} <option>
+            {% endif %}
+          {% endfor %}
+        </select>
         <div class="form-group">
           {% if code %}
             <dd><textarea name=text rows=20 cols=60>{{ code }}</textarea>
@@ -53,4 +63,9 @@
       </form>
       
   </div>
+  <script type="text/javascript">
+    $(document).ready(function() {
+  $(".language_menu").select2({ width: '10%' });
+});
+  </script>
 {% endblock %}

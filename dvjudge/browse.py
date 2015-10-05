@@ -30,6 +30,8 @@ def browse_search():
 
 @app.route('/browse/<problem_name>', methods=['GET'])
 def browse_specific_problem(problem_name): 
+    supported_languages = ['C', 'Python', 'Java', 'C++']
+
     cur = query_db('select * from challenges where name = ?', [problem_name], one=True)
     if cur is not None:
         problem_id  = cur[0]
@@ -40,7 +42,8 @@ def browse_specific_problem(problem_name):
         output_desc = cur[7]
     else:
         abort(404)
-    problem_info = {'problem_id': problem_id, 'name': name, 'description': description, 'sample_tests': sample_tests, 'input_desc': input_desc, 'output_desc': output_desc}
+    problem_info = {'problem_id': problem_id, 'name': name, 'description': description, 'sample_tests': sample_tests, 
+                    'input_desc': input_desc, 'output_desc': output_desc, 'languages':supported_languages}
     
     #Check if it's a redirect from submission and the program 
     #has produced output
@@ -57,6 +60,11 @@ def browse_specific_problem(problem_name):
     else:
         code = None
 
+    if 'language' in session:
+        language = session['language']
+        session.pop('language', None)
+    else:
+        language = 'C'
     # Prepare playlist information for the dropdown if user logged in
     playlists = {} 
     if 'user' in session:
@@ -72,7 +80,7 @@ def browse_specific_problem(problem_name):
        else:
            abort(401)
         
-    return render_template('problem.html', problem_info=problem_info, output=info, code=code, playlists=playlists)
+    return render_template('problem.html', problem_info=problem_info, output=info, code=code, playlists=playlists, in_use = language)
 
 @app.route('/playlists')
 def show_playlists():
@@ -115,5 +123,3 @@ def create_playlist():
             abort(401)
     else:
         abort(401)
-
-        

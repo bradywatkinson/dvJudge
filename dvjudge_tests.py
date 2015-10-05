@@ -152,11 +152,12 @@ class FlaskrTestCase(unittest.TestCase):
         assert ('4 - Subtract 5 from N') not in rv.data
         
         #testing code submission
-    def test_code_submission(self):
+    def test_c_submission(self):
         self.login('admin','default')
         #submit code with errors
         rv = self.app.post('/submit?problem_id=1',data=dict(
-            text="printf"
+            text="printf",
+            language = 'C'
             ),follow_redirects=True)
 
         assert('error') in rv.data
@@ -167,7 +168,8 @@ class FlaskrTestCase(unittest.TestCase):
 
         #submit valid code
         rv = self.app.post('/submit?problem_id=1',data=dict(
-            text="int main(){return 0;}"
+            text="int main(){return 0;}",
+            language = 'C'
             ),follow_redirects=True)
         assert('Program output') in rv.data
 
@@ -175,12 +177,14 @@ class FlaskrTestCase(unittest.TestCase):
         assert('Status: Incorrect') in rv.data
         #test another challenge for submission
         rv = self.app.post('/submit?problem_id=2',data=dict(
-            text="int main(){return 0;}"
+            text="int main(){return 0;}",
+            language = 'C'
             ),follow_redirects=True)
         assert('Program output') in rv.data
 
         rv = self.app.post('/submit?problem_id=2',data=dict(
-            text="printf"
+            text="printf",
+            language = 'C'
             ),follow_redirects=True)
         assert('error') in rv.data
         assert('printf') in rv.data
@@ -197,7 +201,8 @@ class FlaskrTestCase(unittest.TestCase):
                                 printf(" ");
                             }
                         }
-                    }'''
+                    }''',
+            language = 'C'
             ),follow_redirects=True)
         assert("All tests passed") in rv.data
 
@@ -212,7 +217,8 @@ class FlaskrTestCase(unittest.TestCase):
                                 printf(" ");
                             }
                         }
-                    }'''
+                    }''',
+            language = 'C'
             ),follow_redirects=True)
         assert("Error") in rv.data
 
@@ -227,13 +233,56 @@ class FlaskrTestCase(unittest.TestCase):
                                 printf("-");
                             }
                         }
-                    }'''
+                    }''',
+            language = 'C'
             ),follow_redirects=True)
         assert("Test failed") in rv.data
         assert("Provided input") in rv.data
         assert("Expected output") in rv.data
         assert("Program output") in rv.data
-   
+
+    def test_java_submission(self):
+        self.login('admin','default')
+
+        #all tests passed
+        rv = self.app.post('/submit?problem_id=1',data=dict(
+            text='''import java.util.Scanner;
+                    public class HelloWorld { 
+                        public static void main(String[] args) { 
+                        Scanner sc = new Scanner(System.in);
+                        int max = sc.nextInt();
+                        for(int i = 1; i<=max; i++){
+                            System.out.print(i+" ");
+                        }
+                       }
+                    }''',
+            language = 'Java'
+            ),follow_redirects=True)
+        assert('All tests passed.') in rv.data
+        rv = self.app.get('/submissions/5', follow_redirects=True)
+        assert('Accepted') in rv.data
+
+        #output doesn't match
+        rv = self.app.post('/submit?problem_id=1',data=dict(
+            text='''import java.util.Scanner;
+                    public class HelloWorld { 
+                        public static void main(String[] args) { 
+                        Scanner sc = new Scanner(System.in);
+                        int max = sc.nextInt();
+                        for(int i = 1; i<max; i++){
+                            System.out.print(i+" ");
+                        }
+                       }
+                    }''',
+            language = 'Java'
+            ),follow_redirects=True)
+        assert("Test failed") in rv.data
+        assert("Provided input") in rv.data
+        assert("Expected output") in rv.data
+        assert("Program output") in rv.data
+
+        rv = self.app.get('/submissions/6', follow_redirects=True)
+        assert('Status: Incorrect') in rv.data
     # Test database imported submissions are displaying properly 
     def test_view_all_submissions(self):
         self.login('dannyeei', 'daniel')
