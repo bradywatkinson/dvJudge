@@ -283,6 +283,46 @@ class FlaskrTestCase(unittest.TestCase):
 
         rv = self.app.get('/submissions/6', follow_redirects=True)
         assert('Status: Incorrect') in rv.data
+
+    def test_python_submission(self):
+        self.login('admin','default')
+
+        #all tests passed
+        rv = self.app.post('/submit?problem_id=1',data=dict(
+            text='''number = raw_input()
+                    for num in range(1,int(number)+1):
+                        print num,''',
+            language = 'Python'
+            ),follow_redirects=True)
+        assert('IndentationError') in rv.data
+        rv = self.app.get('/submissions/5', follow_redirects=True)
+        assert('Compile Error') in rv.data
+
+
+    def test_c_plus_submission(self):
+        self.login('admin','default')
+
+        #all tests passed
+        rv = self.app.post('/submit?problem_id=2',data=dict(
+            text='''#include<iostream>
+                    using namespace std;
+                    int main()
+                    {
+                     long int sum=0;
+                     int n;
+                     cin>>n;
+                     for(int num=1;num<=n;num++)
+                     {
+                      sum=sum+num;
+                     }
+                     cout<<sum;
+                    }''',
+            language = 'C++'
+            ),follow_redirects=True)
+        assert('All tests passed.') in rv.data
+        rv = self.app.get('/submissions/5', follow_redirects=True)
+        assert('Accepted') in rv.data
+
     # Test database imported submissions are displaying properly 
     def test_view_all_submissions(self):
         self.login('dannyeei', 'daniel')
