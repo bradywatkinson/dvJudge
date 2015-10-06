@@ -2,14 +2,6 @@ from flask import render_template, session, request, abort, g
 from dvjudge import app
 from core import query_db
 
-
-@app.route('/playlist', methods=['GET'])
-def show_playlist():
-    cur = query_db('select id, name from challenges')
-    challenges = [dict(id=row[0],name=row[1]) for row in cur]
-    return render_template('playlist.html', challenges=challenges)
-
-
 @app.route('/browse', methods=['GET'])
 def browse():
     cur = query_db('select id, name from challenges')
@@ -82,24 +74,43 @@ def browse_specific_problem(problem_name):
         
     return render_template('problem.html', problem_info=problem_info, output=info, code=code, playlists=playlists, in_use = language)
 
-@app.route('/playlists')
+@app.route('/playlists', methods=['GET', 'POST'])
 def show_playlists():
     if 'user' in session:
-       username = session['user']
-       # Convert user session to user ID
-       cur = query_db('select id from users where username = ?', [username], one=True)
-       if cur is not None:
-           # Retrieve the playlists available to this user
-           cur = query_db('select * from playlists where owner_id = ?', [cur[0]])
-            
-           # Build a dictionary to pass to the page later
-           # Dictionary contains playlist name, id, and which challenges belong to it
-           playlists = [dict(id=row[0],name=row[1],challenges=row[2]) for row in cur]
+        username = session['user']
+        # Convert user session to user ID
+        cur = query_db('select id from users where username = ?', [username], one=True)
+        if cur is not None:
+            # Retrieve the playlists available to this user
+            cur = query_db('select * from playlists where owner_id = ?', [cur[0]])
+                
+            # Build a dictionary to pass to the page later
+            # Dictionary contains playlist name, id, and which challenges belong to it
+            playlists = [dict(id=row[0],name=row[1],challenges=row[3]) for row in cur]
 
-           # Passing playlists.html all the playilst info in a hash
-           return render_template('playlists.html', playlists=playlists)
-       else:
-           abort(401)
+            selected_name = request.form.get('selected_name')
+            selection = playlists[0]
+            if selected_name is not None:
+                for play in playlists:
+                    if play['name'] == selected_name:
+                        selection = play
+
+            challenge_ids = selection['challenges']
+            id_list = [int(s) for s in challenge_ids.split('|')]
+
+            cur = query_db('select id, name from challenges')
+            # Produce an array of hashes that looks something like:
+            # [{id->'1', name->'some problem name'}, {other hash}]  
+            challenges = [dict(id=row[0],name=row[1]) for row in cur]
+
+            challenge_list = []
+            for id in id_list:
+                challenge_list.append(challenges[id-1])
+
+            # Passing playlists.html all the playilst info in a hash
+            return render_template('playlists.html', playlists=playlists, selection=selection, challenge_list=challenge_list)
+        else:
+            abort(401)
     else:
         abort(401)
 

@@ -370,6 +370,33 @@ class FlaskrTestCase(unittest.TestCase):
         assert("Add to \"my playlist first ever\"") in rv.data
         assert("Add to \"my second playlist ever\"") in rv.data
         assert("Add to \"AUTOMATED TEST\"") in rv.data
+
+    # Test creating playlists works
+    def test_show_playlist(self):
+        self.login('dannyeei', 'daniel')
+        rv = self.app.get('/playlists', follow_redirects=True)
+        # Check dropdown menu is operational
+        assert("<option selected>my playlist first ever") in rv.data
+        assert("my second playlist ever") in rv.data
+        # Check challenges displayed correctly
+        assert("Count to N") in rv.data
+        assert("Dota 2 is a great game") in rv.data
+        assert("Sum to N") not in rv.data
+        assert("Valve cant program") not in rv.data
         
+        # Change selected playlist to display
+        rv = self.app.post('/playlists',data=dict(
+                        selected_name = 'my second playlist ever'
+                        ), follow_redirects=True)
+        # Check dropdown menu is operational
+        assert("<option selected>my playlist first ever") not in rv.data
+        assert("<option selected>my second playlist ever") in rv.data
+        # Check challenges displayed correctly
+        assert("Dota 2 is a great game") in rv.data
+        assert("Valve cant program") in rv.data
+        assert("Count to N") not in rv.data
+        assert("Sum to N") not in rv.data
+
+
 if __name__ == '__main__':
     unittest.main()

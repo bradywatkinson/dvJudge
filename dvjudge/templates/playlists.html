@@ -6,29 +6,26 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>jQuery UI Sortable - Default functionality</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='jquery.rowsorter.js') }}"></script>
 </head>
-{% if not session.logged_in %}
-  <h1>Go away.</h1>
-{% else %}
 <body> 
   <h1>{{ session.user }}'s Playlists</h1>
-  <select class="form-control" style="width:300px">
-    <!--
-      {% for group in playlists %}
-          <option value="{{ group.name }}">{{ group.name }}</option>
-      {% endfor %}
-    -->
-    <option>Playlist 1</option>
-    <option>Playlist 2</option>
-  </select>
+  <form action="{{ url_for('show_playlists') }}" method="POST" class=playlist>
+    <select class="form-control" name="selected_name" style="width:300px" onchange="this.form.submit()">
+      <ul class=playlists>
+        {% for group in playlists %}
+          {% if group.name  !=  selection.name  %}
+            <option>{{ group.name }}</option>
+          {% else %}
+            <option selected>{{ group.name }}</option>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </select>
+  </form>
   <br>
+
 
   <div class="bs-example" align="center">
   <table class="table table-striped" id="challenge-table">
@@ -41,15 +38,15 @@
       </tr>
     </thead>
     <tbody>
-      {% for problem in challenges %}
+      {% for problem in challenge_list %}
         <tr>
-          <td class="sorter"></td>
+          <td class="sorter">{{ loop.index }}</td>
           <td><b><a href="browse/{{ problem.name }}">{{ problem.name }}</a></b></td>
           <td>Nope</td>
           <td>Probably C</td>
         </tr>
       {% endfor %}
-
+      <!--
       <tr>
         <td class="sorter"></td>
         <td>Row 1</td>
@@ -67,7 +64,7 @@
         <td>Row 3</td>
         <td>Record 3</td>
         <td>Record 3</td>
-      </tr>
+      </tr>-->
     </tbody>
   </table>
   </div>
@@ -97,5 +94,4 @@ $("#challenge-table").rowSorter({
 });
 </script>
 </html>
-{% endif %}
 {% endblock %} 

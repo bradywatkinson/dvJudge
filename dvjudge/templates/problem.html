@@ -46,9 +46,9 @@
         <select name = 'language' class="language_menu">
           {% for item in problem_info.languages%} 
             {% if item == in_use %}
-              <option selected='selected'>{{ item }}<option>
+              <option selected='selected'>{{ item }}</option>
             {% else %}
-              <option>{{ item }} <option>
+              <option>{{ item }}</option>
             {% endif %}
           {% endfor %}
         </select>
