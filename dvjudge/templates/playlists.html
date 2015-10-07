@@ -1,17 +1,13 @@
 {% extends "layout.html" %}
 {% block body %}
-
-
 <!DOCTYPE html>
-<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-  <script type="text/javascript" src="{{ url_for('static', filename='jquery.rowsorter.js') }}"></script>
+	<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='rowsort.js') }}"></script>
 </head>
-<body> 
-  <h1>{{ session.user }}'s Playlists</h1>
-  <form action="{{ url_for('show_playlists') }}" method="POST" class=playlist>
+<body>
+	<h1>{{ session.user }}'s Playlists</h1>
+  <form action="{{ url_for('test_playlist') }}" method="POST" class=playlist>
     <select class="form-control" name="selected_name" style="width:300px" onchange="this.form.submit()">
       <ul class=playlists>
         {% for group in playlists %}
@@ -24,74 +20,40 @@
       </ul>
     </select>
   </form>
-  <br>
 
 
-  <div class="bs-example" align="center">
-  <table class="table table-striped" id="challenge-table">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Question</th>
-        <th>Completed</th>
-        <th>Language</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for problem in challenge_list %}
+	<div class="bs-example" align="center">
+	<table class="table table-striped" id="challenge_list">
+		<thead>
+			<tr>
+				<th width="5%">#</th>
+				<th width="40%">Question</th>
+				<th width="30%">Contributor</th>
+				<th width="10%">Completed</th>
+				<th width="10%"></th>
+			</tr>
+		</thead> 
+		<tbody> 
+			{% for problem in challenge_list %}
         <tr>
-          <td class="sorter">{{ loop.index }}</td>
+          <td class="order">{{ loop.index }}</td>
           <td><b><a href="browse/{{ problem.name }}">{{ problem.name }}</a></b></td>
-          <td>Nope</td>
-          <td>Probably C</td>
+          <td>Dumpling</td>
+          <td>N</td>
+          <td><div align="center"><a class='btn btn-delete btn-sm btn-primary'>Delete</a></div></td>
         </tr>
       {% endfor %}
-      <!--
-      <tr>
-        <td class="sorter"></td>
-        <td>Row 1</td>
-        <td>Record 1</td>
-        <td>Record 1</td>
-      </tr>
-      <tr>
-        <td class="sorter"></td>
-        <td>Row 2</td>
-        <td>Record 2</td>
-        <td>Record 2</td>
-      </tr>
-      <tr>
-        <td class="sorter"></td>
-        <td>Row 3</td>
-        <td>Record 3</td>
-        <td>Record 3</td>
-      </tr>-->
-    </tbody>
-  </table>
-  </div>
+		</tbody>
+	</table> 
+	</div>
 </body>
 <style>
-  #challenge-table tbody tr {
-    cursor:move;
-  }
-  #challenge-table tbody tr:hover {
+#challenge_list tr {
+     cursor:move;
+}    
+#challenge_list tbody tr:hover {
     background:ghostwhite;
-  }
-  #challenge-table tbody tr:active {
-    background:ghostwhite;
-    opacity:0.6;
-  }  
+}
 </style>
-<script>
-$("#challenge-table").rowSorter({
-  handler         : null,
-  tbody           : true,
-  tableClass      : 'sorting-table',
-  dragClass       : 'sorting-row',
-  stickTopRows    : 0,
-  stickBottomRows : 0,
-  onDragStart     : null,
-  onDrop          : null
-});
-</script>
-</html>
+
 {% endblock %} 
