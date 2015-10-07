@@ -34,3 +34,12 @@ function renumber_table(tableID) {
    		$(this).find('.order').html(count);
    	});
 }
+
+function reorder_form() {
+	var sorted = [];
+	$("#challenge_list tbody tr").each(function() {
+		var name = $(this).find('.problem').text();
+		sorted.push(name);
+	});
+	return sorted;
+}

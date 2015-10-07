@@ -87,28 +87,57 @@ def show_playlists():
             # Build a dictionary to pass to the page later
             # Dictionary contains playlist name, id, and which challenges belong to it
             playlists = [dict(id=row[0],name=row[1],challenges=row[3]) for row in cur]
+            if playlists:
+                selected_name = request.form.get('selected_name')
+                selection = playlists[0]
+                if selected_name is not None:
+                    for play in playlists:
+                        if play['name'] == selected_name:
+                            selection = play
 
-            selected_name = request.form.get('selected_name')
-            selection = playlists[0]
-            if selected_name is not None:
-                for play in playlists:
-                    if play['name'] == selected_name:
-                        selection = play
 
-            challenge_ids = selection['challenges']
-            id_list = [int(s) for s in challenge_ids.split('|')]
+                cur = query_db('select id, name from challenges')
+                # Produce an array of hashes that looks something like:
+                # [{id->'1', name->'some problem name'}, {other hash}]  
+                challenges = [dict(id=row[0],name=row[1]) for row in cur]
+                
+                # Determine whether Submit Changes was pressed
+                to_reorder = request.form.get('reorder')
+                if to_reorder:
+                    reorder_entry = {}
+                    # Match each challenge to their new order
+                    for challenge in challenges:
+                        if request.form.get(challenge['name']):
+                            chal_order = int(request.form.get(challenge['name']))
+                            chal_id = int(challenge['id'])
+                            reorder_entry[chal_order] = chal_id
+                    print reorder_entry # Debugging purposes
 
-            cur = query_db('select id, name from challenges')
-            # Produce an array of hashes that looks something like:
-            # [{id->'1', name->'some problem name'}, {other hash}]  
-            challenges = [dict(id=row[0],name=row[1]) for row in cur]
+                    # Generate an order string to insert into the database
+                    new_order = ""
+                    for key in reorder_entry:
+                        if not new_order:
+                            new_order = str(reorder_entry[key])
+                        else:
+                            new_order += "|" + str(reorder_entry[key])
+                    print new_order # Debugging purposes
 
-            challenge_list = []
-            for id in id_list:
-                challenge_list.append(challenges[id-1])
+                
+                # Obtain a list of in order challenge ids for a playlist
+                challenge_ids = selection['challenges']
+                id_list = [int(s) for s in challenge_ids.split('|')]
+
+                challenge_list = []
+                for id in id_list:
+                    challenge_list.append(challenges[id-1])
+            else:
+                playlists = None
+                selection = None
+                challenge_list = None
 
             # Passing playlists.html all the playilst info in a hash
-            return render_template('playlists.html', playlists=playlists, selection=selection, challenge_list=challenge_list)
+            return render_template('playlists.html', playlists=playlists,
+                        selection=selection, challenge_list=challenge_list)
         else:
             abort(401)
     else:

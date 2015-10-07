@@ -397,6 +397,16 @@ class FlaskrTestCase(unittest.TestCase):
         assert("Count to N") not in rv.data
         assert("Sum to N") not in rv.data
 
+    # Test no playlist page
+    def test_no_playlist(self):
+        self.login('admin', 'default')
+        rv = self.app.get('/playlists', follow_redirects=True)
+        # Check dropdown menu is operational
+        assert("You have no playlists.") in rv.data
+        assert("option") not in rv.data
+        assert("table") not in rv.data
+        assert("Submit") not in rv.data
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -7,53 +7,78 @@
 </head>
 <body>
 	<h1>{{ session.user }}'s Playlists</h1>
-  <form action="{{ url_for('test_playlist') }}" method="POST" class=playlist>
-    <select class="form-control" name="selected_name" style="width:300px" onchange="this.form.submit()">
-      <ul class=playlists>
-        {% for group in playlists %}
-          {% if group.name  !=  selection.name  %}
-            <option>{{ group.name }}</option>
-          {% else %}
-            <option selected>{{ group.name }}</option>
-          {% endif %}
-        {% endfor %}
-      </ul>
-    </select>
-  </form>
+  {% if playlists is not none %}
+    <form action="{{ url_for('show_playlists') }}" method="POST" class=playlist>
+      <select class="form-control" name="selected_name" style="width:300px" onchange="this.form.submit()">
+        <ul class=playlists>
+          {% for group in playlists %}
+            {% if group.name  !=  selection.name  %}
+              <option>{{ group.name }}</option>
+            {% else %}
+              <option selected>{{ group.name }}</option>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </select>
+    </form>
 
-
-	<div class="bs-example" align="center">
-	<table class="table table-striped" id="challenge_list">
-		<thead>
-			<tr>
-				<th width="5%">#</th>
-				<th width="40%">Question</th>
-				<th width="30%">Contributor</th>
-				<th width="10%">Completed</th>
-				<th width="10%"></th>
-			</tr>
-		</thead> 
-		<tbody> 
-			{% for problem in challenge_list %}
-        <tr>
-          <td class="order">{{ loop.index }}</td>
-          <td><b><a href="browse/{{ problem.name }}">{{ problem.name }}</a></b></td>
-          <td>Dumpling</td>
-          <td>N</td>
-          <td><div align="center"><a class='btn btn-delete btn-sm btn-primary'>Delete</a></div></td>
-        </tr>
-      {% endfor %}
-		</tbody>
-	</table> 
-	</div>
+    <form action="{{ url_for('show_playlists') }}" method="POST" id="order-form">
+    	<div class="bs-example" align="center">
+    	<table name="reorder_list" class="table table-striped" id="challenge_list">
+    		<thead>
+    			<tr>
+    				<th width="5%">#</th>
+    				<th width="40%">Question</th>
+    				<th width="30%">Contributor</th>
+    				<th width="10%">Completed</th>
+    				<th width="10%"></th>
+    			</tr>
+    		</thead>
+      		<tbody> 
+      			{% for problem in challenge_list %}
+              <tr>
+                <td class="order">{{ loop.index }}</td>
+                <td class="problem"><b><a href="browse/{{ problem.name }}">{{ problem.name }}</a></b></td>
+                <td>Dumpling</td>
+                <td>N</td>
+                <td><div align="center"><a class='btn btn-delete btn-sm btn-primary'>Delete</a></div></td>
+                <input type="hidden" name="{{ problem.name }}" id="{{ problem.name }}" value=""/>
+              </tr>
+            {% endfor %}
+      		</tbody>
+        </input>
+    	</table> 
+    	</div>
+      <div align="right">
+        <input type="submit" name="reorder" id="sub" value="Submit Changes" class="btn btn-submit btn-default"/>
+      </div>
+    </form>
+  {% else %}
+    <br>
+    <h4>You have no playlists.</h4>
+    <h4>Create a new playlist then add challenges to your cart from the problem pages.</h4>
+  {% endif %}
 </body>
 <style>
-#challenge_list tr {
+#challenge_list tbody tr {
      cursor:move;
 }    
 #challenge_list tbody tr:hover {
     background:ghostwhite;
 }
+#sub {
+    margin-right:3%;
+}
 </style>
+<script type="text/javascript">
+$('#order-form').submit(function() {
+  new_list = reorder_form();
+  for (var i = 0; i < new_list.length; i++) {
+    var elem = document.getElementById(new_list[i]);
+    elem.value = i.toString();
+  }
+});
+
+</script>
 
 {% endblock %} 
