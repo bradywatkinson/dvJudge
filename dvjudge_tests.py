@@ -234,6 +234,24 @@ class FlaskrTestCase(unittest.TestCase):
         assert("Expected output") in rv.data
         assert("Program output") in rv.data
    
+    #test comments and comment submission
+    def test_comment_submission(self):
+        self.login('dannyeei', 'daniel')
+        rv = self.app.get('/browse/Count%20to%20N', follow_redirects=True)
+        assert('Hello World!') not in rv.data
+        rv = self.app.post('/browse/Count%20to%20N', data=dict(
+            comment='Hello World!'))
+        assert('Hello World!') in rv.data
+        rv = self.app.post('/browse/Count%20to%20N', data=dict(
+            comment='New comment'))
+        assert('New comment') in rv.data
+        assert('Hello World!') in rv.data
+        rv = self.app.post('/browse/Count%20to%20N', data=dict(
+            comment='Long comment including odd characters: !@#$,.;:'))
+        assert('New comment') in rv.data
+        assert('Hello World!') in rv.data
+        assert('Long comment including odd characters: !@#$,.;:') in rv.data
+
     # Test database imported submissions are displaying properly 
     def test_view_all_submissions(self):
         self.login('dannyeei', 'daniel')

@@ -1,0 +1,41 @@
+<!--Display header reading comments-->
+<h3>Comments</h3>
+{% if comments %}
+<!--Display comments-->
+<div class="bs-example">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Posted</th>
+                <th>Comment</th>
+            </tr>
+        </thead>
+        <tbody>
+          <ul class=challenges>
+          {% for comment in comments %}
+          <tr>
+            <td><b>{{ comment.username }}</b></td>
+            <td>{{ comment.post_time }}</td>
+            <td>{{ comment.comment }}</td>
+          </tr>
+          {% endfor %}
+          </ul>
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+<!--Allow them to enter new comments-->
+  <div class="form-group">
+    <form action="" method=post>
+      <dl>
+        <div class="form-group">
+          <dd><input type=text name=comment class="form-control" placeholder="">
+        </div>
+        <div class="form-group">
+          <dd><input class="form-control" type=submit value=Submit>
+        </div>
+      </dl>
+    </form>
+  </div>
