@@ -74,6 +74,7 @@ def logout():
     flash('You were logged out')
     return redirect(url_for('show_mainpage'))
 
+
 @app.route('/myprofile')
 def myprofile():
     if 'user' in session:
@@ -81,3 +82,7 @@ def myprofile():
     else:
         flash('You need to login before you can access this page')
         return redirect(url_for('show_mainpage'))
+
+@app.route('/profile')
+def profile():
+    return render_template('profile.html')
