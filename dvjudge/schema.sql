@@ -31,3 +31,11 @@ create table submissions (
 );
 
 
+drop table if exists challenge_comments;
+create table challenge_comments(
+	id integer primary key autoincrement,
+	username text not null,
+	challenge_id integer not null,
+	comment text not null, 
+	post_time DATETIME DEFAULT CURRENT_TIMESTAMP
+);

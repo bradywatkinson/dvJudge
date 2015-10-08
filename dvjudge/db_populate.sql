@@ -27,4 +27,3 @@ insert into submissions (user_id, challenge_id, status, status_info)
 
 insert into submissions (user_id, challenge_id, status, status_info)
     values ('1', 1, 'Compile Error', 'Do you even C?');
-
