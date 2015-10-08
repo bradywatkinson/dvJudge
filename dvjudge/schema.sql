@@ -1,4 +1,3 @@
-
 drop table if exists users;
 create table users (
 	id integer primary key autoincrement,
@@ -30,4 +29,10 @@ create table submissions (
     status_info text not null
 );
 
-
+drop table if exists playlists;
+create table playlists (
+    id integer primary key autoincrement,
+    name text not null,
+    owner_id integer not null,
+    challenges text not null
+);
