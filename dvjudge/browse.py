@@ -1,6 +1,6 @@
 from flask import render_template, session, request, abort, g
 from dvjudge import app
-from core import query_db
+from core import query_db, update_db
 from comments import get_comments, post_comment
 
 @app.route('/browse', methods=['GET'])
@@ -92,6 +92,7 @@ def show_playlists():
         # Convert user session to user ID
         cur = query_db('select id from users where username = ?', [username], one=True)
         if cur is not None:
+            owner_id = str(cur[0])
             # Retrieve the playlists available to this user
             cur = query_db('select * from playlists where owner_id = ?', [cur[0]])
                 
@@ -122,7 +123,6 @@ def show_playlists():
                             chal_order = int(request.form.get(challenge['name']))
                             chal_id = int(challenge['id'])
                             reorder_entry[chal_order] = chal_id
-                    print reorder_entry # Debugging purposes
 
                     # Generate an order string to insert into the database
                     new_order = ""
@@ -131,11 +131,16 @@ def show_playlists():
                             new_order = str(reorder_entry[key])
                         else:
                             new_order += "|" + str(reorder_entry[key])
-                    print new_order # Debugging purposes
 
-                
+                    reorder_str = "update playlists set challenges=? where name=? and owner_id=?;"
+                    update_db(reorder_str, [new_order,selection['name'],owner_id])
+                    query_db('select * from playlists where owner_id = ? and name = ?',
+                                    [owner_id, selection['name']])
+                    challenge_ids = new_order
+                else:
+                    challenge_ids = selection['challenges']
+
                 # Obtain a list of in order challenge ids for a playlist
-                challenge_ids = selection['challenges']
                 id_list = [int(s) for s in challenge_ids.split('|')]
 
                 challenge_list = []

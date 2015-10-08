@@ -3,6 +3,7 @@ from dvjudge import init_db, populate_db
 from dvjudge import core
 import unittest
 import tempfile
+import re
 
 class FlaskrTestCase(unittest.TestCase):
 
@@ -423,6 +424,30 @@ class FlaskrTestCase(unittest.TestCase):
         assert("option") not in rv.data
         assert("table") not in rv.data
         assert("Submit") not in rv.data
+
+    # Test reorder playlist
+    def test_reorder_playlist(self):
+        self.login('typical', 'typical')
+        rv = self.app.get('/playlists', follow_redirects=True)
+        assert ("Count to N: 1") in rv.data
+        assert ("Sum to N: 2") in rv.data
+        assert ("Dota 2 is a great game: 3") in rv.data
+        assert ("Valve cant program: 4") in rv.data
+
+        data = {}
+        data['Valve cant program'] = "1"
+        data['Dota 2 is a great game'] = "2"
+        data['Sum to N'] = "3"
+        data['Count to N'] = "4"
+        data['reorder'] = "Submit Changes"
+        data['selected_name'] = "different playlist"
+
+        # Change challenge ordering
+        rv = self.app.post('/playlists',data=data, follow_redirects=True)
+        assert ("Valve cant program: 1") in rv.data
+        assert ("Dota 2 is a great game: 2") in rv.data
+        assert ("Sum to N: 3") in rv.data
+        assert ("Count to N: 4") in rv.data
 
 
 if __name__ == '__main__':

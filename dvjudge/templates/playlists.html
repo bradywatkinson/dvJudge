@@ -37,6 +37,8 @@
       		<tbody> 
       			{% for problem in challenge_list %}
               <tr>
+                <!-- For testing purposes:
+                {{ problem.name}}: {{ loop.index }} -->
                 <td class="order">{{ loop.index }}</td>
                 <td class="problem"><b><a href="browse/{{ problem.name }}">{{ problem.name }}</a></b></td>
                 <td>Dumpling</td>

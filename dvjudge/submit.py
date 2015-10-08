@@ -1,6 +1,6 @@
 from flask import render_template, session, request, flash, url_for, redirect, abort
 from dvjudge import app
-from core import query_db, insert_db
+from core import query_db, update_db
 import subprocess
 import os.path
 import random
@@ -51,7 +51,7 @@ def submit_specific_problem():
         result = run_java(code=code, username = username, input_tests = input_tests, expected_output = expected_output)
     # if not a default user, the one that is just trying out the website
     if not skip:
-        insert_db("insert into submissions (user_id, challenge_id, status, status_info)\
+        update_db("insert into submissions (user_id, challenge_id, status, status_info)\
     values (?, ?, ?, ?);",[user_id,problem_id,result['status'],result['output']])
 
     #clean up
