@@ -36,15 +36,15 @@ def browse_specific_problem(problem_name):
     else:
         abort(404)
 
+    problem_info = {'problem_id': problem_id, 'name': name, 'description': description, 'sample_tests': sample_tests, 
+                'input_desc': input_desc, 'output_desc': output_desc, 'languages':supported_languages}
+
     #check for posted comment
     if request.method == 'POST':
         comment = request.form['comment']
         if comment:
             post_comment(session['user'], problem_id, comment)
-
-    problem_info = {'problem_id': problem_id, 'name': name, 'description': description, 'sample_tests': sample_tests, 
-                    'input_desc': input_desc, 'output_desc': output_desc, 'languages':supported_languages}
-    
+  
     #Check if it's a redirect from submission and the program 
     #has produced output
     #Stored in session cookie
@@ -60,12 +60,6 @@ def browse_specific_problem(problem_name):
     else:
         code = None
 
-<<<<<<< HEAD
-    #insert the comments section
-    question_comments = get_comments(problem_id)
-
-    return render_template('problem.html', problem_info=problem_info, output=info, code = code, problem_name=problem_name, comments=question_comments)
-=======
     if 'language' in session:
         language = session['language']
         session.pop('language', None)
@@ -85,8 +79,11 @@ def browse_specific_problem(problem_name):
            playlists = [dict(id=row[0],name=row[1]) for row in cur]
        else:
            abort(401)
-        
-    return render_template('problem.html', problem_info=problem_info, output=info, code=code, playlists=playlists, in_use = language)
+  
+    #insert the comments section
+    question_comments = get_comments(problem_id)
+      
+    return render_template('problem.html', problem_info=problem_info, output=info, code=code, playlists=playlists, in_use = language, comments=question_comments)
 
 @app.route('/playlists', methods=['GET', 'POST'])
 def show_playlists():
