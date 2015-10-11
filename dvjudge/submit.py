@@ -20,7 +20,7 @@ def submit_specific_problem():
     problem_info = {'problem_id': problem_id, 'name': name, 'description': description, 'sample_tests': sample_tests, 'input_desc': input_desc, 'output_desc': output_desc}
     
     # get the code from the form
-    code = request.form['text']
+    code = request.form['editor']
     # create a directory for current submission
     directory = subprocess.Popen(['mkdir', 'submissions'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     directory.wait()

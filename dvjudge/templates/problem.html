@@ -29,12 +29,39 @@
     <!-- Example row of columns -->
 
 
-<div id="editor" style="height: 500px; width: 500px">some text</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/ace.js" type="text/javascript" charset="utf-8"></script>
+<div id="editor" style="height: 500px; width: 500px">// enter code here</div>
+<form action="{{ url_for('submit_specific_problem', problem_id=problem_info.problem_id) }}" method="post">
+<input type="submit" value="Submit" id="submit" class="btn btn-primary btn-lg">
+<br>
+<textarea name="editor"><%= @text %></textarea>
+</form>
+<!--script src="/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
     var editor = ace.edit("editor");
-    editor.setTheme("ace/theme/github");
-    editor.getSession().setMode("ace/mode/c++");
+    editor.setTheme("ace/theme/monokai");
+    editor.getSession().setMode("ace/mode/javascript");
+</script-->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var textarea = $('textarea[name="editor"]');
+    textarea.hide();
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/chrome");
+    editor.getSession().setMode("ace/mode/c_cpp");
+    $('#submit').on('click', function() {
+        textarea.val(editor.getSession().getValue());
+    });
+</script>
+
+<!--div class="container">
+  <p>
+ <button class="btn btn-primary btn-lg" href="#" data-toggle="modal" data-target=".bs-modal-sm">Submit</button>
+</div-->
+
+<script>
+  var editor = ace.edit("editor");
+  editor.getValue();
 </script>
 
 
