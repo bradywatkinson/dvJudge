@@ -1,31 +1,31 @@
-
 {% extends "layout.html" %}
 {% block body %}
 <div class="container">
-<div class="bs-example">
-    <table class="table table-striped">
-        <thead>
+
+  <div class="bs-example">
+      <table class="table table-striped">
+          <thead>
+              <tr>
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>Submitter</th>
+                  <th>Completed</th>
+              </tr>
+          </thead>
+          <tbody>
+            <ul class=challenges>
+            {% for problem in challenges %}
             <tr>
-                <th>#</th>
-                <th>Title</th>
-                <th>Submitter</th>
-                <th>Completed</th>
+              {# Both of the following links should link to browse/<problem_name> #}
+              <td><b><a href="browse/{{ problem.name }}">{{ problem.id }}</a></b></td>
+              <td><a href="browse/{{ problem.name }}">{{ problem.name }}</a></td>
+              <td>Stanley</td>
+              <td>Nope</td>
             </tr>
-        </thead>
-        <tbody>
-          <ul class=challenges>
-          {% for problem in challenges %}
-          <tr>
-            {# Both of the following links should link to browse/<problem_name> #}
-            <td><b><a href="browse/{{ problem.name }}">{{ problem.id }}</a></b></td>
-            <td><a href="browse/{{ problem.name }}">{{ problem.name }}</a></td>
-            <td>Stanley</td>
-            <td>Nope</td>
-          </tr>
-          {% endfor %}
-          </ul>
-        </tbody>
-    </table>
-</div>
+            {% endfor %}
+            </ul>
+          </tbody>
+      </table>
+  </div>
 </div>
 {% endblock %}                             

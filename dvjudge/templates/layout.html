@@ -5,7 +5,8 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-
+<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 
 
@@ -47,7 +48,12 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li><a href="/browse">Challenges<span class="sr-only">(current)</span></a></li>
-        <li><a href="#">Competitions(empty)</a></li>
+        {% if session.logged_in %}
+          <li><a href="/submissions">Submissions</a></li>
+        {% endif %}
+        {% if session.logged_in %}
+          <li><a href="/playlists">Playlists</a></li>
+        {% endif %}
       </ul>
       <form class="navbar-form navbar-left" role="search" action="{{ url_for('browse') }}" method=post>
         <div class="form-group">
@@ -245,11 +251,13 @@
         </div>
         <!--/.footer-->
         
-        <div class="footer-bottom">
-            <div class="container">
-                <p class="pull-left"> Copyright © Bloom. All right reserved. </p>
-            </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <footer>
+                <div align="center"><p>Copyright © 2015 DVJudge</p></div>
+            </footer>
         </div>
+    </div>
         <!--/.footer-bottom--> 
     </footer>
   </div>

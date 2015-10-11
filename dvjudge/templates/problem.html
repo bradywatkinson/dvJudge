@@ -3,7 +3,19 @@
   <div class="container">
     <div class="jumbotron">
         <h1>{{ problem_info.name }}</h1>
-        
+        {% if session.logged_in %} 
+        <div class="dropdown" style="float: right;">
+          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            Playlist
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            {% for playlist in playlists %}
+              <li><a href="/playlists/{{ playlist.id }}?add={{ problem_info.problem_id }}">Add to "{{ playlist.name }}"</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %} 
         <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="#Desc">Description</a></li>
           <li><a data-toggle="tab" href="#IO">Input/Output</a></li>
@@ -22,18 +34,31 @@
     </div>
   {% if output %}
      <div class="container">
-        <h1>{{ output }}</h1>
+        <pre>{{ output }}</pre>
     </div>
   {% endif %}
   <div class="container">
     <!-- Example row of columns -->
 
-    <div id="editor" style="height: 500px; width: 500px">// enter code here</div>
-    <form action="{{ url_for('submit_specific_problem', problem_id=problem_info.problem_id) }}" method="post">
-      <input type="submit" value="Submit" id="submit" class="btn btn-primary btn-lg">
+
+
+    <form action="{{ url_for('submit_specific_problem', problem_id=problem_info.problem_id) }}" method="post" id="code">
+      <select name = 'language' class="language_menu">
+        {% for item in problem_info.languages%} 
+          {% if item == in_use %}
+            <option selected='selected'>{{ item }}</option>
+          {% else %}
+            <option>{{ item }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+
       <br>
       <textarea name="editor"><%= @text %></textarea>
     </form>
+    <div id="editor" style="height: 500px; width: 500px">// enter code here</div>
+    <input type="submit" value="Submit" id="submit" class="btn btn-primary btn-lg" form="code">
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/ace.js" type="text/javascript" charset="utf-8"></script>
     <script>
@@ -46,5 +71,14 @@
             textarea.val(editor.getSession().getValue());
         });
     </script>
+
+
   </div>
+  <script type="text/javascript">
+    $(document).ready(function() {
+  $(".language_menu").select2({ width: '10%' });
+});
+  </script>
+
+{% include "comments.html" %}
 {% endblock %}

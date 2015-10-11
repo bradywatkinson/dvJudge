@@ -52,7 +52,7 @@ def login_signup_form():
             salt = uuid.uuid4().hex
             hashed_password = hashlib.sha512(password + salt).hexdigest()
             #submit info to the database
-            g.db.execute("insert into users (username, email, password, salt) values ('%s', '%s', '%s', '%s')" % (username, email, hashed_password, salt))
+            g.db.execute("insert into users (username, email, password, salt) values (?, ?, ?, ?)", [username, email, hashed_password, salt])
             g.db.commit()
             flash('You successfully created an account')
             session['logged_in'] = True
@@ -61,6 +61,5 @@ def login_signup_form():
     if error != "":
         flash(error)
     return redirect(url_for(request.form['page']))
-
 
 
