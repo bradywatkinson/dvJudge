@@ -57,6 +57,7 @@ def login_signup_form():
             flash('You successfully created an account')
             session['logged_in'] = True
             session['user'] = username
+            session['userid'] = query_db('''select last_insert_rowid()''');
             flash('You were logged in')
     if error != "":
         flash(error)
