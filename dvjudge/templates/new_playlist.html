@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+{% block body %}
+<!DOCTYPE html>
+<head>
+	<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='rowsort.js') }}"></script>
+</head>
+<body>
+	<h3>Create New Playlist</h3>
+  <form method="POST">
+    {% if no_name %}
+      <div class="alert alert-info alert-dismissable">
+          <a class="panel-close close" data-dismiss="alert">×</a> 
+          <i class="fa fa-coffee"></i>
+          Please insert a valid username.
+      </div>
+    {% elif conflict_name %}
+      <div class="alert alert-info alert-dismissable">
+        <a class="panel-close close" data-dismiss="alert">×</a> 
+        <i class="fa fa-coffee"></i>
+        <b>{{ new_name }}</b> already exists.
+      </div>
+    {% elif new_name %}
+      <div class="alert alert-info alert-dismissable">
+        <a class="panel-close close" data-dismiss="alert">×</a> 
+        <i class="fa fa-coffee"></i>
+        New playlist <b>{{ new_name }}</b> created.
+      </div>
+    {% endif %}
+    <br />
+    <b>Playlist Name</b>: <input type="text" name="playlist_name"/>
+    <br />
+    <div class="bs-example" align="center">
+      <table class="table" id="chal_list">
+        <thead>
+          <tr>
+            <th width="8%"></th>
+            <th>Challenges</th>
+          </tr>
+        </thead>
+        <ul class=challenges>
+        <tbody>
+        {% for problem in challenges %}
+          <tr>
+            <td><input type="checkbox" name="{{ problem.name }}" value="{{ problem.id }}"/></td>
+            <td><a href="browse/{{ problem.name }}">{{ problem.name }}</a></td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <br>
+    <div align="center">
+      <input type="submit" name="submit" id="sub" value="Submit" class="btn btn-submit btn-default"/>
+    </div>
+  </form>
+</body>
+<style>
+#chal_list {
+    width: 50%;
+    background: #F9F9F9;
+    border-radius:10px;
+    -moz-border-radius:10px;
+    -webkit-border-radius:10px;
+}
+#chal_list>tbody>tr:nth-child(odd)>td, 
+#chal_list>tbody>tr:nth-child(odd)>th {
+   background-color: white;  
+}
+#sub {
+    margin-left:45%;
+}
+.alert {
+    display: inline-block;
+}
+</style>
+{% endblock %} 
