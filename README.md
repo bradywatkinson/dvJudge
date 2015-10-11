@@ -11,7 +11,7 @@ UNSW comp4920 Major Project "D[tbd] V[tbd] online Judge"
 ## Production Setup
   - Install apache
   - Install mod_wsgi
-  - Actiate mod_wsgi
+  - Activate mod_wsgi
   - Add a wsgi file as follows:
 ```
 import sys, os
