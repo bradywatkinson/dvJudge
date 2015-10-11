@@ -69,3 +69,11 @@ def logout():
     session.pop('user', None)
     flash('You were logged out')
     return redirect(url_for('show_mainpage'))
+
+@app.route('/myprofile')
+def myprofile():
+    if 'user' in session:
+        return render_template('userprofile.html', username=session['user'])
+    else:
+        flash('You need to login before you can access this page')
+        return redirect(url_for('show_mainpage'))
