@@ -8,6 +8,19 @@ UNSW comp4920 Major Project "D[tbd] V[tbd] online Judge"
   - run `python runserver.py` to start the webserver
   - Navigate to http://localhost:5000
 
+## Production Setup
+  - Install apache
+  - Install mod_wsgi
+  - Actiate mod_wsgi
+  - Add a wsgi file as follows:
+```import sys, os
+sys.path.insert(0, '/var/www/dvjudge/dvJudge')
+os.chdir('/var/www/dvjudge/dvJudge')
+from dvjudge import app as application```
+  - Add a virtualhost entry for dvjudge using the configuration found [Here](http://flask.pocoo.org/docs/0.10/deploying/mod_wsgi/)
+  - cd to /var/www/dvjudge and run git clone on this repo
+  - Setup the DB.
+
 ##Project Details
 [Google Drive](https://drive.google.com/drive/folders/0BxD6wDvDG5hRfklTaUxrM0VNV2pqcm9sazFiNjhHQ3paSHRNN3JnODlLazU2d3B1Yjh6WDA)  
 [Jira](https://dvjudge.atlassian.net/projects/DVJ/summary)
