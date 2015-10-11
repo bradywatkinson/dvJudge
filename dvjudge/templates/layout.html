@@ -196,7 +196,11 @@
 </nav>
 <div class=page>
   {% for message in get_flashed_messages() %}
-    <div class=flash>{{ message }}</div>
+          <div class="alert alert-info alert-dismissable">
+          <a class="panel-close close" data-dismiss="alert">×</a> 
+          <i class="fa fa-coffee"></i>
+          {{ message }}
+        </div>
   {% endfor %}
   <div class="container">
       {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}

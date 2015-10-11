@@ -14,11 +14,12 @@ def login_signup_form():
         #retrieve username and password
         username = request.form['username']
         password = request.form['password']
-        user_pass = query_db('select username, password, salt from users where username = ? or email = ?',[username,username], one=True)
+        user_pass = query_db('select id, username, password, salt from users where username = ? or email = ?',[username,username], one=True)
         if user_pass is not None:
             print user_pass
-            hashed_password = hashlib.sha512(password + user_pass[2]).hexdigest()
-            if username == user_pass[0] and hashed_password == user_pass[1]:
+            hashed_password = hashlib.sha512(password + user_pass[3]).hexdigest()
+            if username == user_pass[1] and hashed_password == user_pass[2]:
+                session['userid'] = user_pass[0]
                 session['logged_in'] = True
                 session['user'] = username
                 flash('You were logged in')
@@ -57,10 +58,23 @@ def login_signup_form():
             flash('You successfully created an account')
             session['logged_in'] = True
             session['user'] = username
-            session['userid'] = query_db('''select last_insert_rowid()''');
+            session['userid'] = query_db('''select last_insert_rowid()''')[0][0];
             flash('You were logged in')
     if error != "":
         flash(error)
     return redirect(url_for(request.form['page']))
 
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    session.pop('user', None)
+    flash('You were logged out')
+    return redirect(url_for('show_mainpage'))
 
+@app.route('/myprofile')
+def myprofile():
+    if 'user' in session:
+        return render_template('userprofile.html', username=session['user'])
+    else:
+        flash('You need to login before you can access this page')
+        return redirect(url_for('show_mainpage'))
