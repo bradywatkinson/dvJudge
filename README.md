@@ -13,10 +13,12 @@ UNSW comp4920 Major Project "D[tbd] V[tbd] online Judge"
   - Install mod_wsgi
   - Actiate mod_wsgi
   - Add a wsgi file as follows:
-```import sys, os
+```
+import sys, os
 sys.path.insert(0, '/var/www/dvjudge/dvJudge')
 os.chdir('/var/www/dvjudge/dvJudge')
-from dvjudge import app as application```
+from dvjudge import app as application
+```
   - Add a virtualhost entry for dvjudge using the configuration found [Here](http://flask.pocoo.org/docs/0.10/deploying/mod_wsgi/)
   - cd to /var/www/dvjudge and run git clone on this repo
   - Setup the DB.
