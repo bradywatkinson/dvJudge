@@ -1,20 +1,12 @@
 {% extends "layout.html" %}
 {% block body %}
-<head>
-<style type="text/css">
-    .bs-example{
-        margin: 20px;
-    }
-</style>
-</head>
 
 
 {% if not session.logged_in %}
-<div class="jumbotron">
-    <div class="container-fluid">
-        <h1>Learn to Solve</h1>
-        <p>DVJudge is a platform for preparing technical coding interviews. Pick from an expanding library, code and submit your solution to see if you have solved it correctly. </p>
-        <p><a href="{{ url_for('signup') }}" target="_blank" class="btn btn-primary">SIGN UP TODAY</a></p>
+<div class="container">
+    <div class="jumbotron">
+            <h1>Learn to Solve</h1>
+            <p>DVJudge is a platform for preparing technical coding interviews. Pick from an expanding library, code and submit your solution to see if you have solved it correctly. </p>
     </div>
 </div>
 <div class="container-fluid">
@@ -29,7 +21,7 @@
         <br>
         <div align="right"><button type="submit" class="btn btn-primary">Submit</button></div>
     </div>
-    </div>
+</div>
 {% else %}
 <div class="jumbotron">
     <div class="container-fluid">
@@ -49,12 +41,6 @@
     </div>
 {% endif %}
 <hr>
-    <div class="row">
-        <div class="col-xs-12">
-            <footer>
-                <div align="center"><p>Copyright © 2015 DVJudge</p></div>
-            </footer>
-        </div>
-    </div>
+
 </div>
 {% endblock %}

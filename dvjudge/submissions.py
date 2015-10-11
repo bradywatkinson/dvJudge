@@ -35,7 +35,7 @@ def show_specific_submission(id):
     # look up DB for this partciular submission
     cur = query_db('''select s.id, user_id, challenge_id, timestamp, status, status_info, c.name '''
                    ''' from submissions s join challenges c on s.challenge_id = c.id where s.id = ?''', [id], one=True)
-    _id          = cur[0]
+    _id = cur[0]
 
     # Convert user_id to username
     cur2 = query_db('select username from users where id = ?', [cur[1]], one=True)

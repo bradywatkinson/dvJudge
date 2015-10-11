@@ -3,6 +3,7 @@ from dvjudge import init_db, populate_db
 from dvjudge import core
 import unittest
 import tempfile
+import re
 
 class FlaskrTestCase(unittest.TestCase):
 
@@ -18,16 +19,21 @@ class FlaskrTestCase(unittest.TestCase):
         os.unlink(core.app.config['DATABASE'])
 
     def login(self, username, password):
-        return self.app.post('/login', data=dict(
+        rv =  self.app.post('/login_signup_form', data=dict(
+                    submit='signin',
                     username=username,
-                    password=password
+                    password=password,
+                    page='show_mainpage'
                     ), follow_redirects=True)
+        #print rv.data
+        return rv
 
     def logout(self):
         return self.app.get('/logout', follow_redirects=True)
 
     def test_login_logout(self):
         rv = self.login('admin', 'default')
+        #print rv.data
         assert 'You were logged in' in rv.data
         rv = self.logout()
         assert 'You were logged out' in rv.data
@@ -37,13 +43,13 @@ class FlaskrTestCase(unittest.TestCase):
         assert "Username and password do not match" in rv.data
 
     def test_user_signup_works(self):
-        self.app.post('/signup')
-        rv = self.app.post('/signup', data=dict(
+        self.app.get('/show_mainpage')
+        rv = self.app.post('/login_signup_form', data=dict(
+                    submit='signup',
                     username='username',
                     password='password',
                     confirmpassword='password',
                     email='dan@hotmail.com',
-                    confirmemail='dan@hotmail.com'
                     ), follow_redirects=True)
         assert 'Username is already taken' not in rv.data
         assert 'Passwords need to be 6 characters or longer' not in rv.data
@@ -51,21 +57,20 @@ class FlaskrTestCase(unittest.TestCase):
         assert 'Passwords do not match' not in rv.data
 
     def test_user_signup_no_work(self):
-        self.app.post('/signup')
-        rv = self.app.post('/signup', data=dict(
+        self.app.get('/show_mainpage')
+        rv = self.app.post('/login_signup_form', data=dict(
+                    submit='signup',
                     username='admin',
                     password='password',
                     confirmpassword='spassword',
                     email='dan@hotmail.com',
-                    confirmemail='dain@hotmail.com'
                     ), follow_redirects=True)
         assert 'Passwords need to be 6 characters or longer' not in rv.data
-        assert 'Emails do not match' in rv.data
-        assert 'Passwords do not match' in rv.data
+        #assert 'Emails do not match' in rv.data
+        #assert 'Passwords do not match' in rv.data
 
     def test_login_landing_page(self):
         rv = self.app.get('/')
-        assert ('SIGN UP TODAY') in rv.data
         assert ('textarea') in rv.data
         assert ('VIEW YOUR PROGRESS') not in rv.data
         assert ('Upload Code') not in rv.data
@@ -73,7 +78,7 @@ class FlaskrTestCase(unittest.TestCase):
         rv = self.app.get('/')
         assert ('VIEW YOUR PROGRESS') in rv.data
         assert ('Upload Code') in rv.data
-        assert ('textarea') not in rv.data
+#        assert ('textarea') not in rv.data
         assert ('SIGN UP TODAY') not in rv.data
 
     def test_upload_problem(self):
@@ -152,36 +157,46 @@ class FlaskrTestCase(unittest.TestCase):
         assert ('4 - Subtract 5 from N') not in rv.data
         
         #testing code submission
-    def test_code_submission(self):
+    def test_c_submission(self):
         self.login('admin','default')
         #submit code with errors
         rv = self.app.post('/submit?problem_id=1',data=dict(
-            text="printf"
+            editor="printf",
+            language = 'C'
             ),follow_redirects=True)
 
         assert('error') in rv.data
         assert('printf') in rv.data
 
+        rv = self.app.get('/submissions/4', follow_redirects=True)
+        assert('Status: Compile Error') in rv.data
+
         #submit valid code
         rv = self.app.post('/submit?problem_id=1',data=dict(
-            text="int main(){return 0;}"
+            editor="int main(){return 0;}",
+            language = 'C'
             ),follow_redirects=True)
         assert('Program output') in rv.data
+
+        rv = self.app.get('/submissions/6', follow_redirects=True)
+        assert('Status: Incorrect') in rv.data
         #test another challenge for submission
         rv = self.app.post('/submit?problem_id=2',data=dict(
-            text="int main(){return 0;}"
+            editor="int main(){return 0;}",
+            language = 'C'
             ),follow_redirects=True)
         assert('Program output') in rv.data
 
         rv = self.app.post('/submit?problem_id=2',data=dict(
-            text="printf"
+            editor="printf",
+            language = 'C'
             ),follow_redirects=True)
         assert('error') in rv.data
         assert('printf') in rv.data
 
         #passing all the tests
         rv = self.app.post('/submit?problem_id=1',data=dict(
-            text='''#include <stdio.h> 
+            editor='''#include <stdio.h> 
                     int main(){
                         int num; 
                         scanf("%d",&num);
@@ -191,12 +206,13 @@ class FlaskrTestCase(unittest.TestCase):
                                 printf(" ");
                             }
                         }
-                    }'''
+                    }''',
+            language = 'C'
             ),follow_redirects=True)
         assert("All tests passed") in rv.data
 
         rv = self.app.post('/submit?problem_id=1',data=dict(
-            text='''#include <stdio.h> 
+            editor='''#include <stdio.h> 
                     int main(){
                         int num; 
                         scanf("%d",&num);
@@ -206,12 +222,13 @@ class FlaskrTestCase(unittest.TestCase):
                                 printf(" ");
                             }
                         }
-                    }'''
+                    }''',
+            language = 'C'
             ),follow_redirects=True)
         assert("Error") in rv.data
 
         rv = self.app.post('/submit?problem_id=1',data=dict(
-            text='''#include <stdio.h> 
+            editor='''#include <stdio.h> 
                     int main(){
                         int num; 
                         scanf("%d",&num);
@@ -221,13 +238,113 @@ class FlaskrTestCase(unittest.TestCase):
                                 printf("-");
                             }
                         }
-                    }'''
+                    }''',
+            language = 'C'
             ),follow_redirects=True)
         assert("Test failed") in rv.data
         assert("Provided input") in rv.data
         assert("Expected output") in rv.data
         assert("Program output") in rv.data
+
+    def test_java_submission(self):
+        self.login('admin','default')
+
+        #all tests passed
+        rv = self.app.post('/submit?problem_id=1',data=dict(
+            editor='''import java.util.Scanner;
+                    public class HelloWorld { 
+                        public static void main(String[] args) { 
+                        Scanner sc = new Scanner(System.in);
+                        int max = sc.nextInt();
+                        for(int i = 1; i<=max; i++){
+                            System.out.print(i+" ");
+                        }
+                       }
+                    }''',
+            language = 'Java'
+            ),follow_redirects=True)
+        assert('All tests passed.') in rv.data
+        rv = self.app.get('/submissions/5', follow_redirects=True)
+        assert('Accepted') in rv.data
+
+        #output doesn't match
+        rv = self.app.post('/submit?problem_id=1',data=dict(
+            editor='''import java.util.Scanner;
+                    public class HelloWorld { 
+                        public static void main(String[] args) { 
+                        Scanner sc = new Scanner(System.in);
+                        int max = sc.nextInt();
+                        for(int i = 1; i<max; i++){
+                            System.out.print(i+" ");
+                        }
+                       }
+                    }''',
+            language = 'Java'
+            ),follow_redirects=True)
+        assert("Test failed") in rv.data
+        assert("Provided input") in rv.data
+        assert("Expected output") in rv.data
+        assert("Program output") in rv.data
+        rv = self.app.get('/submissions/6', follow_redirects=True)
+        assert('Status: Incorrect') in rv.data
    
+    #test comments and comment submission
+    def test_comment_submission(self):
+        self.login('dannyeei', 'daniel')
+        rv = self.app.get('/browse/Count%20to%20N', follow_redirects=True)
+        assert('Hello World!') not in rv.data
+        rv = self.app.post('/browse/Count%20to%20N', data=dict(
+            comment='Hello World!'))
+        assert('Hello World!') in rv.data
+        rv = self.app.post('/browse/Count%20to%20N', data=dict(
+            comment='New comment'))
+        assert('New comment') in rv.data
+        assert('Hello World!') in rv.data
+        rv = self.app.post('/browse/Count%20to%20N', data=dict(
+            comment='Long comment including odd characters: !@#$,.;:'))
+        assert('New comment') in rv.data
+        assert('Hello World!') in rv.data
+        assert('Long comment including odd characters: !@#$,.;:') in rv.data
+
+    def test_python_submission(self):
+        self.login('admin','default')
+
+        #all tests passed
+        rv = self.app.post('/submit?problem_id=1',data=dict(
+            editor='''number = raw_input()
+                    for num in range(1,int(number)+1):
+                        print num,''',
+            language = 'Python'
+            ),follow_redirects=True)
+        assert('IndentationError') in rv.data
+        rv = self.app.get('/submissions/5', follow_redirects=True)
+        assert('Compile Error') in rv.data
+
+
+    def test_c_plus_submission(self):
+        self.login('admin','default')
+
+        #all tests passed
+        rv = self.app.post('/submit?problem_id=2',data=dict(
+            editor='''#include<iostream>
+                    using namespace std;
+                    int main()
+                    {
+                     long int sum=0;
+                     int n;
+                     cin>>n;
+                     for(int num=1;num<=n;num++)
+                     {
+                      sum=sum+num;
+                     }
+                     cout<<sum;
+                    }''',
+            language = 'C++'
+            ),follow_redirects=True)
+        assert('All tests passed.') in rv.data
+        rv = self.app.get('/submissions/5', follow_redirects=True)
+        assert('Accepted') in rv.data
+
     # Test database imported submissions are displaying properly 
     def test_view_all_submissions(self):
         self.login('dannyeei', 'daniel')
@@ -247,6 +364,95 @@ class FlaskrTestCase(unittest.TestCase):
         assert('I would have like a compile error or something in here') in rv.data
         assert('Blab blah you failed some testcases man') not in rv.data
         
+    # Test a challenge shows the correct "add to playlist" buttons in the dropdown
+    def test_add_to_playlist(self):
+        self.login('dannyeei', 'daniel')
+        rv = self.app.get('/browse/Sum%20to%20N', follow_redirects=True)
+        assert("Create a program that prints sum 1..n") in rv.data
+        assert("Add to \"my playlist first ever\"") in rv.data
+        assert("Add to \"my second playlist ever\"") in rv.data
+
+    # Test creating playlists works
+    def test_create_playlist(self):
+        self.login('dannyeei', 'daniel')
+        rv = self.app.get('/browse/Sum%20to%20N', follow_redirects=True)
+        assert("Create a program that prints sum 1..n") in rv.data
+        assert("Add to \"my playlist first ever\"") in rv.data
+        assert("Add to \"my second playlist ever\"") in rv.data
+        assert("Add to \"AUTOMATED TEST\"") not in rv.data
+
+        # Add new playlist
+        rv = self.app.post('/new_playlist', data=dict(
+                    playlist_name="AUTOMATED TEST",
+                    ), follow_redirects=True)
+
+        # Now check we have three now 
+        rv = self.app.get('/browse/Sum%20to%20N', follow_redirects=True)
+        assert("Create a program that prints sum 1..n") in rv.data
+        assert("Add to \"my playlist first ever\"") in rv.data
+        assert("Add to \"my second playlist ever\"") in rv.data
+        assert("Add to \"AUTOMATED TEST\"") in rv.data
+
+    # Test creating playlists works
+    def test_show_playlist(self):
+        self.login('dannyeei', 'daniel')
+        rv = self.app.get('/playlists', follow_redirects=True)
+        # Check dropdown menu is operational
+        assert("<option selected>my playlist first ever") in rv.data
+        assert("my second playlist ever") in rv.data
+        # Check challenges displayed correctly
+        assert("Count to N") in rv.data
+        assert("Dota 2 is a great game") in rv.data
+        assert("Sum to N") not in rv.data
+        assert("Valve cant program") not in rv.data
+        
+        # Change selected playlist to display
+        rv = self.app.post('/playlists',data=dict(
+                        selected_name = 'my second playlist ever'
+                        ), follow_redirects=True)
+        # Check dropdown menu is operational
+        assert("<option selected>my playlist first ever") not in rv.data
+        assert("<option selected>my second playlist ever") in rv.data
+        # Check challenges displayed correctly
+        assert("Dota 2 is a great game") in rv.data
+        assert("Valve cant program") in rv.data
+        assert("Count to N") not in rv.data
+        assert("Sum to N") not in rv.data
+
+    # Test no playlist page
+    def test_no_playlist(self):
+        self.login('admin', 'default')
+        rv = self.app.get('/playlists', follow_redirects=True)
+        # Check dropdown menu is operational
+        assert("You have no playlists.") in rv.data
+        assert("option") not in rv.data
+        assert("table") not in rv.data
+        assert("Submit") not in rv.data
+
+    # Test reorder playlist
+    def test_reorder_playlist(self):
+        self.login('typical', 'typical')
+        rv = self.app.get('/playlists', follow_redirects=True)
+        assert ("Count to N: 1") in rv.data
+        assert ("Sum to N: 2") in rv.data
+        assert ("Dota 2 is a great game: 3") in rv.data
+        assert ("Valve cant program: 4") in rv.data
+
+        data = {}
+        data['Valve cant program'] = "1"
+        data['Dota 2 is a great game'] = "2"
+        data['Sum to N'] = "3"
+        data['Count to N'] = "4"
+        data['reorder'] = "Submit Changes"
+        data['selected_name'] = "different playlist"
+
+        # Change challenge ordering
+        rv = self.app.post('/playlists',data=data, follow_redirects=True)
+        assert ("Valve cant program: 1") in rv.data
+        assert ("Dota 2 is a great game: 2") in rv.data
+        assert ("Sum to N: 3") in rv.data
+        assert ("Count to N: 4") in rv.data
+
 
 if __name__ == '__main__':
     unittest.main()

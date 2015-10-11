@@ -1,4 +1,3 @@
-
 drop table if exists users;
 create table users (
 	id integer primary key autoincrement,
@@ -31,4 +30,18 @@ create table submissions (
     status_info text not null
 );
 
+drop table if exists challenge_comments;
+create table challenge_comments (
+	username text not null,
+	challenge_id integer not null,
+	comment text not null,
+	post_time DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 
+drop table if exists playlists;
+create table playlists (
+    id integer primary key autoincrement,
+    name text not null,
+    owner_id integer not null,
+    challenges text not null
+);
