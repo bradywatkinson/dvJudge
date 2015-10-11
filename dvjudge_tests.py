@@ -83,11 +83,11 @@ class FlaskrTestCase(unittest.TestCase):
 
     def test_upload_problem(self):
         self.login('admin', 'default')
-        rv = self.app.post('/upload', data=dict(
+        rv = self.app.post('/community/upload', data=dict(
             challenge_name='testproblemname',
             description='testproblemdescription'
         ), follow_redirects=True)
-        rv = self.app.get('/browse')
+        rv = self.app.get('/community/browse')
         assert ('testproblemname') in rv.data
         assert ('notproblemname') not in rv.data
     
@@ -97,37 +97,37 @@ class FlaskrTestCase(unittest.TestCase):
     # already in the db
     def test_submit_solution(self):
         self.login('admin', 'default')
-        rv = self.app.post('/upload', data=dict(
+        rv = self.app.post('/community/upload', data=dict(
             challenge_name='problem name test',
             description='this is a problem'
         ), follow_redirects=True)
         
-        rv = self.app.get('/browse/problem%20name%20test')
+        rv = self.app.get('/community/browse/problem%20name%20test')
         assert ('problem name test') in rv.data
         assert ('this is a problem') in rv.data
 
     def test_browse_search(self):
         # Add some problems via upload problem
         self.login('admin', 'default')
-        rv = self.app.post('/upload', data=dict(
+        rv = self.app.post('/community/upload', data=dict(
             challenge_name='1 - Count to N',
             description='testproblemdescription'
         ), follow_redirects=True)
-        rv = self.app.post('/upload', data=dict(
+        rv = self.app.post('/community/upload', data=dict(
             challenge_name='2 - Sum to N',
             description='testproblemdescription'
         ), follow_redirects=True)
-        rv = self.app.post('/upload', data=dict(
+        rv = self.app.post('/community/upload', data=dict(
             challenge_name='3 - Sum to N^2',
             description='testproblemdescription'
         ), follow_redirects=True)
-        rv = self.app.post('/upload', data=dict(
+        rv = self.app.post('/community/upload', data=dict(
             challenge_name='4 - Subtract 5 from N',
             description='testproblemdescription'
         ), follow_redirects=True)
         
         # Now try searching for Subtract 
-        rv = self.app.post('/browse', data=dict(
+        rv = self.app.post('/community/browse', data=dict(
             searchterm='Subtract'
         ), follow_redirects=True)
 
@@ -137,7 +137,7 @@ class FlaskrTestCase(unittest.TestCase):
         assert ('3 - Sum to N^2') not in rv.data
 
         # Now try searching for nothing (i.e. show all)
-        rv = self.app.post('/browse', data=dict(
+        rv = self.app.post('/community/browse', data=dict(
             searchterm=''
         ), follow_redirects=True)
 
@@ -147,7 +147,7 @@ class FlaskrTestCase(unittest.TestCase):
         assert ('4 - Subtract 5 from N') in rv.data
         
         # Now try searching for special character '^'
-        rv = self.app.post('/browse', data=dict(
+        rv = self.app.post('/community/browse', data=dict(
             searchterm='^'
         ), follow_redirects=True)
 
