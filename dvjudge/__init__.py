@@ -38,7 +38,6 @@ import dvjudge.core
 import dvjudge.browse
 import dvjudge.submit
 import dvjudge.upload
-import dvjudge.userauth
 import dvjudge.community
 import dvjudge.community_browse
 import dvjudge.login_signup_form

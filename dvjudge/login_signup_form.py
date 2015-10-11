@@ -63,3 +63,9 @@ def login_signup_form():
     return redirect(url_for(request.form['page']))
 
 
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    session.pop('user', None)
+    flash('You were logged out')
+    return redirect(url_for('show_mainpage'))
