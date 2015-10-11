@@ -1,4 +1,5 @@
 <!doctype html>
+<head>
 <title>Dvjudge</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
@@ -6,6 +7,28 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+
+
+<style type="text/css" media="screen">
+    textarea {
+        display: block;
+        margin: auto;
+        width: 600px;
+        height: 5px;
+    }
+    #editor_div {
+        display: block;
+        margin: auto;
+        width: 600px;
+        height: 300px;
+        border: 1px solid #888;
+    }
+    form {
+        text-align: center;
+    }
+</style>
+
+</head>
 <!-- Latest compiled and minified JavaScript -->
 <nav class="navbar navbar-default">
   <div class="container-fluid">
