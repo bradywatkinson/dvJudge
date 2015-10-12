@@ -2,6 +2,9 @@ from flask import render_template, session, request, abort, g
 from dvjudge import app
 from core import query_db, update_db
 from comments import get_comments, post_comment
+import hashlib
+
+from werkzeug import secure_filename
 
 from flask import Flask, request, session, g, redirect, url_for, \
      abort, render_template, flash
@@ -22,10 +25,42 @@ def updateprofile():
     username = request.form['username']
     pass1    = request.form['pass1']
     pass2    = request.form['pass2']
+
+    # check passwords are the same
     if pass1 != pass2:
         flash('Passwords do not match')
         return redirect(url_for('profile'))
-    update_db('''update users set username = ?, email = ?, password = ? where id = ?''', [username, email, pass1, session['userid']])
-    #g.db.execute('''update users set username, email, password where id = ?''', [session['userid']])
-    #g.db.commit()
+
+    # check username does not already exist
+    username_check = query_db('''select id from users where username = ? and id != ?''',[username, session['userid']], one=True)
+    if username_check is not None:
+        flash('Username is already taken')
+        return redirect(url_for('profile'))
+
+    # check email does not already exist
+    email_check = query_db('''select id from users where email = ? and id != ?''',[email, session['userid']], one=True)
+    if email_check is not None:
+        flash('Email is already taken')
+        return redirect(url_for('profile'))
+
+    if pass1 != "" and pass2 != "":
+        user_pass = query_db('''select salt from users where id = ?''',[session['userid']], one=True)
+        hashed_password = hashlib.sha512(pass1 + user_pass[0]).hexdigest()
+        update_db('''update users set username = ?, email = ?, password = ? where id = ?''', [username, email, hashed_password, session['userid']])
+
+    else:
+        update_db('''update users set username = ?, email = ? where id = ?''', [username, email, session['userid']])
+
+    session['user'] = username
+    return redirect(url_for('profile'))
+
+@app.route('/updateprofilepic', methods=['POST'])
+def updateprofilepic():
+    file = request.files['file']
+    
+    # save the file
+    if file and allowed_file(file.filename):
+        filename = session['userid']+"_profilepic.jpg"
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
     return redirect(url_for('profile'))

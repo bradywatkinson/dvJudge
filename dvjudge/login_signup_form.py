@@ -16,7 +16,7 @@ def login_signup_form():
         password = request.form['password']
         user_pass = query_db('select id, username, password, salt from users where username = ? or email = ?',[username,username], one=True)
         if user_pass is not None:
-            print user_pass
+            #print user_pass
             hashed_password = hashlib.sha512(password + user_pass[3]).hexdigest()
             if username == user_pass[1] and hashed_password == user_pass[2]:
                 session['userid'] = user_pass[0]
@@ -36,18 +36,12 @@ def login_signup_form():
             error += "Username is already taken\n"
         #check if emails match up
         email = request.form['email']
-        #confirmemail = request.form['confirmemail']
-        #if not email or email != request.form['confirmemail']:
-         #   error += "Emails do not match\n"
         #check if passwords match up
         password = request.form['password']
         if len(password) < 6:
             error += "Passwords need to be 6 characters or longer"
         if not password or password != request.form['confirmpassword']:
             error += "Passwords do not match\n"
-        #if form entry was not succesful return errors
-        #if error != "":
-            #return render_template('signup.html', error=error, username=username, email=email, confirmemail=confirmemail)
         else:
             #hash password and salt
             salt = uuid.uuid4().hex

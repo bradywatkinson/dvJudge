@@ -72,13 +72,10 @@ class FlaskrTestCase(unittest.TestCase):
     def test_login_landing_page(self):
         rv = self.app.get('/')
         assert ('textarea') in rv.data
-        assert ('VIEW YOUR PROGRESS') not in rv.data
         assert ('Upload Code') not in rv.data
         self.login('admin', 'default')
         rv = self.app.get('/')
-        assert ('VIEW YOUR PROGRESS') in rv.data
         assert ('Upload Code') in rv.data
-#        assert ('textarea') not in rv.data
         assert ('SIGN UP TODAY') not in rv.data
 
     def test_upload_problem(self):
@@ -452,6 +449,43 @@ class FlaskrTestCase(unittest.TestCase):
         assert ("Dota 2 is a great game: 2") in rv.data
         assert ("Sum to N: 3") in rv.data
         assert ("Count to N: 4") in rv.data
+
+
+    # Update profile tests
+    # This test, tests the update profile method written by Brady on 11 Oct
+    def test_profile(self):
+        self.login('admin', 'default')
+        rv = self.app.get('profile', follow_redirects=True)
+        assert ("admin") in rv.data
+        assert ("admin@hotmail.com") in rv.data
+
+        rv = self.app.post('/updateprofile',data=dict(
+                        username = 'admin', 
+                        email = 'admin1@hotmail.com',
+                        pass1 = "",
+                        pass2 = ""
+                        ), follow_redirects=True)
+        assert ("admin") in rv.data
+        assert ("admin1@hotmail.com") in rv.data
+
+        rv = self.app.post('/updateprofile',data=dict(
+                        username = 'admin1', 
+                        email = 'admin1@hotmail.com',
+                        pass1 = "",
+                        pass2 = ""
+                        ), follow_redirects=True)
+        assert ("admin1") in rv.data
+        assert ("admin1@hotmail.com") in rv.data
+
+        rv = self.app.post('/updateprofile',data=dict(
+                        username = 'admin1', 
+                        email = 'admin1@hotmail.com',
+                        pass1 = "testtest",
+                        pass2 = "testtestx"
+                        ), follow_redirects=True)
+        assert ("admin1") in rv.data
+        assert ("admin1@hotmail.com") in rv.data
+        assert ("Passwords do not match") in rv.data
 
 
 if __name__ == '__main__':
