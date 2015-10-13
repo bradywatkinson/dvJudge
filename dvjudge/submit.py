@@ -5,6 +5,9 @@ import subprocess
 import os.path
 import random
 import re
+
+import json
+
 @app.route('/submit', methods=['POST'])
 def submit_specific_problem():
 
@@ -61,7 +64,7 @@ def submit_specific_problem():
     subprocess.Popen(['rm', '-rf', username], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)   
     session['output'] = result['output']
     session['code'] = code
-    session['language'] = language
+    session['language'] = json.dumps(language)
     return redirect(url_for('browse_specific_problem', problem_name=name))
 
 

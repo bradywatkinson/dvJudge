@@ -44,7 +44,7 @@
 function changeText(choice){
   editor.setValue( {{ data|safe }}[choice] );
   choice = choice.toLowerCase();
-  if (choice.localeCompare('c') == 0) {
+  if (choice.localeCompare('c') == 0  || choice.localeCompare('c++') == 0) {
     editor.getSession().setMode("ace/mode/c_cpp");
   } else {
     editor.getSession().setMode("ace/mode/" + choice);
@@ -59,6 +59,8 @@ function changeText(choice){
         {% for item in problem_info.languages%} 
           {% if item == in_use %}
             <option selected='selected'>{{ item }}</option>
+          {% elif item == language %}
+            <option selected='selected'>{{ item }}</option>
           {% else %}
             <option>{{ item }}</option>
           {% endif %}
@@ -68,10 +70,11 @@ function changeText(choice){
       <br>
       <textarea name="editor"><%= @text %></textarea>
     </form>
-    {% if not session.code %}
-    <div id="editor" style="height: 500px; width: 500px">// enter code here {{ session['code'] }}</div>
+
+    {% if code %}
+    <div id="editor" style="height: 500px; width: 500px">{{ code }}</div>
     {% else %}
-    <div id="editor" style="height: 500px; width: 500px">{{ session['code'] }}</div>
+    <div id="editor" style="height: 500px; width: 500px">// enter code here </div>
     {% endif %}
     </div>
     <input type="submit" value="Submit" id="submit" class="btn btn-primary btn-lg" form="code">
