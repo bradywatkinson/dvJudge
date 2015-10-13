@@ -68,7 +68,12 @@ function changeText(choice){
       <br>
       <textarea name="editor"><%= @text %></textarea>
     </form>
-    <div id="editor" style="height: 500px; width: 500px">// enter code here</div>
+    {% if not session.code %}
+    <div id="editor" style="height: 500px; width: 500px">// enter code here {{ session['code'] }}</div>
+    {% else %}
+    <div id="editor" style="height: 500px; width: 500px">{{ session['code'] }}</div>
+    {% endif %}
+    </div>
     <input type="submit" value="Submit" id="submit" class="btn btn-primary btn-lg" form="code">
 
 
