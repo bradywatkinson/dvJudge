@@ -25,7 +25,7 @@
 
   {% if session.logged_in %}
   <div class="container">
-    <form action="{{ url_for('upload') }}" method=post class=upload-problem, class="form-horizontal">
+    <form action="{{ url_for('upload') }}" method=post class=upload-challenge, class="form-horizontal">
       <div class="form-group">
         <label for="challenge_name" class="col-sm-2 control-label">Challenge Name</label>
         <div class="col-sm-10">

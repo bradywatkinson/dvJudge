@@ -43,3 +43,4 @@ import dvjudge.community_browse
 import dvjudge.login_signup_form
 import dvjudge.submissions
 import dvjudge.profile
+import dvjudge.challenge

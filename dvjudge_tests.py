@@ -370,27 +370,6 @@ class FlaskrTestCase(unittest.TestCase):
         assert("Add to \"my second playlist ever\"") in rv.data
 
     # Test creating playlists works
-    def test_create_playlist(self):
-        self.login('dannyeei', 'daniel')
-        rv = self.app.get('/browse/Sum%20to%20N', follow_redirects=True)
-        assert("Create a program that prints sum 1..n") in rv.data
-        assert("Add to \"my playlist first ever\"") in rv.data
-        assert("Add to \"my second playlist ever\"") in rv.data
-        assert("Add to \"AUTOMATED TEST\"") not in rv.data
-
-        # Add new playlist
-        rv = self.app.post('/new_playlist', data=dict(
-                    playlist_name="AUTOMATED TEST",
-                    ), follow_redirects=True)
-
-        # Now check we have three now 
-        rv = self.app.get('/browse/Sum%20to%20N', follow_redirects=True)
-        assert("Create a program that prints sum 1..n") in rv.data
-        assert("Add to \"my playlist first ever\"") in rv.data
-        assert("Add to \"my second playlist ever\"") in rv.data
-        assert("Add to \"AUTOMATED TEST\"") in rv.data
-
-    # Test creating playlists works
     def test_show_playlist(self):
         self.login('dannyeei', 'daniel')
         rv = self.app.get('/playlists', follow_redirects=True)
@@ -449,6 +428,68 @@ class FlaskrTestCase(unittest.TestCase):
         assert ("Dota 2 is a great game: 2") in rv.data
         assert ("Sum to N: 3") in rv.data
         assert ("Count to N: 4") in rv.data
+
+    # Test creating a new playlist
+    def test_new_playlist(self):
+        self.login('typical', 'typical')
+        rv = self.app.get('/new_playlist', follow_redirects=True)
+        assert ("Count to N") in rv.data
+        assert ("Sum to N") in rv.data
+        assert ("Dota 2 is a great game") in rv.data
+        assert ("Valve cant program") in rv.data
+        
+        # Testing empty strings and whitespace names fail
+        data = {}
+        data['playlist_name'] = ""
+        rv = self.app.post('/new_playlist', data=data, follow_redirects=True)
+        assert ("Please insert a valid username.") in rv.data
+
+        data['playlist_name'] = "          "
+        rv = self.app.post('/new_playlist', data=data, follow_redirects=True)
+        assert ("Please insert a valid username.") in rv.data
+
+        data['playlist_name'] = "Stanley Sux"
+        data['Count to N'] = "1"
+        data['Valve cant program'] = "4"
+        rv = self.app.post('/new_playlist', data=data, follow_redirects=True)
+        assert ("New playlist <b>Stanley Sux</b> created.") in rv.data
+
+        data['playlist_name'] = "Stanley Sux"
+        rv = self.app.post('/new_playlist', data=data, follow_redirects=True)
+        assert ("<b>Stanley Sux</b> already exists.") in rv.data
+
+        rv = self.app.get('/playlists', follow_redirects=True)
+        rv = self.app.post('/playlists',data=dict(
+                    selected_name = 'Stanley Sux'
+                    ), follow_redirects=True)
+        assert ("Count to N: 1") in rv.data
+        assert ("Valve cant program: 2") in rv.data
+        assert ("Sum to N") not in rv.data
+        assert ("Dota 2 is a great game") not in rv.data
+
+
+
+    def test_delete_playlist(self):
+        self.login('dannyeei', 'daniel')
+        rv = self.app.get('/playlists', follow_redirects=True)
+        assert("<option selected>my playlist first ever") in rv.data
+        assert ("Count to N") in rv.data
+        assert ("Dota 2 is a great game") in rv.data
+        assert ("Valve cant program") not in rv.data
+        
+        # Testing empty strings and whitespace names fail
+        data = {}
+        data['delete_list'] = "my playlist first ever"
+        rv = self.app.post('/playlists', data=data, follow_redirects=True)
+        assert ("my playlist first ever") not in rv.data
+        assert ("Count to N") not in rv.data
+        assert ("Dota 2 is a great game") in rv.data
+        assert ("Valve cant program") in rv.data
+        assert("<option selected>my second playlist ever") in rv.data
+
+        data['delete_list'] = "my second playlist ever"
+        rv = self.app.post('/playlists', data=data, follow_redirects=True)
+        assert ("You have no playlists.") in rv.data
 
 
     # Update profile tests

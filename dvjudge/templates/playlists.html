@@ -6,8 +6,9 @@
 	<script type="text/javascript" src="{{ url_for('static', filename='rowsort.js') }}"></script>
 </head>
 <body>
-	<h1>{{ session.user }}'s Playlists</h1>
+	<h1>{{ session.user }}'s Playlists
   {% if playlists is not none %}
+    </h1><br />
     <form action="{{ url_for('show_playlists') }}" method="POST" class=playlist>
       <select class="form-control" name="selected_name" style="width:300px" onchange="this.form.submit()">
         <ul class=playlists>
@@ -21,6 +22,15 @@
         </ul>
       </select>
     </form>
+    <form action="{{ url_for('show_playlists') }}" method="POST"
+    onsubmit="return confirm('Are you sure you want to delete \'{{ selection.name }}\'?');">
+      <input type="submit" id="del" class="btn btn-danger" value="Delete Playlist">
+      <input type="hidden" name="delete_list" value="{{ selection.name }}"/>
+    </form>
+
+    <button type="button" class="btn btn-link" id="new_list">
+    <a href="{{ url_for('show_playlist_form') }}"><font size="3.5">+ Create New Playlist...</font></a>
+    </button>
 
     <form action="{{ url_for('show_playlists') }}" method="POST" id="order-form">
     	<div class="bs-example" align="center">
@@ -35,16 +45,16 @@
     			</tr>
     		</thead>
       		<tbody> 
-      			{% for problem in challenge_list %}
+      			{% for challenge in challenge_list %}
               <tr>
                 <!-- For testing purposes:
-                {{ problem.name}}: {{ loop.index }} -->
+                {{ challenge.name}}: {{ loop.index }} -->
                 <td class="order">{{ loop.index }}</td>
-                <td class="problem"><b><a href="browse/{{ problem.name }}">{{ problem.name }}</a></b></td>
+                <td class="challenge"><b><a href="browse/{{ challenge.name }}">{{ challenge.name }}</a></b></td>
                 <td>Dumpling</td>
                 <td>N</td>
                 <td><div align="center"><a class='btn btn-delete btn-sm btn-primary'>Delete</a></div></td>
-                <input type="hidden" name="{{ problem.name }}" id="{{ problem.name }}" value=""/>
+                <input type="hidden" name="{{ challenge.name }}" id="{{ challenge.name }}" value=""/>
               </tr>
             {% endfor %}
       		</tbody>
@@ -57,9 +67,12 @@
       </div>
     </form>
   {% else %}
-    <br>
+    <button type="button" class="btn btn-link" id="new_list">
+    <a href="{{ url_for('show_playlist_form') }}"><font size="3.5">+ Create New Playlist...</font></a>
+    </button>
+    <br /><br />
     <h4>You have no playlists.</h4>
-    <h4>Create a new playlist then add challenges to your cart from the problem pages.</h4>
+    <h4>Create a new playlist then add challenges to your cart from the challenge pages.</h4>
   {% endif %}
 </body>
 <style>
@@ -72,8 +85,21 @@
 #sub {
     margin-right:3%;
 }
+select {
+    float:left;
+}
+#new_list {
+    float:right;
+    margin-right: 3%;
+}
+#del {
+    margin-left:2em;
+    float:left;
+}
+
 </style>
 <script type="text/javascript">
+// Fill form with new order
 $('#order-form').submit(function() {
   new_list = reorder_form();
   for (var i = 0; i < new_list.length; i++) {
@@ -81,7 +107,6 @@ $('#order-form').submit(function() {
     elem.value = i.toString();
   }
 });
-
 </script>
 
 {% endblock %} 

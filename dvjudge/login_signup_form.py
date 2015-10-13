@@ -9,6 +9,7 @@ import uuid
 @app.route('/login_signup_form', methods=['POST'])
 def login_signup_form():
     error = ""
+    # print request.form['page']
     if request.form["submit"] == 'signin':
         
         #retrieve username and password
@@ -28,6 +29,7 @@ def login_signup_form():
         else:
             error += "Username and password do not match"
 
+    #print request.form["submit"]
     if request.form["submit"] == 'signup':
         #check if duplicate username
         username = request.form['username']
@@ -43,19 +45,27 @@ def login_signup_form():
         if not password or password != request.form['confirmpassword']:
             error += "Passwords do not match\n"
         else:
+
             #hash password and salt
             salt = uuid.uuid4().hex
             hashed_password = hashlib.sha512(password + salt).hexdigest()
             #submit info to the database
             g.db.execute("insert into users (username, email, password, salt) values (?, ?, ?, ?)", [username, email, hashed_password, salt])
             g.db.commit()
+
             flash('You successfully created an account')
             session['logged_in'] = True
+            
             session['user'] = username
             session['userid'] = query_db('''select last_insert_rowid()''')[0][0];
+            
             flash('You were logged in')
     if error != "":
         flash(error)
+
+    if request.form['page'] == "browse_specific_problem":
+        return redirect(url_for('show_mainpage'))
+
     return redirect(url_for(request.form['page']))
 
 @app.route('/logout')
@@ -64,11 +74,3 @@ def logout():
     session.pop('user', None)
     flash('You were logged out')
     return redirect(url_for('show_mainpage'))
-
-@app.route('/myprofile')
-def myprofile():
-    if 'user' in session:
-        return render_template('userprofile.html', username=session['user'])
-    else:
-        flash('You need to login before you can access this page')
-        return redirect(url_for('show_mainpage'))

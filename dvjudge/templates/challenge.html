@@ -2,7 +2,7 @@
 {% block body %}
   <div class="container">
     <div class="jumbotron">
-        <h1>{{ problem_info.name }}</h1>
+        <h1>{{ challenge_info.name }}</h1>
         {% if session.logged_in %} 
         <div class="dropdown" style="float: right;">
           <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -11,7 +11,7 @@
           </button>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
             {% for playlist in playlists %}
-              <li><a href="/playlists/{{ playlist.id }}?add={{ problem_info.problem_id }}">Add to "{{ playlist.name }}"</a></li>
+              <li><a href="/playlists/{{ playlist.id }}?add={{ challenge_info.challenge_id }}">Add to "{{ playlist.name }}"</a></li>
             {% endfor %}
           </ul>
         </div>
@@ -23,12 +23,13 @@
 
         <div class="tab-content">
           <div id="Desc" class="tab-pane fade in active">
-            <p>{{ problem_info.description }}</p>
+            <p>{{ challenge_info.description }}</p>
+            <p>[{{ language }}][{{ code }}][{{ jsonlanguage }}]</p>
           </div>
           <div id="IO" class="tab-pane fade">
-            <p>{{ problem_info.input_desc }}</p>
-            <p>{{ problem_info.output_desc }}</p>
-            <p>{{ problem_info.sample_tests }}</p>
+            <p>{{ challenge_info.input_desc }}</p>
+            <p>{{ challenge_info.output_desc }}</p>
+            <p>{{ challenge_info.sample_tests }}</p>
           </div>
         </div>
     </div>
@@ -40,12 +41,26 @@
   <div class="container">
     <!-- Example row of columns -->
 
+<script>
+function changeText(choice){
+  editor.setValue( {{ data|safe }}[choice] );
+  choice = choice.toLowerCase();
+
+  if (choice.localeCompare('python') == 0) {
+    editor.getSession().setMode("ace/mode/python");
+  } else if (choice.localeCompare('java') == 0) {
+    editor.getSession().setMode("ace/mode/java");
+  } else {
+    editor.getSession().setMode("ace/mode/c_cpp");
+  }
+}
+</script>
 
 
-    <form action="{{ url_for('submit_specific_problem', problem_id=problem_info.problem_id) }}" method="post" id="code">
-      <select name = 'language' class="language_menu">
-        {% for item in problem_info.languages%} 
-          {% if item == in_use %}
+    <form action="{{ url_for('submit_specific_challenge', challenge_id=challenge_info.challenge_id) }}" method="post" id="code">
+      <select name = 'language' class="language_menu" onChange="changeText(this.value)">
+        {% for item in challenge_info.languages %} 
+          {% if item == language %}
             <option selected='selected'>{{ item }}</option>
           {% else %}
             <option>{{ item }}</option>
@@ -54,19 +69,32 @@
       </select>
 
       <br>
-      <textarea name="editor"><%= @text %></textarea>
+      <textarea name="editor"></textarea>
     </form>
-    <div id="editor" style="height: 500px; width: 500px">// enter code here</div>
-    <input type="submit" value="Submit" id="submit" class="btn btn-primary btn-lg" form="code">
 
+    {% if code %}
+    <div id="editor" style="height: 500px; width: 500px">{{ code }}</div>
+    {% else %}
+    <div id="editor" style="height: 500px; width: 500px">// enter code here </div>
+    {% endif %}
+    </div>
+    <input type="submit" value="Submit" id="submit" class="btn btn-primary btn-lg" form="code">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/ace.js" type="text/javascript" charset="utf-8"></script>
     <script>
         var textarea = $('textarea[name="editor"]');
         textarea.hide();
         var editor = ace.edit("editor");
-        editor.setTheme("ace/theme/chrome");
-        editor.getSession().setMode("ace/mode/c_cpp");
+        editor.setTheme("ace/theme/xcode");
+
+        if ("{{language|safe}}".localeCompare('Python') == 0) {
+          editor.getSession().setMode("ace/mode/python");
+        } else if ("{{language|safe}}".localeCompare('Java') == 0) {
+          editor.getSession().setMode("ace/mode/java");
+        } else {
+          editor.getSession().setMode("ace/mode/c_cpp");
+        }
+
         $('#submit').on('click', function() {
             textarea.val(editor.getSession().getValue());
         });
