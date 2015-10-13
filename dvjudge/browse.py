@@ -3,6 +3,7 @@ from dvjudge import app
 from core import query_db, update_db
 from comments import get_comments, post_comment
 import re
+import json
 
 @app.route('/browse', methods=['GET'])
 def browse():
@@ -24,7 +25,8 @@ def browse_search():
 
 @app.route('/browse/<problem_name>', methods=['GET', 'POST'])
 def browse_specific_problem(problem_name): 
-    supported_languages = ['C', 'Python', 'Java', 'C++']
+    supported_languages = {'C', 'Python', 'Java', 'C++'}
+    data = {'C':"// enter code here", 'Python':"# enter code here", 'Java':"// enter code here", 'C++':"// enter code here"}
 
     cur = query_db('select * from challenges where name = ?', [problem_name], one=True)
     if cur is not None:
@@ -84,7 +86,7 @@ def browse_specific_problem(problem_name):
     #insert the comments section
     question_comments = get_comments(problem_id)
       
-    return render_template('problem.html', problem_info=problem_info, output=info, code=code, playlists=playlists, in_use = language, comments=question_comments)
+    return render_template('problem.html', problem_info=problem_info, output=info, code=code, playlists=playlists, in_use = language, comments=question_comments, data=json.dumps(data))
 
 @app.route('/test', methods=['POST'])
 def test():

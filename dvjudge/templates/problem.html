@@ -40,10 +40,22 @@
   <div class="container">
     <!-- Example row of columns -->
 
+<script>
+function changeText(choice){
+  editor.setValue( {{ data|safe }}[choice] );
+  choice = choice.toLowerCase();
+  if (choice.localeCompare('c') == 0) {
+    editor.getSession().setMode("ace/mode/c_cpp");
+  } else {
+    editor.getSession().setMode("ace/mode/" + choice);
+  }
+  // editor.setValue( {{ problem_info.languages|safe }}[choice] );
+}
+</script>
 
 
     <form action="{{ url_for('submit_specific_problem', problem_id=problem_info.problem_id) }}" method="post" id="code">
-      <select name = 'language' class="language_menu">
+      <select name = 'language' class="language_menu" onChange="changeText(this.value)">
         {% for item in problem_info.languages%} 
           {% if item == in_use %}
             <option selected='selected'>{{ item }}</option>
