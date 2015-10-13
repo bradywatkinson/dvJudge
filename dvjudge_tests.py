@@ -81,15 +81,15 @@ class FlaskrTestCase(unittest.TestCase):
 #        assert ('textarea') not in rv.data
         assert ('SIGN UP TODAY') not in rv.data
 
-    def test_upload_problem(self):
+    def test_upload_challenge(self):
         self.login('admin', 'default')
         rv = self.app.post('/community/upload', data=dict(
-            challenge_name='testproblemname',
-            description='testproblemdescription'
+            challenge_name='testchallengename',
+            description='testchallengedescription'
         ), follow_redirects=True)
         rv = self.app.get('/community/browse')
-        assert ('testproblemname') in rv.data
-        assert ('notproblemname') not in rv.data
+        assert ('testchallengename') in rv.data
+        assert ('notchallengename') not in rv.data
     
 
     # creates a new challenge and checks that it is
@@ -98,32 +98,32 @@ class FlaskrTestCase(unittest.TestCase):
     def test_submit_solution(self):
         self.login('admin', 'default')
         rv = self.app.post('/community/upload', data=dict(
-            challenge_name='problem name test',
-            description='this is a problem'
+            challenge_name='challenge name test',
+            description='this is a challenge'
         ), follow_redirects=True)
         
-        rv = self.app.get('/community/browse/problem%20name%20test')
-        assert ('problem name test') in rv.data
-        assert ('this is a problem') in rv.data
+        rv = self.app.get('/community/browse/challenge%20name%20test')
+        assert ('challenge name test') in rv.data
+        assert ('this is a challenge') in rv.data
 
     def test_browse_search(self):
-        # Add some problems via upload problem
+        # Add some challenges via upload challenge
         self.login('admin', 'default')
         rv = self.app.post('/community/upload', data=dict(
             challenge_name='1 - Count to N',
-            description='testproblemdescription'
+            description='testchallengedescription'
         ), follow_redirects=True)
         rv = self.app.post('/community/upload', data=dict(
             challenge_name='2 - Sum to N',
-            description='testproblemdescription'
+            description='testchallengedescription'
         ), follow_redirects=True)
         rv = self.app.post('/community/upload', data=dict(
             challenge_name='3 - Sum to N^2',
-            description='testproblemdescription'
+            description='testchallengedescription'
         ), follow_redirects=True)
         rv = self.app.post('/community/upload', data=dict(
             challenge_name='4 - Subtract 5 from N',
-            description='testproblemdescription'
+            description='testchallengedescription'
         ), follow_redirects=True)
         
         # Now try searching for Subtract 
@@ -160,7 +160,7 @@ class FlaskrTestCase(unittest.TestCase):
     def test_c_submission(self):
         self.login('admin','default')
         #submit code with errors
-        rv = self.app.post('/submit?problem_id=1',data=dict(
+        rv = self.app.post('/submit?challenge_id=1',data=dict(
             editor="printf",
             language = 'C'
             ),follow_redirects=True)
@@ -172,7 +172,7 @@ class FlaskrTestCase(unittest.TestCase):
         assert('Status: Compile Error') in rv.data
 
         #submit valid code
-        rv = self.app.post('/submit?problem_id=1',data=dict(
+        rv = self.app.post('/submit?challenge_id=1',data=dict(
             editor="int main(){return 0;}",
             language = 'C'
             ),follow_redirects=True)
@@ -181,13 +181,13 @@ class FlaskrTestCase(unittest.TestCase):
         rv = self.app.get('/submissions/6', follow_redirects=True)
         assert('Status: Incorrect') in rv.data
         #test another challenge for submission
-        rv = self.app.post('/submit?problem_id=2',data=dict(
+        rv = self.app.post('/submit?challenge_id=2',data=dict(
             editor="int main(){return 0;}",
             language = 'C'
             ),follow_redirects=True)
         assert('Program output') in rv.data
 
-        rv = self.app.post('/submit?problem_id=2',data=dict(
+        rv = self.app.post('/submit?challenge_id=2',data=dict(
             editor="printf",
             language = 'C'
             ),follow_redirects=True)
@@ -195,7 +195,7 @@ class FlaskrTestCase(unittest.TestCase):
         assert('printf') in rv.data
 
         #passing all the tests
-        rv = self.app.post('/submit?problem_id=1',data=dict(
+        rv = self.app.post('/submit?challenge_id=1',data=dict(
             editor='''#include <stdio.h> 
                     int main(){
                         int num; 
@@ -211,7 +211,7 @@ class FlaskrTestCase(unittest.TestCase):
             ),follow_redirects=True)
         assert("All tests passed") in rv.data
 
-        rv = self.app.post('/submit?problem_id=1',data=dict(
+        rv = self.app.post('/submit?challenge_id=1',data=dict(
             editor='''#include <stdio.h> 
                     int main(){
                         int num; 
@@ -227,7 +227,7 @@ class FlaskrTestCase(unittest.TestCase):
             ),follow_redirects=True)
         assert("Error") in rv.data
 
-        rv = self.app.post('/submit?problem_id=1',data=dict(
+        rv = self.app.post('/submit?challenge_id=1',data=dict(
             editor='''#include <stdio.h> 
                     int main(){
                         int num; 
@@ -250,7 +250,7 @@ class FlaskrTestCase(unittest.TestCase):
         self.login('admin','default')
 
         #all tests passed
-        rv = self.app.post('/submit?problem_id=1',data=dict(
+        rv = self.app.post('/submit?challenge_id=1',data=dict(
             editor='''import java.util.Scanner;
                     public class HelloWorld { 
                         public static void main(String[] args) { 
@@ -268,7 +268,7 @@ class FlaskrTestCase(unittest.TestCase):
         assert('Accepted') in rv.data
 
         #output doesn't match
-        rv = self.app.post('/submit?problem_id=1',data=dict(
+        rv = self.app.post('/submit?challenge_id=1',data=dict(
             editor='''import java.util.Scanner;
                     public class HelloWorld { 
                         public static void main(String[] args) { 
@@ -310,14 +310,16 @@ class FlaskrTestCase(unittest.TestCase):
         self.login('admin','default')
 
         #all tests passed
-        rv = self.app.post('/submit?problem_id=1',data=dict(
+        rv = self.app.post('/submit?challenge_id=1',data=dict(
             editor='''number = raw_input()
                     for num in range(1,int(number)+1):
                         print num,''',
             language = 'Python'
             ),follow_redirects=True)
         assert('IndentationError') in rv.data
+        print rv
         rv = self.app.get('/submissions/5', follow_redirects=True)
+
         assert('Compile Error') in rv.data
 
 
@@ -325,7 +327,7 @@ class FlaskrTestCase(unittest.TestCase):
         self.login('admin','default')
 
         #all tests passed
-        rv = self.app.post('/submit?problem_id=2',data=dict(
+        rv = self.app.post('/submit?challenge_id=2',data=dict(
             editor='''#include<iostream>
                     using namespace std;
                     int main()
@@ -349,7 +351,7 @@ class FlaskrTestCase(unittest.TestCase):
     def test_view_all_submissions(self):
         self.login('dannyeei', 'daniel')
         rv = self.app.get('/submissions', follow_redirects=True)
-        # Check if we can see our 3 problems that are pre-populated
+        # Check if we can see our 3 challenges that are pre-populated
         assert('Accepted') in rv.data
         assert('Incorrect') in rv.data
         assert('Compile Error') in rv.data
