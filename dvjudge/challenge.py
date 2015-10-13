@@ -47,11 +47,9 @@ def browse_specific_challenge(challenge_name):
 
     if 'language' in session:
         language = session['language']
-        jsonlanguage = json.dumps(session['language'])
         session.pop('language', None)
     else:
         language = 'C'
-        jsonlanguage = '"C"'
     # Prepare playlist information for the dropdown if user logged in
     playlists = {} 
     if 'user' in session:
@@ -70,4 +68,6 @@ def browse_specific_challenge(challenge_name):
     #insert the comments section
     question_comments = get_comments(challenge_id)
       
-    return render_template('challenge.html', challenge_info=challenge_info, output=info, code=code, playlists=playlists, language=language, jsonlanguage=jsonlanguage, comments=question_comments, data=json.dumps(data))
+    return render_template('challenge.html', challenge_info=challenge_info, output=info, code=code, playlists=playlists, language=language, comments=question_comments, data=json.dumps(data))
+
+

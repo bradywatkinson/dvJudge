@@ -30,8 +30,6 @@ def test():
 
     return "Hello" + name
 
-
-
 @app.route('/playlists', methods=['GET', 'POST'])
 def show_playlists():
     if 'user' in session:

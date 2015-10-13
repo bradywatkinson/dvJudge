@@ -317,7 +317,6 @@ class FlaskrTestCase(unittest.TestCase):
             language = 'Python'
             ),follow_redirects=True)
         assert('IndentationError') in rv.data
-        print rv
         rv = self.app.get('/submissions/5', follow_redirects=True)
 
         assert('Compile Error') in rv.data

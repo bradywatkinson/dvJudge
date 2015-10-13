@@ -65,9 +65,9 @@ def login_signup_form():
             flash('You were logged in')
     if error != "":
         flash(error)
+    if request.form['page'] == "browse_specific_challenge":
 
-    if request.form['page'] == "browse_specific_problem":
-        return redirect(url_for('show_mainpage'))
+        return redirect(url_for('browse_specific_challenge', challenge_name=request.form['challenge_name']))
 
     return redirect(url_for(request.form['page']))
 
