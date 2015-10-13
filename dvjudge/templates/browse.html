@@ -20,11 +20,11 @@
           </thead>
           <tbody>
             <ul class=challenges>
-            {% for problem in challenges %}
+            {% for challenge in challenges %}
             <tr>
-              {# Both of the following links should link to browse/<problem_name> #}
-              <td><b><a href="browse/{{ problem.name }}">{{ problem.id }}</a></b></td>
-              <td><a href="browse/{{ problem.name }}">{{ problem.name }}</a></td>
+              {# Both of the following links should link to browse/<challenge_name> #}
+              <td><b><a href="browse/{{ challenge.name }}">{{ challenge.id }}</a></b></td>
+              <td><a href="browse/{{ challenge.name }}">{{ challenge.name }}</a></td>
               <td>Stanley</td>
               <td>Nope</td>
             </tr>

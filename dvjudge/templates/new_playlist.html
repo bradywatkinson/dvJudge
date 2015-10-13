@@ -40,10 +40,10 @@
         </thead>
         <ul class=challenges>
         <tbody>
-        {% for problem in challenges %}
+        {% for challenge in challenges %}
           <tr>
-            <td><input type="checkbox" name="{{ problem.name }}" value="{{ problem.id }}"/></td>
-            <td><a href="browse/{{ problem.name }}">{{ problem.name }}</a></td>
+            <td><input type="checkbox" name="{{ challenge.name }}" value="{{ challenge.id }}"/></td>
+            <td><a href="browse/{{ challenge.name }}">{{ challenge.name }}</a></td>
           </tr>
         {% endfor %}
         </tbody>

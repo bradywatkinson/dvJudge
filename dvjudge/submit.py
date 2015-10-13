@@ -9,7 +9,7 @@ import re
 import json
 
 @app.route('/submit', methods=['POST'])
-def submit_specific_problem():
+def submit_specific_challenge():
 
     skip = False 
     language = request.form.get('language')
@@ -22,11 +22,11 @@ def submit_specific_problem():
         skip = True
 
     #do database stuff
-    problem_id = request.args.get('problem_id')
-    cur = query_db('select * from challenges where id = ?', [problem_id], one=True)
+    challenge_id = request.args.get('challenge_id')
+    cur = query_db('select * from challenges where id = ?', [challenge_id], one=True)
     
     if cur is not None:
-        problem_id  = cur[0]
+        challenge_id  = cur[0]
         name        = cur[1]
         description = cur[2]
         input_tests = cur[3]
@@ -38,9 +38,10 @@ def submit_specific_problem():
     else:
         abort(404)
     
-    problem_info = {'problem_id': problem_id, 'name': name, 'description': description, 'sample_tests': sample_tests, 'input_desc': input_desc, 'output_desc': output_desc}
+    challenge_info = {'challenge_id': challenge_id, 'name': name, 'description': description, 'sample_tests': sample_tests, 'input_desc': input_desc, 'output_desc': output_desc}
      # get the code from the form
     code = request.form['editor']
+    print code
     # create a directory for current submission
     directory = subprocess.Popen(['mkdir', username], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     directory.wait()
@@ -58,14 +59,15 @@ def submit_specific_problem():
     # if not a default user, the one that is just trying out the website
     if not skip:
         update_db("insert into submissions (user_id, challenge_id, status, status_info)\
-    values (?, ?, ?, ?);",[user_id,problem_id,result['status'],result['output']])
+    values (?, ?, ?, ?);",[user_id,challenge_id,result['status'],result['output']])
 
     #clean up
     subprocess.Popen(['rm', '-rf', username], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)   
     session['output'] = result['output']
     session['code'] = code
-    session['language'] = json.dumps(language)
-    return redirect(url_for('browse_specific_problem', problem_name=name))
+    session['language'] = language
+
+    return redirect(url_for('browse_specific_challenge', challenge_name=name))
 
 
 def run_c(code, username, input_tests, expected_output):

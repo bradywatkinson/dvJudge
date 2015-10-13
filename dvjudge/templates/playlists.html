@@ -45,16 +45,16 @@
     			</tr>
     		</thead>
       		<tbody> 
-      			{% for problem in challenge_list %}
+      			{% for challenge in challenge_list %}
               <tr>
                 <!-- For testing purposes:
-                {{ problem.name}}: {{ loop.index }} -->
+                {{ challenge.name}}: {{ loop.index }} -->
                 <td class="order">{{ loop.index }}</td>
-                <td class="problem"><b><a href="browse/{{ problem.name }}">{{ problem.name }}</a></b></td>
+                <td class="challenge"><b><a href="browse/{{ challenge.name }}">{{ challenge.name }}</a></b></td>
                 <td>Dumpling</td>
                 <td>N</td>
                 <td><div align="center"><a class='btn btn-delete btn-sm btn-primary'>Delete</a></div></td>
-                <input type="hidden" name="{{ problem.name }}" id="{{ problem.name }}" value=""/>
+                <input type="hidden" name="{{ challenge.name }}" id="{{ challenge.name }}" value=""/>
               </tr>
             {% endfor %}
       		</tbody>
@@ -72,7 +72,7 @@
     </button>
     <br /><br />
     <h4>You have no playlists.</h4>
-    <h4>Create a new playlist then add challenges to your cart from the problem pages.</h4>
+    <h4>Create a new playlist then add challenges to your cart from the challenge pages.</h4>
   {% endif %}
 </body>
 <style>
