@@ -283,24 +283,26 @@ class FlaskrTestCase(unittest.TestCase):
         assert("Program output") in rv.data
         rv = self.app.get('/submissions/6', follow_redirects=True)
         assert('Status: Incorrect') in rv.data
-   
+
+    #this section is commented out as we decided to go for forums rather
+    #than comments at the bottom of the page   
     #test comments and comment submission
-    def test_comment_submission(self):
-        self.login('dannyeei', 'daniel')
-        rv = self.app.get('/browse/Count%20to%20N', follow_redirects=True)
-        assert('Hello World!') not in rv.data
-        rv = self.app.post('/browse/Count%20to%20N', data=dict(
-            comment='Hello World!'))
-        assert('Hello World!') in rv.data
-        rv = self.app.post('/browse/Count%20to%20N', data=dict(
-            comment='New comment'))
-        assert('New comment') in rv.data
-        assert('Hello World!') in rv.data
-        rv = self.app.post('/browse/Count%20to%20N', data=dict(
-            comment='Long comment including odd characters: !@#$,.;:'))
-        assert('New comment') in rv.data
-        assert('Hello World!') in rv.data
-        assert('Long comment including odd characters: !@#$,.;:') in rv.data
+    # def test_comment_submission(self):
+    #     self.login('dannyeei', 'daniel')
+    #     rv = self.app.get('/browse/Count%20to%20N', follow_redirects=True)
+    #     assert('Hello World!') not in rv.data
+    #     rv = self.app.post('/browse/Count%20to%20N', data=dict(
+    #         comment='Hello World!'))
+    #     assert('Hello World!') in rv.data
+    #     rv = self.app.post('/browse/Count%20to%20N', data=dict(
+    #         comment='New comment'))
+    #     assert('New comment') in rv.data
+    #     assert('Hello World!') in rv.data
+    #     rv = self.app.post('/browse/Count%20to%20N', data=dict(
+    #         comment='Long comment including odd characters: !@#$,.;:'))
+    #     assert('New comment') in rv.data
+    #     assert('Hello World!') in rv.data
+    #     assert('Long comment including odd characters: !@#$,.;:') in rv.data
 
     def test_python_submission(self):
         self.login('admin','default')
@@ -449,6 +451,28 @@ class FlaskrTestCase(unittest.TestCase):
         assert ("Sum to N: 3") in rv.data
         assert ("Count to N: 4") in rv.data
 
+    def test_new_forum(self):
+        self.login('typical', 'typical')
+        rv = self.app.get('/forums/1', follow_redirects=True)
+        assert("This is a forum question") not in rv.data
+        rv = self.app.post('/forums-new/1', follow_redirects=True, data=dict(question="This is a forum question", postbody="This bit explains what the forum question is in more detail"))
+        assert("This bit explains what the forum question is in more detail") in rv.data
+        assert("This is a forum question") in rv.data
+        rv = self.app.get('/forums/1', follow_redirects=True)
+        assert("This is a forum question") in rv.data
+
+    def test_comment_forum(self):
+        self.login('typical', 'typical')
+        rv = self.app.get('/forums/1', follow_redirects=True)
+        assert("This is a forum question") not in rv.data
+        rv = self.app.post('/forums-new/1', follow_redirects=True, data=dict(question="This is a forum question", postbody="This bit explains what the forum question is in more detail"))
+        assert("This bit explains what the forum question is in more detail") in rv.data
+        assert("This is a forum question") in rv.data
+        assert("This is a comment. Commenty commenty comment") not in rv.data
+        rv = self.app.post('/forums/1/1', data=dict(comment="This is a comment. Commenty commenty comment"))
+        assert("This is a comment. Commenty commenty comment") in rv.data
+
+    #TODO write tests for invalid input
 
 if __name__ == '__main__':
     unittest.main()

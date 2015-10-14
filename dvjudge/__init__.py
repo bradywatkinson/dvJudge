@@ -40,3 +40,4 @@ import dvjudge.submit
 import dvjudge.upload
 import dvjudge.userauth
 import dvjudge.submissions
+import dvjudge.forums
