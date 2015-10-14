@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block body %}
+
+{% if error %}
+<table class="table table-hover">
+  <p class=error><strong>Error:</strong> {{ error }}
+</table>
+{% endif %}
+
+  <div class="form-group">
+    <form action="{{ problem_id }}" method=post>
+      <dl>
+        <div class="form-group">
+          <dt><h3>Ask a question</h3>
+          <dd><input type=text name=question required class="form-control" id="exampleInputEmail1" placeholder="Question" value='{{ question }}'>
+          <dd><input type=textarea class="form-control" name=postbody rows="4" placeholder="Specifics" value='{{ question_body }}'></input>
+        </div>
+        <div class="form-group">
+          <dd><input type=submit class="btn btn-default" value=Submit>
+        </div>
+      </dl>
+    </form>
+  </div>
+
+{% endblock %} 

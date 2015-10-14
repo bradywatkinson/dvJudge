@@ -79,6 +79,7 @@ function changeText(choice){
     {% endif %}
     </div>
     <input type="submit" value="Submit" id="submit" class="btn btn-primary btn-lg" form="code">
+    <p><p><a style="margin: 10px" href="/forums/{{ challenge_info.challenge_id }}">If you're having trouble click here to check out the forums</a></p></p>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/ace.js" type="text/javascript" charset="utf-8"></script>
     <script>
@@ -108,5 +109,5 @@ function changeText(choice){
 });
   </script>
 
-{% include "comments.html" %}
+
 {% endblock %}

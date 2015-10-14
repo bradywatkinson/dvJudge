@@ -45,3 +45,21 @@ create table playlists (
     owner_id integer not null,
     challenges text not null
 );
+
+drop table if exists forum_page;
+create table forum_page(
+	id integer primary key autoincrement,
+	problem_id integer not null,
+	original_poster text not null, 
+	post_name text not null,
+	post_body text not null,
+	post_time DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+drop table if exists forum_comment;
+create table forum_comment(
+	forum_page integer not null,
+	username text not null,
+	comment text not null,
+	post_time DATETIME DEFAULT CURRENT_TIMESTAMP
+);
