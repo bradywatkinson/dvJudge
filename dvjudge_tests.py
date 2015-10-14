@@ -473,6 +473,27 @@ class FlaskrTestCase(unittest.TestCase):
         assert ("Sum to N") not in rv.data
         assert ("Dota 2 is a great game") not in rv.data
 
+    def test_submit_playlist(self):
+        self.login('dannyeei', 'daniel')
+        rv = self.app.get('/new_playlist', follow_redirects=True)
+        data = {}
+        data['playlist_name'] = "Stanley Sux"
+        data['Count to N'] = "1"
+        data['Valve cant program'] = "4"
+        rv = self.app.post('/new_playlist', data=data, follow_redirects=True)
+        rv = self.app.post('/playlists',data=dict(
+                    selected_name = 'Stanley Sux'
+                    ), follow_redirects=True)
+        assert ("Count to N") in rv.data
+        assert ("Valve cant program") in rv.data
+        data = {}
+        data['reorder'] = "Submit Changes"
+        data['selected_name'] = "Stanley Sux"
+        rv = self.app.post('/playlists', data=data, follow_redirects=True)
+        assert ("Count to N") in rv.data
+        assert ("Valve cant program") in rv.data
+
+       
 
 
     def test_delete_playlist(self):

@@ -6,48 +6,52 @@
 	<script type="text/javascript" src="{{ url_for('static', filename='rowsort.js') }}"></script>
 </head>
 <body>
-	<h3>Create New Playlist</h3>
+	<h3 style="margin-left:5%">Create New Playlist</h3>
+  <button type="button" class="btn btn-link" id="return_list">
+    <a href="{{ url_for('show_playlists') }}"><font size="3.5">Return to Playlists</font></a>
+  </button>
+  <br /><br />
   <form method="POST">
+    <div align="center">
     {% if no_name %}
       <div class="alert alert-info alert-dismissable">
           <a class="panel-close close" data-dismiss="alert">×</a> 
-          <i class="fa fa-coffee"></i>
           Please insert a valid username.
       </div>
     {% elif conflict_name %}
       <div class="alert alert-info alert-dismissable">
         <a class="panel-close close" data-dismiss="alert">×</a> 
-        <i class="fa fa-coffee"></i>
         <b>{{ new_name }}</b> already exists.
       </div>
     {% elif new_name %}
       <div class="alert alert-info alert-dismissable">
         <a class="panel-close close" data-dismiss="alert">×</a> 
-        <i class="fa fa-coffee"></i>
         New playlist <b>{{ new_name }}</b> created.
       </div>
     {% endif %}
+
     <br />
-    <b>Playlist Name</b>: <input type="text" name="playlist_name"/>
-    <br />
-    <div class="bs-example" align="center">
-      <table class="table" id="chal_list">
-        <thead>
-          <tr>
-            <th width="8%"></th>
-            <th>Challenges</th>
-          </tr>
-        </thead>
-        <ul class=challenges>
-        <tbody>
-        {% for challenge in challenges %}
-          <tr>
-            <td><input type="checkbox" name="{{ challenge.name }}" value="{{ challenge.id }}"/></td>
-            <td><a href="browse/{{ challenge.name }}">{{ challenge.name }}</a></td>
-          </tr>
-        {% endfor %}
-        </tbody>
-      </table>
+      <b>Playlist Name</b>: <input type="text" name="playlist_name"/>
+      <br />
+      <div class="bs-example">
+        <table class="table" id="chal_list">
+          <thead>
+            <tr>
+              <th width="8%"></th>
+              <th>Challenges</th>
+            </tr>
+          </thead>
+          <ul class=challenges>
+          <tbody>
+          {% for problem in challenges %}
+            <tr>
+              <td><input type="checkbox" name="{{ problem.name }}" value="{{ problem.id }}"/></td>
+              <td><a href="browse/{{ problem.name }}">{{ problem.name }}</a></td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
     <br>
     <div align="center">
@@ -69,6 +73,10 @@
 }
 #sub {
     margin-left:45%;
+}
+#return_list {
+    float:right;
+    margin-right: 3%;
 }
 .alert {
     display: inline-block;

@@ -38,7 +38,7 @@ function renumber_table(tableID) {
 function reorder_form() {
 	var sorted = [];
 	$("#challenge_list tbody tr").each(function() {
-		var name = $(this).find('.problem').text();
+		var name = $(this).find('.challenge').text();
 		sorted.push(name);
 	});
 	return sorted;
