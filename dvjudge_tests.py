@@ -465,7 +465,7 @@ class FlaskrTestCase(unittest.TestCase):
         assert ("Sum to N") not in rv.data
         assert ("Dota 2 is a great game") not in rv.data
 
-    def test_submit_playlist(self):
+    def test_submit_old_playlist(self):
         self.login('dannyeei', 'daniel')
         rv = self.app.get('/new_playlist', follow_redirects=True)
         data = {}
@@ -481,6 +481,8 @@ class FlaskrTestCase(unittest.TestCase):
         data = {}
         data['reorder'] = "Submit Changes"
         data['selected_name'] = "Stanley Sux"
+        data['Count to N'] = "1"
+        data['Valve cant program'] = "2"
         rv = self.app.post('/playlists', data=data, follow_redirects=True)  
         assert ("Count to N") in rv.data
         assert ("Valve cant program") in rv.data
