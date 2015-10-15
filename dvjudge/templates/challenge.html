@@ -1,20 +1,37 @@
 {% extends "layout.html" %}
 {% block body %}
+  
+  {% if exists %}
+    <div class="alert alert-info alert-dismissable">
+        <a class="panel-close close" data-dismiss="alert">×</a> 
+        <b>{{ challenge_info.name }}</b> already exists in <b>{{ playlist_name }}</b>.
+    </div>
+  {% elif playlist_name %}
+    <div class="alert alert-info alert-dismissable">
+      <a class="panel-close close" data-dismiss="alert">×</a> 
+      <b>{{ challenge_info.name }}</b> has been added to <b>{{ playlist_name }}</b>.
+    </div>
+  {% endif %}
   <div class="container">
     <div class="jumbotron">
         <h1>{{ challenge_info.name }}</h1>
-        {% if session.logged_in %} 
-        <div class="dropdown" style="float: right;">
-          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            Playlist
-            <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-            {% for playlist in playlists %}
-              <li><a href="/playlists/{{ playlist.id }}?add={{ challenge_info.challenge_id }}">Add to "{{ playlist.name }}"</a></li>
-            {% endfor %}
-          </ul>
-        </div>
+        {% if session.logged_in %}
+          <div class="dropdown" style="float:right; margin-right:3%">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              Playlist
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+              {% for playlist in playlists %}
+                <li id="{{ playlist.name }}">
+                  <a href="{{ url_for('browse_specific_challenge',
+                        challenge_name=challenge_info.name, playlist_name=playlist.name) }}">
+                    Add to "{{ playlist.name }}"
+                  </a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
         {% endif %} 
         <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="#Desc">Description</a></li>

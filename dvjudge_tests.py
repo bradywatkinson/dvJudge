@@ -366,14 +366,6 @@ class FlaskrTestCase(unittest.TestCase):
         assert('This is a status info') in rv.data
         assert('I would have like a compile error or something in here') in rv.data
         assert('Blab blah you failed some testcases man') not in rv.data
-        
-    # Test a challenge shows the correct "add to playlist" buttons in the dropdown
-    def test_add_to_playlist(self):
-        self.login('dannyeei', 'daniel')
-        rv = self.app.get('/browse/Sum%20to%20N', follow_redirects=True)
-        assert("Create a program that prints sum 1..n") in rv.data
-        assert("Add to \"my playlist first ever\"") in rv.data
-        assert("Add to \"my second playlist ever\"") in rv.data
 
     # Test creating playlists works
     def test_show_playlist(self):
@@ -489,12 +481,9 @@ class FlaskrTestCase(unittest.TestCase):
         data = {}
         data['reorder'] = "Submit Changes"
         data['selected_name'] = "Stanley Sux"
-        rv = self.app.post('/playlists', data=data, follow_redirects=True)
+        rv = self.app.post('/playlists', data=data, follow_redirects=True)  
         assert ("Count to N") in rv.data
         assert ("Valve cant program") in rv.data
-
-       
-
 
     def test_delete_playlist(self):
         self.login('dannyeei', 'daniel')
@@ -517,6 +506,49 @@ class FlaskrTestCase(unittest.TestCase):
         data['delete_list'] = "my second playlist ever"
         rv = self.app.post('/playlists', data=data, follow_redirects=True)
         assert ("You have no playlists.") in rv.data
+
+
+    # Test a challenge shows the correct "add to playlist" buttons in the dropdown
+    def test_add_to_playlist(self):
+        self.login('dannyeei', 'daniel')
+        rv = self.app.get('/new_playlist', follow_redirects=True)
+        # Create empty playlist Stanley Sux
+        data = {}
+        data['playlist_name'] = "Stanley Sux"
+        rv = self.app.post('/new_playlist', data=data, follow_redirects=True)
+        rv = self.app.post('/playlists',data=dict(
+                    selected_name = 'Stanley Sux'
+                    ), follow_redirects=True)
+        assert ("Count to N") not in rv.data
+        assert ("Sum to N") not in rv.data
+
+        # Add Count to N to playlist
+        rv = self.app.get('/browse/Count%20to%20N', follow_redirects=True)
+        assert("Add to \"my playlist first ever\"") in rv.data
+        assert("Add to \"my second playlist ever\"") in rv.data
+        assert("Add to \"Stanley Sux\"") in rv.data
+        rv = self.app.get('/browse/Count%20to%20N?playlist_name=Stanley+Sux', follow_redirects=True)
+        assert("<b>Count to N</b> has been added to <b>Stanley Sux</b>") in rv.data
+        # Check that it accounts for already existing challenges
+        rv = self.app.get('/browse/Count%20to%20N?playlist_name=Stanley+Sux', follow_redirects=True)
+        assert("<b>Count to N</b> already exists in <b>Stanley Sux</b>") in rv.data
+
+        # Add Sum to N to playlist
+        rv = self.app.get('/browse/Sum%20to%20N', follow_redirects=True)
+        assert("Create a program that prints sum 1..n") in rv.data
+        assert("Add to \"my playlist first ever\"") in rv.data
+        assert("Add to \"my second playlist ever\"") in rv.data
+        assert("Add to \"Stanley Sux\"") in rv.data
+        rv = self.app.get('/browse/Sum%20to%20N?playlist_name=Stanley+Sux', follow_redirects=True)
+        assert("<b>Sum to N</b> has been added to <b>Stanley Sux</b>") in rv.data
+
+        # Test playlist manager shows added challenges
+        rv = self.app.post('/playlists',data=dict(
+                    selected_name = 'Stanley Sux'
+                    ), follow_redirects=True)
+        assert ("Count to N") in rv.data
+        assert ("Sum to N") in rv.data
+
 
     def test_new_forum(self):
         self.login('typical', 'typical')
