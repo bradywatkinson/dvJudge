@@ -78,7 +78,9 @@ function changeText(choice){
     <div id="editor" style="height: 500px; width: 500px">// enter code here </div>
     {% endif %}
     </div>
+    {% if session.logged_in %}
     <input type="submit" value="Submit" id="submit" class="btn btn-primary btn-lg" form="code">
+    {% endif %}
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/ace.js" type="text/javascript" charset="utf-8"></script>
     <script>
