@@ -23,8 +23,8 @@
             {% for challenge in challenges %}
             <tr>
               {# Both of the following links should link to browse/<challenge_name> #}
-              <td><b><a href="browse/{{ challenge.name }}">{{ challenge.id }}</a></b></td>
-              <td><a href="browse/{{ challenge.name }}">{{ challenge.name }}</a></td>
+              <td><b><a href="{{ url_for('browse_specific_challenge', challenge_name=challenge.name) }}">{{ challenge.id }}</a></b></td>
+              <td><a href="{{ url_for('browse_specific_challenge', challenge_name=challenge.name) }}">{{ challenge.name }}</a></td>
               <td>Stanley</td>
               <td>Nope</td>
             </tr>

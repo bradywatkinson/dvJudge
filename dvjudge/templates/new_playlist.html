@@ -13,20 +13,20 @@
   <br /><br />
   <form method="POST">
     <div align="center">
-    {% if no_name %}
+    {% if flags.no_name %}
       <div class="alert alert-info alert-dismissable">
           <a class="panel-close close" data-dismiss="alert">×</a> 
           Please insert a valid username.
       </div>
-    {% elif conflict_name %}
+    {% elif flags.conflict_name %}
       <div class="alert alert-info alert-dismissable">
         <a class="panel-close close" data-dismiss="alert">×</a> 
-        <b>{{ new_name }}</b> already exists.
+        <b>{{ flags.new_name }}</b> already exists.
       </div>
-    {% elif new_name %}
+    {% elif flags.new_name %}
       <div class="alert alert-info alert-dismissable">
         <a class="panel-close close" data-dismiss="alert">×</a> 
-        New playlist <b>{{ new_name }}</b> created.
+        New playlist <b>{{ flags.new_name }}</b> created with ID: <b>{{ play_id }}</b>.
       </div>
     {% endif %}
 

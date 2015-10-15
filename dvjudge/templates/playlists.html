@@ -31,7 +31,12 @@
     <button type="button" class="btn btn-link" id="new_list">
     <a href="{{ url_for('show_playlist_form') }}"><font size="3.5">+ Create New Playlist...</font></a>
     </button>
+    <br /><br />
+    <h4>{{ selection.name }}'s Playlist ID:
+      <a href="{{ url_for('show_playlist_challenges', playlist_id=selection.id) }}"><b>{{ selection.id }}</b></a>
+    </h4>
 
+    <br />
     <form action="{{ url_for('show_playlists') }}" method="POST" id="order-form">
       <div class="bs-example" align="center">
       <table name="reorder_list" class="table table-striped" id="challenge_list">

@@ -393,15 +393,15 @@ class FlaskrTestCase(unittest.TestCase):
         assert("Count to N") not in rv.data
         assert("Sum to N") not in rv.data
 
-    # Test no playlist page
+    # Test display playlist page
     def test_no_playlist(self):
-        self.login('admin', 'default')
-        rv = self.app.get('/playlists', follow_redirects=True)
+        rv = self.app.get('/playlists/0', follow_redirects=True)
         # Check dropdown menu is operational
-        assert("You have no playlists.") in rv.data
-        assert("option") not in rv.data
-        assert("table") not in rv.data
-        assert("Submit") not in rv.data
+        assert("Count to N") in rv.data
+        assert("Sum to N") in rv.data
+        assert("Invert Case") in rv.data
+        assert("Number of As") in rv.data
+        assert("Dota 2 is a great game") not in rv.data
 
     # Test reorder playlist
     def test_reorder_playlist(self):
@@ -450,7 +450,7 @@ class FlaskrTestCase(unittest.TestCase):
         data['Count to N'] = "1"
         data['Valve cant program'] = "4"
         rv = self.app.post('/new_playlist', data=data, follow_redirects=True)
-        assert ("New playlist <b>Stanley Sux</b> created.") in rv.data
+        assert ("New playlist <b>Stanley Sux</b> created with ID") in rv.data
 
         data['playlist_name'] = "Stanley Sux"
         rv = self.app.post('/new_playlist', data=data, follow_redirects=True)

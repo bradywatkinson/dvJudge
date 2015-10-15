@@ -40,7 +40,7 @@ create table challenge_comments (
 
 drop table if exists playlists;
 create table playlists (
-    id integer primary key autoincrement,
+    id integer primary key not null,
     name text not null,
     owner_id integer not null,
     challenges text not null

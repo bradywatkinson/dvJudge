@@ -13,16 +13,17 @@ def browse_specific_challenge(challenge_name):
     cur = query_db('select * from challenges where name = ?', [challenge_name], one=True)
     if cur is not None:
         challenge_id  = cur[0]
-        name        = cur[1]
-        description = cur[2]
-        sample_tests= cur[5]
-        input_desc  = cur[6]
-        output_desc = cur[7]
+        name          = cur[1]
+        description   = cur[2]
+        sample_tests  = cur[5]
+        input_desc    = cur[6]
+        output_desc   = cur[7]
+        com_flag      = cur[8]
     else:
         abort(404)
 
     challenge_info = {'challenge_id': challenge_id, 'name': name, 'description': description, 'sample_tests': sample_tests, 
-                'input_desc': input_desc, 'output_desc': output_desc, 'languages':supported_languages}
+                'input_desc': input_desc, 'output_desc': output_desc, 'languages':supported_languages, 'com_flag':com_flag}
 
     #check for posted comment
     if request.method == 'POST':

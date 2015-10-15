@@ -1,6 +1,12 @@
 {% extends "layout.html" %}
 {% block body %}
   
+
+  {% if not session.logged_in and challenge_info.com_flag != 2 %}
+    <div class="alert alert-info alert-dismissable"><a class="panel-close close" data-dismiss="alert">×</a> 
+        Please login to submit your answers.
+    </div>
+  {% endif %}
   {% if exists %}
     <div class="alert alert-info alert-dismissable">
         <a class="panel-close close" data-dismiss="alert">×</a> 
@@ -37,7 +43,7 @@
           <li class="active"><a data-toggle="tab" href="#Desc">Description</a></li>
           <li><a data-toggle="tab" href="#IO">Input/Output</a></li>
         </ul>
-
+  
         <div class="tab-content">
           <div id="Desc" class="tab-pane fade in active">
             <p>{{ challenge_info.description }}</p>
@@ -73,7 +79,6 @@ function changeText(choice){
 }
 </script>
 
-
     <form action="{{ url_for('submit_specific_challenge', challenge_id=challenge_info.challenge_id) }}" method="post" id="code">
       <select name = 'language' class="language_menu" onChange="changeText(this.value)">
         {% for item in challenge_info.languages %} 
@@ -85,7 +90,7 @@ function changeText(choice){
         {% endfor %}
       </select>
 
-      <br>
+      <br /><br />
       <textarea name="editor"></textarea>
     </form>
 
@@ -95,7 +100,12 @@ function changeText(choice){
     <div id="editor" style="height: 500px; width: 500px">// enter code here </div>
     {% endif %}
     </div>
-    <input type="submit" value="Submit" id="submit" class="btn btn-primary btn-lg" form="code">
+    <br />
+    {% if not session.logged_in and challenge_info.com_flag != 2 %}
+      <input type="submit" value="Submit" class="btn btn-primary btn-lg disabled">
+    {% else %}
+      <input type="submit" value="Submit" id="submit" class="btn btn-primary btn-lg" form="code">
+    {% endif %}
     <p><p><a style="margin: 10px" href="/forums/{{ challenge_info.challenge_id }}">If you're having trouble click here to check out the forums</a></p></p>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/ace.js" type="text/javascript" charset="utf-8"></script>

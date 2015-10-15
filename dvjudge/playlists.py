@@ -1,7 +1,7 @@
 from flask import render_template, session, request, abort, g
 from dvjudge import app
 from core import query_db, update_db
-import re
+import re, random
 
 @app.route('/playlists', methods=['GET', 'POST'])
 def show_playlists():
@@ -80,12 +80,40 @@ def show_playlists():
     else:
         abort(401)
 
+@app.route('/playlists/<playlist_id>', methods=['GET'])
+def show_playlist_challenges(playlist_id):
+    # Retrieve the requested playlist
+    cur = query_db('select * from playlists where id = ?', [playlist_id], one=True)
+    if cur is not None:
+        challenge_ids = cur[3]
+        cur = query_db('select id, name from challenges')
+        # Produce an array of hashes that looks something like:
+        # [{id->'1', name->'some challenge name'}, {other hash}]
+        all_challenges = [dict(id=row[0],name=row[1]) for row in cur]  
+        challenges = []
+        if challenge_ids:
+            # Obtain a list of in order challenge ids for a playlist
+            id_list = [int(s) for s in challenge_ids.split('|')]
+            for id in id_list:
+                for challenge in all_challenges:
+                    if challenge['id'] == id:
+                        challenges.append(dict(id=challenge['id'],name=challenge['name']))
+                        break
+
+        return render_template('browse.html', challenges=challenges)
+
+    else:
+        abort(404)
+
+
 @app.route('/new_playlist', methods=['GET'])
 def show_playlist_form():
     if 'user' in session:
         cur = query_db('select id, name from challenges')
         challenges = [dict(id=row[0],name=row[1]) for row in cur]
-        return render_template('new_playlist.html', challenges=challenges)
+        flags= {}
+        play_id = None
+        return render_template('new_playlist.html', challenges=challenges, flags=flags, play_id=play_id)
     else:
         abort(401)
 
@@ -97,24 +125,29 @@ def create_new_playlist():
         if cur is not None:
             user_id = cur[0]
             # Set fields to check to false and grab playlist name
-            no_name = False
-            conflict_name = False
-            new_name = None
+            flags = {'no_name':False, 'conflict_name':False, 'new_name':None}
             playlist_name = request.form.get('playlist_name')
             temp = re.sub('[\s+]', '', playlist_name)
+            play_id = None
 
             cur = query_db('select id, name from challenges')
             challenges = [dict(id=row[0],name=row[1]) for row in cur]
 
             # If invalid playlist name, flash an alert
-            if not request.form.get('playlist_name') or temp == "":
-                no_name = True
+            if not request.form.get('playlist_name') or not temp:
+                flags['no_name'] = True
             # Insert new playlist into database
             else:
-                new_name = playlist_name
+                flags['new_name'] = playlist_name
                 cur2 = query_db('select * from playlists where owner_id = ? and name = ?',
                     [user_id, playlist_name], one=True)
                 if cur2 is None:
+                    play_id = random.randint(0, 1000000)
+                    id_check = query_db('select * from playlists where id = ?', [play_id], one=True)
+                    while id_check is not None:
+                        play_id = random.randint(0, 1000000)
+                        id_check = query_db('select * from playlists where id = ?', [play_id], one=True)
+
                     challenge_ids = ""
                     for challenge in challenges:
                         id = request.form.get(challenge['name'])
@@ -123,14 +156,13 @@ def create_new_playlist():
                                 challenge_ids = str(id)
                             else:
                                 challenge_ids += "|" + str(id)
-                    g.db.execute('insert into playlists (name, owner_id, challenges) values (?, ?, ?)',
-                        [playlist_name, user_id, challenge_ids])
+                    g.db.execute('insert into playlists (id, name, owner_id, challenges) values (?, ?, ?, ?)',
+                        [play_id, playlist_name, user_id, challenge_ids])
                     g.db.commit()  
                 else:
-                    conflict_name = True  
+                    flags['conflict_name'] = True  
 
-            return render_template('new_playlist.html', challenges=challenges,
-                                no_name=no_name, new_name = new_name, conflict_name=conflict_name)
+            return render_template('new_playlist.html', challenges=challenges, flags=flags, play_id=play_id)
         else:
             abort(401)
     else:
