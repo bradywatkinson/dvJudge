@@ -25,8 +25,12 @@
               {# Both of the following links should link to browse/<challenge_name> #}
               <td><b><a href="{{ url_for('browse_specific_challenge', challenge_name=challenge.name) }}">{{ challenge.id }}</a></b></td>
               <td><a href="{{ url_for('browse_specific_challenge', challenge_name=challenge.name) }}">{{ challenge.name }}</a></td>
-              <td>Stanley</td>
-              <td>Nope</td>
+              <td>DVJUDGE</td>
+              {% if challenge.completed %}
+                <td>Yes</td>
+              {% else %}
+                <td>No</td>
+              {% endif %}
             </tr>
             {% endfor %}
             </ul>

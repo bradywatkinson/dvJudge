@@ -25,7 +25,6 @@ class FlaskrTestCase(unittest.TestCase):
                     password=password,
                     page='show_mainpage'
                     ), follow_redirects=True)
-        #print rv.data
         return rv
 
     def logout(self):
@@ -33,7 +32,6 @@ class FlaskrTestCase(unittest.TestCase):
 
     def test_login_logout(self):
         rv = self.login('admin', 'default')
-        #print rv.data
         assert 'You were logged in' in rv.data
         rv = self.logout()
         assert 'You were logged out' in rv.data
@@ -66,8 +64,6 @@ class FlaskrTestCase(unittest.TestCase):
                     email='dan@hotmail.com',
                     ), follow_redirects=True)
         assert 'Passwords need to be 6 characters or longer' not in rv.data
-        #assert 'Emails do not match' in rv.data
-        #assert 'Passwords do not match' in rv.data
 
     def test_login_landing_page(self):
         rv = self.app.get('/')
@@ -78,7 +74,6 @@ class FlaskrTestCase(unittest.TestCase):
         rv = self.app.get('/')
         assert ('VIEW YOUR PROGRESS') in rv.data
         assert ('Upload Code') in rv.data
-#        assert ('textarea') not in rv.data
         assert ('SIGN UP TODAY') not in rv.data
 
     def test_upload_challenge(self):
@@ -288,26 +283,6 @@ class FlaskrTestCase(unittest.TestCase):
         rv = self.app.get('/submissions/6', follow_redirects=True)
         assert('Status: Incorrect') in rv.data
    
-    #this section is commented out as we decided to go for forums rather
-    #than comments at the bottom of the page   
-    #test comments and comment submission
-    # def test_comment_submission(self):
-    #     self.login('dannyeei', 'daniel')
-    #     rv = self.app.get('/browse/Count%20to%20N', follow_redirects=True)
-    #     assert('Hello World!') not in rv.data
-    #     rv = self.app.post('/browse/Count%20to%20N', data=dict(
-    #         comment='Hello World!'))
-    #     assert('Hello World!') in rv.data
-    #     rv = self.app.post('/browse/Count%20to%20N', data=dict(
-    #         comment='New comment'))
-    #     assert('New comment') in rv.data
-    #     assert('Hello World!') in rv.data
-    #     rv = self.app.post('/browse/Count%20to%20N', data=dict(
-    #         comment='Long comment including odd characters: !@#$,.;:'))
-    #     assert('New comment') in rv.data
-    #     assert('Hello World!') in rv.data
-    #     assert('Long comment including odd characters: !@#$,.;:') in rv.data
-
     def test_python_submission(self):
         self.login('admin','default')
 
@@ -573,6 +548,78 @@ class FlaskrTestCase(unittest.TestCase):
         rv = self.app.post('/forums/1/1', data=dict(comment="This is a comment. Commenty commenty comment"))
         assert("This is a comment. Commenty commenty comment") in rv.data
 
+    # check user stanley has by default challenges 1 6 completed, admin has none.
+    def test_completed_challenges(self):
+        self.login('stanley', 'default')
+        rv = self.app.get('/myprofile')
+        assert("No challenges completed.") not in rv.data
+        assert("1 6") in rv.data
+        rv = self.logout()
+        self.login('admin', 'default')
+        rv = self.app.get('/myprofile')
+        assert("No challenges completed.") in rv.data
+        assert("1 3") not in rv.data
+
+    # submit an answer for Q1 and Q6, check profile shows those two problems solved.
+    def test_completed_challenges_2(self):
+        self.login('admin', 'default')
+        rv = self.app.get('/myprofile')
+        assert("No challenges completed.") in rv.data
+        
+        # Submit problem 1
+        rv = self.app.post('/submit?challenge_id=1',data=dict(
+            editor='''#include <stdio.h> 
+                    int main(){
+                        int num; 
+                        scanf("%d",&num);
+                        for(int i = 0; i < num; i++){ 
+                            printf("%d", i+1); 
+                            if(i < num-1){
+                                printf(" ");
+                            }
+                        }
+                    }''',
+            language = 'C'
+            ),follow_redirects=True)
+        assert("All tests passed") in rv.data
+
+        # Submit problem2 
+        rv = self.app.post('/submit?challenge_id=2',data=dict(
+            editor='''#include<iostream>
+                    using namespace std;
+                    int main()
+                    {
+                     long int sum=0;
+                     int n;
+                     cin>>n;
+                     for(int num=1;num<=n;num++)
+                     {
+                      sum=sum+num;
+                     }
+                     cout<<sum;
+                    }''',
+            language = 'C++'
+            ),follow_redirects=True)
+        assert('All tests passed.') in rv.data
+
+        # Check /myprofile shows 1 2
+        rv = self.app.get('/myprofile')
+        assert("1 2") in rv.data
+        assert("No challenges completed.") not in rv.data
+
+    # Test browse page shows completion status correctly
+    def test_completed_challenges_3(self):
+        # Admin has no completed challenges, so YES should not be on the browse page
+        rv = self.login('admin', 'default')
+        rv = self.app.get('/browse')
+        assert("YES") not in rv.data
+
+        rv = self.logout()
+        rv = self.login('stanley', 'default')
+        rv = self.app.get('/browse')
+        assert("Yes") in rv.data
+        # Also assert it's in twice not just once
+        assert(rv.data.count("Yes") == 2)
 
 if __name__ == '__main__':
     unittest.main()

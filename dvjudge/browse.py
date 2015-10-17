@@ -8,6 +8,16 @@ def browse():
     # com_flag of 2 signfies admin chosen challenges that can be attempted by anyone
     cur = query_db('select id, name from challenges where com_flag = 0 or com_flag = 2')
     challenges = [dict(id=row[0],name=row[1]) for row in cur]
+
+    # Add completion status
+    if 'user' in session:
+        lookup = query_db("select solved_challenges from users where username = ?", [session['user']], one=True)
+        if lookup is not None and lookup[0] is not None:
+            for completed_challenge in lookup[0].split('|'):
+                for displayed_challenge in challenges:
+                    if str(displayed_challenge["id"]) == completed_challenge:
+                        displayed_challenge["completed"] = 1 # The HTML page just checks for the existance of this key-value pair
+
     return render_template('browse.html', challenges=challenges)
 
 @app.route('/browse', methods=['POST'])

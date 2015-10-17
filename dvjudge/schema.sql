@@ -4,7 +4,8 @@ create table users (
 	username text not null,
 	email text not null,
 	password text not null,
-	salt text not null
+	salt text not null,
+    solved_challenges text
 );
 
 drop table if exists challenges;

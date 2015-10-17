@@ -1,4 +1,10 @@
 {% extends "layout.html" %}
 {% block body %}
 <h1>Welcome {{ username }}</h1>
+<h2>Completed Challenges:</h2>
+{% if data.solved_challenges %}
+  <h3>{{ data.solved_challenges }}</h3>
+{% else %}
+  <h3>No challenges completed.</h3>
+{% endif %}
 {% endblock %}

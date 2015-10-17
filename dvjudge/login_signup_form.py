@@ -82,7 +82,18 @@ def logout():
 @app.route('/myprofile')
 def myprofile():
     if 'user' in session:
-        return render_template('userprofile.html', username=session['user'])
+        # Lookup data they need for the profile page
+        data = {}
+        challenge_string = ""
+        cur = query_db('select solved_challenges from users where username = ?', [session['user']], one=True)
+        if cur is not None and cur[0] is not None:
+            solved_challenges = cur[0]
+            # split solved_challenges on '|' character
+            for word in solved_challenges.split('|'):
+                challenge_string = challenge_string + " " + word
+
+        data["solved_challenges"] = challenge_string
+        return render_template('userprofile.html', username=session['user'], data=data)
     else:
         flash('You need to login before you can access this page')
         return redirect(url_for('show_mainpage'))

@@ -17,7 +17,6 @@ insert into challenges (name,description,input,output,sample_tests,input_desc,ou
 insert into challenges (name,description,input,output,sample_tests,input_desc,output_desc,com_flag)
 	values ('Number of As','Given an input string, print the number of upper and lowercase As that occur.',"AAAbcdaaa","6","Input: abACad123; Output: 3","Any string of characters","A single integer", 2);
 
-
 -- Accounts
 insert into users (username, email, password, salt)
 	values ('dannyeei', 'danielslater811@hotmail.com', 'd9bdde89547d18f0d6bd72d9a17133ae2cb023357357f51c5d226cbf2d02a056e89102bed4c29e0f2827a952027c9e0a3c2b3545735f0a1c643427d81fc75281', 'thisissamplesalt');
@@ -28,7 +27,10 @@ insert into users (username, email, password, salt)
 insert into users (username, email, password, salt)
 	values ('admin', 'admin@hotmail.com', '0b491227c0328e4c87c03fe4749b0b3a78d6da7094f5ef249b99caa759c6f1b1b6c952abb73e9448c5468fb7635f2d90a2f83b14e466c95b19b100fb9aec3c19', 'yumyumsaltinmytum');
 
--- Submissions
+insert into users (username, email, password, salt, solved_challenges)
+	values ('stanley', 'stanleyhon348@gmail.com', '0b491227c0328e4c87c03fe4749b0b3a78d6da7094f5ef249b99caa759c6f1b1b6c952abb73e9448c5468fb7635f2d90a2f83b14e466c95b19b100fb9aec3c19', 'yumyumsaltinmytum', '1|6');
+
+    -- Submissions
 insert into submissions (user_id, challenge_id, status, status_info)
     values ('1', 1, 'Accepted', 'This is a status info\nI would have like a compile error or something in here');
 
