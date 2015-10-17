@@ -332,6 +332,11 @@ class FlaskrTestCase(unittest.TestCase):
         assert('Incorrect') in rv.data
         assert('Compile Error') in rv.data
         assert('Something Else') not in rv.data
+        # Check submission languages work
+        assert('Python') in rv.data
+        assert('C++') in rv.data
+        assert('C') in rv.data
+        assert('<td>Java</td>') not in rv.data # There's a false positive for Java in a comment relating to minified Javascript
 
     # Test database imported specific submission is working as intended
     def test_specific_submission(self):

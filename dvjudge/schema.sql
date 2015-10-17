@@ -28,7 +28,8 @@ create table submissions (
     challenge_id integer not null,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
 	status text not null,
-    status_info text not null
+    status_info text not null,
+    language text not null
 );
 
 drop table if exists challenge_comments;

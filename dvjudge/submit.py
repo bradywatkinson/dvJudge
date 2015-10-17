@@ -58,8 +58,8 @@ def submit_specific_challenge():
     # if not a default user, the one that is just trying out the website
     new_solved_challenges = ""
     if not skip:
-        update_db("insert into submissions (user_id, challenge_id, status, status_info)\
-    values (?, ?, ?, ?);",[user_id,challenge_id,result['status'],result['output']])
+        update_db("insert into submissions (user_id, challenge_id, status, status_info, language)\
+    values (?, ?, ?, ?, ?);",[user_id,challenge_id,result['status'],result['output'],language])
         # Check to see if the user has completed this challenge
         lookup = query_db("select solved_challenges from users where id = ?", [user_id], one=True)
         done = False
