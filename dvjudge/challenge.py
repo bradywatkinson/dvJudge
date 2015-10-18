@@ -6,7 +6,8 @@ import re
 import json
 
 @app.route('/browse/<challenge_name>', methods=['GET', 'POST'])
-def browse_specific_challenge(challenge_name): 
+def browse_specific_challenge(challenge_name):
+    
     supported_languages = {'C', 'Python', 'Java', 'C++'}
     data = {'C':"// enter code here", 'Python':"# enter code here", 'Java':"// enter code here", 'C++':"// enter code here"}
 

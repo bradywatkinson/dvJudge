@@ -55,8 +55,8 @@ def login_signup_form():
             
             flash('You were logged in')
     if error != "":
-        # flash(error)
-        session['error'] = error
+        flash(error,'error')
+        # session['error'] = error
     if request.form['page'] == "browse_specific_challenge":
         return redirect(url_for('browse_specific_challenge', challenge_name=request.form['challenge_name']))
     if request.form['page'] == "forums_browse":
