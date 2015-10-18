@@ -49,8 +49,6 @@
         <li><a href="/community">Community</a></li>
         {% if session.logged_in %}
           <li><a href="/submissions">Submissions</a></li>
-        {% endif %}
-        {% if session.logged_in %}
           <li><a href="/playlists">Playlists</a></li>
         {% endif %}
       </ul>
@@ -110,7 +108,7 @@
             <div class="control-group">
               <label class="control-label" for="passwordinput">Password:</label>
               <div class="controls">
-                <input required="" id="passwordinput" name="password" class="form-control" type="password" placeholder="********" class="input-medium">
+                <input required="" id="passwordinput" name="password" class="form-control" type="password" placeholder="********" class="input-medium" minlength="6" maxlength="20">
               </div>
             </div>
 
@@ -166,8 +164,7 @@
             <div class="control-group">
               <label class="control-label" for="password">Password:</label>
               <div class="controls">
-                <input id="password" name="password" class="form-control" type="password" placeholder="********" class="input-large" required="">
-                <em>1-8 Characters</em>
+                <input id="password" name="password" class="form-control" type="password" placeholder="********" class="input-large" required="" minlength="6" maxlength"20">
               </div>
             </div>
             
@@ -175,7 +172,7 @@
             <div class="control-group">
               <label class="control-label" for="confirmpassword">Re-Enter Password:</label>
               <div class="controls">
-                <input id="confirmpassword" class="form-control" name="confirmpassword" type="password" placeholder="********" class="input-large" required="">
+                <input id="confirmpassword" class="form-control" name="confirmpassword" type="password" placeholder="********" class="input-large" required="" minlength="6" maxlength="20">
               </div>
             </div>
             
@@ -236,12 +233,18 @@
 </nav>
 <div class=page>
   {% for message in get_flashed_messages() %}
-    <div class=flash>{{ message }}</div>
+  <div class="alert alert-info alert-dismissable"><a class="panel-close close" data-dismiss="alert">×</a> 
+    {{ message }}
+  </div>
   {% endfor %}
   <div class="container">
-      {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+      {% if session.error %}<p class=error><strong>Error:</strong> {{ session.error }}{% endif %}
   </div>
+
+
   {% block body %}{% endblock %}
+
+  
   <div class="container">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <footer>

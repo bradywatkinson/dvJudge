@@ -34,22 +34,13 @@ def login_signup_form():
         value = query_db('select * from users where username = ?',[username], one=True)
         if value is not None:
             error += "Username is already taken\n"
-        #check if emails match up
         email = request.form['email']
-        #confirmemail = request.form['confirmemail']
-        #if not email or email != request.form['confirmemail']:
-         #   error += "Emails do not match\n"
-        #check if passwords match up
         password = request.form['password']
         if len(password) < 6:
             error += "Passwords need to be 6 characters or longer"
         if not password or password != request.form['confirmpassword']:
             error += "Passwords do not match\n"
-        #if form entry was not succesful return errors
-        #if error != "":
-            #return render_template('signup.html', error=error, username=username, email=email, confirmemail=confirmemail)
         else:
-
             #hash password and salt
             salt = uuid.uuid4().hex
             hashed_password = hashlib.sha512(password + salt).hexdigest()
@@ -64,7 +55,8 @@ def login_signup_form():
             
             flash('You were logged in')
     if error != "":
-        flash(error)
+        # flash(error)
+        session['error'] = error
     if request.form['page'] == "browse_specific_challenge":
         return redirect(url_for('browse_specific_challenge', challenge_name=request.form['challenge_name']))
     if request.form['page'] == "forums_browse":
