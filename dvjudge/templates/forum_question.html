@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<!--Original forum question-->
+{% for forum_detail in forum_details %}
+<!--Display header reading comments-->
+<h2>{{ forum_detail.question }}</h2>
+    <p>{{ forum_detail.body }}</p>
+    <h6><a href="/profile/{{ forum_detail.username }}">{{ forum_detail.username }}</a> posted at {{ forum_detail.post_time }}</h6>
+{% endfor %}
+
+{% include "comments.html" %}
+
+{% endblock %} 

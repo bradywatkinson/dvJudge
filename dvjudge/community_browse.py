@@ -13,19 +13,19 @@ def community_browse_search():
     name = request.form.get('searchterm')
     cur = query_db('select id, name from challenges where com_flag = 1')
     # Produce an array of hashes that looks something like:
-    # [{id->'1', name->'some problem name'}, {other hash}]  
+    # [{id->'1', name->'some challenge name'}, {other hash}]  
     challenges = [dict(id=row[0],name=row[1]) for row in cur]
-    # Iterate over challenges, and only keep hashes (i.e. problems) where the names match up
+    # Iterate over challenges, and only keep hashes (i.e. challenges) where the names match up
     results = [challenge for challenge in challenges if name.lower() in challenge["name"].lower()]
     # Pass only those on
     com_flag = True
     return render_template('browse.html', challenges=results, searchterm=request.form.get('searchterm'), com_flag=com_flag)
 
-@app.route('/community/browse/<problem_name>', methods=['GET'])
-def community_browse_specific_problem(problem_name): 
-    cur = query_db('select * from challenges where name = ?', [problem_name], one=True)
+@app.route('/community/browse/<challenge_name>', methods=['GET'])
+def community_browse_specific_challenge(challenge_name): 
+    cur = query_db('select * from challenges where name = ?', [challenge_name], one=True)
     if cur is not None:
-        problem_id  = cur[0]
+        challenge_id  = cur[0]
         name        = cur[1]
         description = cur[2]
         sample_tests= cur[5]
@@ -33,7 +33,7 @@ def community_browse_specific_problem(problem_name):
         output_desc = cur[7]
     else:
         abort(404)
-    problem_info = {'problem_id': problem_id, 'name': name, 'description': description, 'sample_tests': sample_tests, 'input_desc': input_desc, 'output_desc': output_desc}
+    challenge_info = {'challenge_id': challenge_id, 'name': name, 'description': description, 'sample_tests': sample_tests, 'input_desc': input_desc, 'output_desc': output_desc}
     
     #Check if it's a redirect from submission and the program 
     #has produced output
@@ -50,4 +50,4 @@ def community_browse_specific_problem(problem_name):
     else:
         code = None
 
-    return render_template('problem.html', problem_info=problem_info, output=info, code = code )
+    return render_template('challenge.html', challenge_info=challenge_info, output=info, code = code )

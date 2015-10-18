@@ -23,7 +23,7 @@ def login_signup_form():
                 session['userid'] = user_pass[0]
                 session['logged_in'] = True
                 session['user'] = username
-                flash('You were logged in')
+                flash('You were logged in','alert')
             else:
                 error += "Username and password do not match"
         else:
@@ -36,16 +36,17 @@ def login_signup_form():
         value = query_db('select * from users where username = ?',[username], one=True)
         if value is not None:
             error += "Username is already taken\n"
-        #check if emails match up
         email = request.form['email']
+<<<<<<< HEAD
         #check if passwords match up
+=======
+>>>>>>> master
         password = request.form['password']
         if len(password) < 6:
             error += "Passwords need to be 6 characters or longer"
         if not password or password != request.form['confirmpassword']:
             error += "Passwords do not match\n"
         else:
-
             #hash password and salt
             salt = uuid.uuid4().hex
             hashed_password = hashlib.sha512(password + salt).hexdigest()
@@ -53,24 +54,25 @@ def login_signup_form():
             g.db.execute("insert into users (username, email, password, salt) values (?, ?, ?, ?)", [username, email, hashed_password, salt])
             g.db.commit()
 
-            flash('You successfully created an account')
+            flash('You successfully created an account','alert')
             session['logged_in'] = True
             
             session['user'] = username
             session['userid'] = query_db('''select last_insert_rowid()''')[0][0];
             
-            flash('You were logged in')
+            flash('You were logged in','alert')
     if error != "":
-        flash(error)
-
-    if request.form['page'] == "browse_specific_problem":
-        return redirect(url_for('show_mainpage'))
-
+        flash(error,'error')
+        # session['error'] = error
+    if request.form['page'] == "browse_specific_challenge":
+        return redirect(url_for('browse_specific_challenge', challenge_name=request.form['challenge_name']))
+    if request.form['page'] == "forums_browse":
+        return redirect(url_for('forums_browse', forum_problem=request.form['forum_problem']))
     return redirect(url_for(request.form['page']))
 
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
     session.pop('user', None)
-    flash('You were logged out')
+    flash('You were logged out','alert')
     return redirect(url_for('show_mainpage'))

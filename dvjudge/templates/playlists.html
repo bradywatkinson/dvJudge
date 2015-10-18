@@ -1,12 +1,8 @@
 {% extends "layout.html" %}
 {% block body %}
-<!DOCTYPE html>
-<head>
-	<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='rowsort.js') }}"></script>
-</head>
+
 <body>
-	<h1>{{ session.user }}'s Playlists
+  <h1>{{ session.user }}'s Playlists
   {% if playlists is not none %}
     </h1><br />
     <form action="{{ url_for('show_playlists') }}" method="POST" class=playlist>
@@ -29,38 +25,43 @@
     </form>
 
     <button type="button" class="btn btn-link" id="new_list">
-    <a href="{{ url_for('show_playlist_form') }}"><font size="3.5">+ Create New Playlist...</font></a>
+    <a href="{{ url_for('show_playlist_form') }}" class="btn btn-primary btn-lg active" role="button"><font size="3.5">New Playlist</font></a>
     </button>
+    <br /><br />
+    <h4>{{ selection.name }}'s Playlist ID:
+      <a href="{{ url_for('show_playlist_challenges', playlist_id=selection.id) }}"><b>{{ selection.id }}</b></a>
+    </h4>
 
+    <br />
     <form action="{{ url_for('show_playlists') }}" method="POST" id="order-form">
-    	<div class="bs-example" align="center">
-    	<table name="reorder_list" class="table table-striped" id="challenge_list">
-    		<thead>
-    			<tr>
-    				<th width="5%">#</th>
-    				<th width="40%">Question</th>
-    				<th width="30%">Contributor</th>
-    				<th width="10%">Completed</th>
-    				<th width="10%"></th>
-    			</tr>
-    		</thead>
-      		<tbody> 
-      			{% for challenge in challenge_list %}
+      <div class="bs-example" align="center">
+      <table name="reorder_list" class="table table-striped" id="challenge_list">
+        <thead>
+          <tr>
+            <th width="5%">#</th>
+            <th width="45%">Question</th>
+            <th width="35%">Contributor</th>
+            <th width="5%">Completed</th>
+            <th width="10%"></th>
+          </tr>
+        </thead>
+          <tbody> 
+            {% for problem in challenge_list %}
               <tr>
                 <!-- For testing purposes:
-                {{ challenge.name}}: {{ loop.index }} -->
+                {{ problem.name}}: {{ loop.index }} -->
                 <td class="order">{{ loop.index }}</td>
-                <td class="challenge"><b><a href="browse/{{ challenge.name }}">{{ challenge.name }}</a></b></td>
+                <td class="problem"><b><a href="browse/{{ problem.name }}">{{ problem.name }}</a></b></td>
                 <td>Dumpling</td>
                 <td>N</td>
                 <td><div align="center"><a class='btn btn-delete btn-sm btn-primary'>Delete</a></div></td>
-                <input type="hidden" name="{{ challenge.name }}" id="{{ challenge.name }}" value=""/>
+                <input type="hidden" name="{{ problem.name }}" id="{{ problem.name }}" value=""/>
               </tr>
             {% endfor %}
-      		</tbody>
+          </tbody>
         </input>
-    	</table> 
-    	</div>
+      </table> 
+      </div>
       <div align="right">
         <input type="hidden" name="selected_name" value="{{ selection.name }}"/>
         <input type="submit" name="reorder" id="sub" value="Submit Changes" class="btn btn-submit btn-default"/>
@@ -68,11 +69,11 @@
     </form>
   {% else %}
     <button type="button" class="btn btn-link" id="new_list">
-    <a href="{{ url_for('show_playlist_form') }}"><font size="3.5">+ Create New Playlist...</font></a>
+    <a href="{{ url_for('show_playlist_form') }}" class="btn btn-primary btn-lg active" role="button"><font size="3.5">New Playlist</font></a>
     </button>
     <br /><br />
     <h4>You have no playlists.</h4>
-    <h4>Create a new playlist then add challenges to your cart from the challenge pages.</h4>
+    <h4>Create a new playlist then add challenges to your cart from the problem pages.</h4>
   {% endif %}
 </body>
 <style>

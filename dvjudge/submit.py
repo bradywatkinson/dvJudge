@@ -41,7 +41,6 @@ def submit_specific_challenge():
     challenge_info = {'challenge_id': challenge_id, 'name': name, 'description': description, 'sample_tests': sample_tests, 'input_desc': input_desc, 'output_desc': output_desc}
      # get the code from the form
     code = request.form['editor']
-    print code
     # create a directory for current submission
     directory = subprocess.Popen(['mkdir', username], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     directory.wait()
@@ -57,9 +56,28 @@ def submit_specific_challenge():
         result = {'output': 'Unknown language', 'status':'Error'}
 
     # if not a default user, the one that is just trying out the website
+    new_solved_challenges = ""
     if not skip:
-        update_db("insert into submissions (user_id, challenge_id, status, status_info)\
-    values (?, ?, ?, ?);",[user_id,challenge_id,result['status'],result['output']])
+        update_db("insert into submissions (user_id, challenge_id, status, status_info, language)\
+    values (?, ?, ?, ?, ?);",[user_id,challenge_id,result['status'],result['output'],language])
+        # Check to see if the user has completed this challenge
+        lookup = query_db("select solved_challenges from users where id = ?", [user_id], one=True)
+        done = False
+        if lookup is not None and lookup[0] is not None:
+            new_solved_challenges = lookup[0]
+            for challenge_done in lookup[0].split('|'):
+                if int(challenge_done) == challenge_id:
+                    done = True
+                    break
+
+        # If they haven't done it before, append it to their done list
+        if done == False:
+            if new_solved_challenges == "":
+                new_solved_challenges = challenge_info["challenge_id"]
+            else:
+                new_solved_challenges += "|" + str(challenge_info["challenge_id"])
+
+            update_db("update users set solved_challenges = ? where id = ?", [new_solved_challenges, user_id])
 
     #clean up
     subprocess.Popen(['rm', '-rf', username], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)   

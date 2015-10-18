@@ -1,7 +1,7 @@
 # all the imports
 from contextlib import closing
 from flask import Flask, request, session, g, redirect, url_for, \
-     abort, render_template, flash
+     abort, render_template
 import os
 from core import query_db
 
@@ -19,11 +19,11 @@ def show_submissions():
         abort(401)
 
     # Get stuff from the database
-    cur = query_db('''select s.id, user_id, challenge_id, timestamp, status, status_info, c.name '''
+    cur = query_db('''select s.id, user_id, challenge_id, timestamp, status, status_info, c.name, language '''
                    '''from submissions s join challenges c on s.challenge_id = c.id where user_id = ?''', [user_id])
     # Produce an array of hashes that looks something like:
-    # [{id->'1', user_id->'5', problem_name->'2', timestamp->'<the time>', status->'Accepted', status_info->'Some Error'}, {other hash}]  
-    submissions = [dict(id=row[0],user_id=row[1],problem_name=row[6],timestamp=row[3],status=row[4],status_info=row[5]) for row in cur]
+    # [{id->'1', user_id->'5', problem_name->'2', timestamp->'<the time>', status->'Accepted', status_info->'Some Error', language->'C'}, {other hash}]  
+    submissions = [dict(id=row[0],user_id=row[1],problem_name=row[6],timestamp=row[3],status=row[4],status_info=row[5],language=row[7]) for row in cur]
     
     # Send it to submissions
     return render_template('submissions.html', submissions=submissions)

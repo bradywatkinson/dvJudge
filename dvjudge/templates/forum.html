@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block body %}
+<!--Display header reading comments-->
+<div style="display: inline-block">
+	<h3>Forums</h3>
+	
+</div>
+{% if logged_in %}
+<div style="display: inline-block; float: right; margin: 10px">
+	<!--Give the option of a new forum post here-->
+	<a class="btn btn-default" href="/forums-new/{{ forum_problem }}">+ New Post</a>
+</div>
+{% endif %}
+
+{% if posts %}
+	<div class="bs-example">
+		<table class="table table-hover">
+			<ul class=challenges>
+			{% for post in posts %}
+				<tr>
+					<td><a href="/forums/{{ forum_problem }}/{{ post.problem_id }}"><div class="content" style="font-size: 100%">
+						<p><b>{{ post.post_name }}</b></p>
+					</div>
+					<div style="font-size: 85%; display: inline-block; margin: 5px">
+						<p><a href="/profile/{{ post.username }}">{{ post.username }}</a> on {{ post.post_time }}</p>
+					</div></a>
+				</tr>
+			{% endfor %}
+			</ul>
+		</table>
+	</div>
+{% else %}
+	<h4>There are no posts yet</h4>
+{% endif %}
+
+
+{% endblock %} 
