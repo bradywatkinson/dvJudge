@@ -1,7 +1,7 @@
 # all the imports
 from contextlib import closing
 from flask import Flask, request, session, g, redirect, url_for, \
-     abort, render_template, flash
+     abort, render_template
 import os
 from core import query_db
 

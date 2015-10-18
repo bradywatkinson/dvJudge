@@ -21,7 +21,7 @@ def login_signup_form():
             if username == user_pass[0] and hashed_password == user_pass[1]:
                 session['logged_in'] = True
                 session['user'] = username
-                flash('You were logged in')
+                flash('You were logged in','alert')
             else:
                 error += "Username and password do not match"
         else:
@@ -48,12 +48,12 @@ def login_signup_form():
             g.db.execute("insert into users (username, email, password, salt) values (?, ?, ?, ?)", [username, email, hashed_password, salt])
             g.db.commit()
 
-            flash('You successfully created an account')
+            flash('You successfully created an account','alert')
             session['logged_in'] = True
             
             session['user'] = username
             
-            flash('You were logged in')
+            flash('You were logged in','alert')
     if error != "":
         flash(error,'error')
         # session['error'] = error
@@ -68,7 +68,7 @@ def login_signup_form():
 def logout():
     session.pop('logged_in', None)
     session.pop('user', None)
-    flash('You were logged out')
+    flash('You were logged out','alert')
     return redirect(url_for('show_mainpage'))
 
 @app.route('/myprofile')
@@ -87,5 +87,5 @@ def myprofile():
         data["solved_challenges"] = challenge_string
         return render_template('userprofile.html', username=session['user'], data=data)
     else:
-        flash('You need to login before you can access this page')
+        flash('You need to login before you can access this page','error')
         return redirect(url_for('show_mainpage'))
