@@ -140,6 +140,8 @@
             <form class="form-horizontal" action="{{ url_for('login_signup_form') }}" method=post>
               {% if challenge_info %}
               <input type="hidden" name="challenge_name" value="{{ challenge_info.name }}">
+              {% elif forum_problem %}
+              <input type="hidden" name="forum_problem" value="{{ forum_problem }}">
               {% endif %}
               <input type="hidden" name="page" value="{{ request.url_rule.endpoint }}">
             <fieldset>
