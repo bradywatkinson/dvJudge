@@ -23,7 +23,7 @@ def show_submissions():
                    '''from submissions s join challenges c on s.challenge_id = c.id where user_id = ?''', [user_id])
     # Produce an array of hashes that looks something like:
     # [{id->'1', user_id->'5', problem_name->'2', timestamp->'<the time>', status->'Accepted', status_info->'Some Error', language->'C'}, {other hash}]  
-    submissions = [dict(id=row[0],user_id=row[1],problem_name=row[6],timestamp=row[3],status=row[4],status_info=row[5],language=row[7]) for row in cur]
+    submissions = [dict(id=row[0],user_id=row[1],challenge_name=row[6],timestamp=row[3],status=row[4],status_info=row[5],language=row[7]) for row in cur]
     
     # Send it to submissions
     return render_template('submissions.html', submissions=submissions)
@@ -43,7 +43,7 @@ def show_specific_submission(id):
         user_id = cur2[0]
     else:
         abort(401)
-    
+ 
     problem_name = cur[6]
     timestamp    = cur[3]
     status       = cur[4]
