@@ -60,8 +60,24 @@ create table forum_page(
 
 drop table if exists forum_comment;
 create table forum_comment(
+	comment_id integer primary key autoincrement,
 	forum_page integer not null,
 	username text not null,
 	comment text not null,
 	post_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+drop table if exists comment_upvotes;
+create table comment_upvotes(
+	user_id integer not null,
+	comment_id integer not null
+);
+
+drop table if exists comment_downvotes;
+create table comment_downvotes(
+	user_id integer not null,
+	comment_id integer not null
+);
+
+
+

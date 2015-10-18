@@ -1,6 +1,6 @@
 from flask import render_template, session, request, abort, g, redirect
 from dvjudge import app
-from comments import get_forum_comments, post_forum_comment
+from comments import get_forum_comments, post_forum_comment, comment_upvote, comment_downvote
 import re
 
 @app.route('/forums-new/<forum_problem>', methods=['GET', 'POST'])
@@ -49,6 +49,16 @@ def forums_browse(forum_problem):
 		forum_posts = [dict(username=row[0],post_name=row[1],post_time=row[2],problem_id=row[3]) for row in cur]
 	return render_template('forum.html', posts=forum_posts, forum_problem=forum_problem, logged_in=logged_in)
 
+@app.route('/forums/<forum_problem>/<forum_question>/<sign>/<comment_id>')
+def forum_comment_vote(forum_problem, forum_question, sign, comment_id):
+	if sign == '+':
+		comment_upvote(session['user'], comment_id)
+	elif sign == '-':
+		comment_downvote(session['user'], comment_id)
+
+	#query database for forum post details
+	return redirect('/forums/%s/%s' % (forum_problem, forum_question))
+
 @app.route('/forums/<forum_problem>/<forum_question>', methods=['GET', 'POST'])
 def forums_question(forum_problem, forum_question):
 	error = ""
@@ -64,7 +74,7 @@ def forums_question(forum_problem, forum_question):
 	cur.execute('select original_poster, post_name, post_body, post_time from forum_page where id=?', [str(forum_question)])
 	forum_details = [dict(username=row[0], question=row[1], body=row[2], post_time=row[3]) for row in cur]
 	comments = get_forum_comments(forum_question)
-	return render_template('forum_question.html', forum_problem=forum_problem, forum_details=forum_details, comments=comments, error=error)
+	return render_template('forum_question.html', forum_problem=forum_problem, forum_question=forum_question, forum_details=forum_details, comments=comments, error=error)
 
 @app.route('/forums/<forum_problem>', methods=['POST'])
 def forums_search(forum_problem=None):
