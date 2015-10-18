@@ -1,29 +1,25 @@
 <!--Display header reading comments-->
 <h3>Comments</h3>
+
 {% if comments %}
-<!--Display comments-->
-<div class="bs-example">
+  <div class="bs-example">
     <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>User</th>
-                <th>Posted</th>
-                <th>Comment</th>
-            </tr>
-        </thead>
-        <tbody>
-          <ul class=challenges>
-          {% for comment in comments %}
-          <tr>
-            <td><b>{{ comment.username }}</b></td>
-            <td>{{ comment.post_time }}</td>
-            <td>{{ comment.comment }}</td>
-          </tr>
-          {% endfor %}
-          </ul>
-        </tbody>
+      <ul class=challenges>
+      {% for comment in comments %}
+        <tr>
+          <td><div class="content" style="font-size: 100%">
+            <p>{{ comment.comment }}</p>
+          </div>
+          <div style="font-size: 85%; display: inline-block; margin: 5px">
+            <p><a href="/profile/{{ comment.username }}">{{ comment.username }}</a> on {{ comment.post_time }}</p>
+          </div>
+        </tr>
+      {% endfor %}
+      </ul>
     </table>
-</div>
+  </div>
+{% else %}
+  <h4>There are no comments yet</h4>
 {% endif %}
 
 <!--Allow them to enter new comments-->

@@ -9,17 +9,16 @@
             <p>DVJudge is a platform for preparing technical coding interviews. Pick from an expanding library, code and submit your solution to see if you have solved it correctly. </p>
     </div>
 </div>
+<br />
 <div class="container-fluid">
     <div class="row">
         <div align="center" class="col-xs-6">
-        <br><br><br>
         <h3><a href="{{ url_for('browse') }}"><b>Browse</b></a> some of the current<br> challenges in our database</h3>
+        <br /><br />
     </div>
     <div align="center" class="col-xs-5">
-        <h4>*Insert Sample Challenge Here*</h4>
-        <textarea rows="10" class="form-control"></textarea>
-        <br>
-        <div align="right"><button type="submit" class="btn btn-primary">Submit</button></div>
+        <h3><a href="{{ url_for('show_playlist_challenges', playlist_id=0) }}"><b>Practise</b></a> with some sample challenges without having to signup</h3>
+        <br /><br />
     </div>
 </div>
 {% else %}
@@ -33,7 +32,7 @@
 <div class="container-fluid">
     <div class="row">
         <div align="center" class="col-xs-6">
-            <h3><a href="{{ url_for('browse') }}">Browse challenges</a></h3>
+            <h3><a href="{{ url_for('browse') }}">Browse Challenges</a></h3>
         </div>
         <div align="center" class="col-xs-6">
             <h3><a href="{{ url_for('upload') }}">Upload Code</a></h3>
