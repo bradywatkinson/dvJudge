@@ -65,3 +65,9 @@ create table forum_comment(
 	comment text not null,
 	post_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+drop table if exists categories;
+create table categories (
+    name text not null,
+    challenges text not null
+);

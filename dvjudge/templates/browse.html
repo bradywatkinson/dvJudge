@@ -1,10 +1,21 @@
 {% extends "layout.html" %}
 {% block body %}
   <div class="container">
-    {% if com_flag %}
-      <h2>Browse Challenges</h2>
-    {% else %}
+    {% if not categories %}
       <h2>Browse Community Challenges</h2>
+    {% else %}
+      <h2>Browse Challenges</h2>
+      <br>
+      <div class="checkbox">
+        <h5>Filter By:</h5>
+          <label><input type="checkbox" name="Completed">Completed</label>
+        {% for category in categories %}
+          <label><input type="checkbox" name="{{ category.name }}">{{ category.name }}</label>
+        {% endfor %}
+        </div>
+      </div>
+
+
     {% endif %}
   </div>
 
@@ -12,10 +23,10 @@
       <table class="table table-striped">
           <thead>
               <tr>
-                  <th>#</th>
-                  <th>Title</th>
-                  <th>Submitter</th>
-                  <th>Completed</th>
+                  <th width="5%">#</th>
+                  <th width="50%">Title</th>
+                  <th width="30%">Submitter</th>
+                  <th width="15%">Completed</th>
               </tr>
           </thead>
           <tbody>
@@ -37,4 +48,12 @@
           </tbody>
       </table>
   </div>
+<style>
+label {
+  margin-left: 1.5%;
+
+}
+
+</style>
+
 {% endblock %}                             

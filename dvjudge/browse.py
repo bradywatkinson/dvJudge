@@ -9,6 +9,11 @@ def browse():
     cur = query_db('select id, name from challenges where com_flag = 0 or com_flag = 2')
     challenges = [dict(id=row[0],name=row[1]) for row in cur]
 
+    # Retrieve category names
+    cur = query_db('select name from categories');
+    if cur:
+        categories = [dict(name=row[0]) for row in cur]
+
     # Add completion status
     if 'user' in session:
         lookup = query_db("select solved_challenges from users where username = ?", [session['user']], one=True)
@@ -18,7 +23,7 @@ def browse():
                     if str(displayed_challenge["id"]) == completed_challenge:
                         displayed_challenge["completed"] = 1 # The HTML page just checks for the existance of this key-value pair
 
-    return render_template('browse.html', challenges=challenges)
+    return render_template('browse.html', challenges=challenges, categories=categories)
 
 @app.route('/browse', methods=['POST'])
 def browse_search():
