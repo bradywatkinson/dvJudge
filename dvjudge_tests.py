@@ -626,5 +626,9 @@ class FlaskrTestCase(unittest.TestCase):
         # Also assert it's in twice not just once
         assert(rv.data.count("Yes") == 2)
 
+
+    # Test adding to a category then displaying filtered challenges
+
+
 if __name__ == '__main__':
     unittest.main()
