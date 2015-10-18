@@ -1,5 +1,8 @@
 {% extends "layout.html" %}
 {% block body %}
+<div class="container">
+<!--Return to the search page-->
+<a href="/forums/{{ forum_problem }}">Return to search results</a>
 
 <!--Original forum question-->
 {% for forum_detail in forum_details %}
@@ -11,4 +14,5 @@
 
 {% include "comments.html" %}
 
+</div>
 {% endblock %} 

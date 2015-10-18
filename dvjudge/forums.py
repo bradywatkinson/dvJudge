@@ -1,6 +1,7 @@
 from flask import render_template, session, request, abort, g, redirect
 from dvjudge import app
 from comments import get_forum_comments, post_forum_comment
+import re
 
 @app.route('/forums-new/<forum_problem>', methods=['GET', 'POST'])
 def new_forum(forum_problem):
@@ -13,16 +14,16 @@ def new_forum(forum_problem):
 		error = ""
 		if not post_question:
 			error += "Please enter a question"
-		if len(post_question) < 12:
-			error += "Your question needs to be longer than 12 characters"
+		if len(post_question) < 6:
+			error += "Your question needs to be longer than 6 characters"
 		if len(post_question) > 60:
 			error += "Your question exceeds the 60 character limit"
 		if not post_body:
 			error += "Please give details on your question"
 		if len(post_body) > 400:
 			error += "Over the 400 character limit for question descriptions"
-		if len(post_body) < 20:
-			error += "Please enter at least a 20 character description"
+		if len(post_body) < 12:
+			error += "Please enter at least a 12 character description"
 		if error != "":
 			error += "Goes through here"
 			return render_template('new_forum.html', error=error)
@@ -36,7 +37,7 @@ def new_forum(forum_problem):
 
 	return render_template('new_forum.html', error=error)
 
-@app.route('/forums/<forum_problem>', methods=['GET', 'POST'])
+@app.route('/forums/<forum_problem>', methods=['GET'])
 def forums_browse(forum_problem):
 	cur = g.db.cursor()
 	cur.execute('select original_poster, post_name, post_time, id from forum_page where problem_id=?', str(forum_problem))
@@ -63,9 +64,28 @@ def forums_question(forum_problem, forum_question):
 	cur.execute('select original_poster, post_name, post_body, post_time from forum_page where id=?', [str(forum_question)])
 	forum_details = [dict(username=row[0], question=row[1], body=row[2], post_time=row[3]) for row in cur]
 	comments = get_forum_comments(forum_question)
-	return render_template('forum_question.html', forum_details=forum_details, comments=comments, error=error)
+	return render_template('forum_question.html', forum_problem=forum_problem, forum_details=forum_details, comments=comments, error=error)
 
+@app.route('/forums/<forum_problem>', methods=['POST'])
+def forums_search(forum_problem=None):
+	if 'user' in session:
+		logged_in = True
+	#check to see if forum_problem was entered 
+	if forum_problem == None:
+		#search through whole database
+		return render_template('forum.html')
+	else:
+		cur = g.db.cursor()
+		cur.execute('select original_poster, post_name, post_time, id, post_body from forum_page where problem_id=?', str(forum_problem))
+		if cur.rowcount != 0:
+			forum_posts = [dict(username=row[0],post_name=row[1],post_time=row[2],problem_id=row[3],post_body=row[4]) for row in cur]
+			searched_posts = []
+			for post in forum_posts:
+				if re.search(r'%s' % (request.form['forumsearch']), post['post_name']) or re.search(r'%s' % (request.form['forumsearch']), post['post_body']):
+					searched_posts.append(post)
 
+		return render_template('forum.html', posts=searched_posts, forum_problem=forum_problem, logged_in=logged_in)
+	
 
 
 

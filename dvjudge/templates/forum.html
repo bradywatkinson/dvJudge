@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
+<div class="container">
 <!--Display header reading comments-->
 <div style="display: inline-block">
 	<h3>Forums</h3>
@@ -11,6 +12,18 @@
 	<a class="btn btn-default" href="/forums-new/{{ forum_problem }}">+ New Post</a>
 </div>
 {% endif %}
+<div style="display: inline-block; float:right; margin: 2px">
+	<form class="navbar-form navbar-left" role="search" action="/forums/{{ forum_problem }}" method=post>
+        <div class="form-group">
+        {% if forumsearch %} 
+        	<input type="text" name="forumsearch" value="{{forumsearch}}" class="form-control">
+        {% else %}
+        	<input type="text" class="form-control" g name="forumsearch">
+        {% endif %}
+        </div>
+        <button type="submit" class="btn btn-default">Search</button>
+      </form>
+</div>
 
 {% if posts %}
 	<div class="bs-example">
@@ -33,5 +46,5 @@
 	<h4>There are no posts yet</h4>
 {% endif %}
 
-
+</div>
 {% endblock %} 
