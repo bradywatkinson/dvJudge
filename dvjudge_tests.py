@@ -642,5 +642,24 @@ class FlaskrTestCase(unittest.TestCase):
         rv = self.app.post('/forums/1', data=dict(forumsearch="question"))
         assert("This is a forum question") in rv.data
 
+    #tests comment votes by making a comment then voting on it
+    def test_comment_vote(self):
+        self.login('typical', 'typical')
+        rv = self.app.get('/forums/1', follow_redirects=True)
+        assert("This is a forum question") not in rv.data
+        rv = self.app.post('/forums-new/1', follow_redirects=True, data=dict(question="This is a forum question", postbody="This bit explains what the forum question is in more detail"))
+        assert("This bit explains what the forum question is in more detail") in rv.data
+        assert("This is a forum question") in rv.data
+        assert("This is a comment. Commenty commenty comment") not in rv.data
+        rv = self.app.post('/forums/1/1', data=dict(comment="This is a comment. Commenty commenty comment"))
+        assert("This is a comment. Commenty commenty comment") in rv.data
+        assert("0") in rv.data
+        rv = self.app.post('/forums/1/1/+/1', follow_redirects=True)
+        assert("1") in rv.data
+
+
+
+
+
 if __name__ == '__main__':
     unittest.main()
