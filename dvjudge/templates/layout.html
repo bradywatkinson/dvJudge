@@ -232,13 +232,13 @@
   </div><!-- /.container-fluid -->
 </nav>
 <div class=page>
-  {% for category, message in get_flashed_messages(category_filter!=["error"]) %}
+  {% for message in get_flashed_messages(category_filter=['alert']) %}
   <div class="alert alert-info alert-dismissable"><a class="panel-close close" data-dismiss="alert">×</a>
     {{ message }}
   </div>
   {% endfor %}
-  {% for error in get_flashed_messages(category_filter=["error"]) %}
-  <div class="alert alert-error"><a class="close" data-dismiss="alert">×</a>
+  {% for error in get_flashed_messages(category_filter=['error']) %}
+  <div class="alert alert-error error"><a class="close" data-dismiss="alert">×</a>
     {{ error }}
   </div>
   {% endfor %}
