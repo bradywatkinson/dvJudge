@@ -626,5 +626,21 @@ class FlaskrTestCase(unittest.TestCase):
         # Also assert it's in twice not just once
         assert(rv.data.count("Yes") == 2)
 
+    #this logs in, adds a forum page then searches for it with a bad search and ensures it didn't show up
+    #then uses a good search to ensure it shows up when a correct query is entered
+    def test_forum_search(self):
+        self.login('typical', 'typical')
+        rv = self.app.get('/forums/1', follow_redirects=True)
+        assert("This is a forum question") not in rv.data
+        rv = self.app.post('/forums-new/1', follow_redirects=True, data=dict(question="This is a forum question", postbody="This bit explains what the forum question is in more detail"))
+        assert("This bit explains what the forum question is in more detail") in rv.data
+        assert("This is a forum question") in rv.data
+        rv = self.app.get('/forums/1', follow_redirects=True)
+        assert("This is a forum question") in rv.data
+        rv = self.app.post('/forums/1', data=dict(forumsearch="RETURN_NOTHING!"))
+        assert("This is a forum question") not in rv.data
+        rv = self.app.post('/forums/1', data=dict(forumsearch="question"))
+        assert("This is a forum question") in rv.data
+
 if __name__ == '__main__':
     unittest.main()
