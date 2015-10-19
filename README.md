@@ -9,9 +9,9 @@ UNSW comp4920 Major Project "D[tbd] V[tbd] online Judge"
   - Navigate to http://localhost:5000
 
 ## Production Setup
-  - Install apache
+  - Install git, Flask, other python dependancies etc.
+  - Install apache2
   - Install mod_wsgi
-  - Activate mod_wsgi
   - Add a wsgi file as follows:
 ```
 import sys, os
@@ -19,9 +19,35 @@ sys.path.insert(0, '/var/www/dvjudge/dvJudge')
 os.chdir('/var/www/dvjudge/dvJudge')
 from dvjudge import app as application
 ```
-  - Add a virtualhost entry for dvjudge using the configuration found [Here](http://flask.pocoo.org/docs/0.10/deploying/mod_wsgi/)
+  - Add a virtualhost entry for dvjudge using the configuration as follows (modify for needs):
+```
+<VirtualHost *>
+    ServerName stanleyhon.cloudapp.net
+
+    WSGIDaemonProcess dvjudge user=azureuser group=azureuser threads=5
+    WSGIScriptAlias / /var/www/dvjudge/dvjudge.wsgi
+
+    <Directory /var/www/dvjudge>
+        WSGIProcessGroup dvjudge 
+        WSGIApplicationGroup %{GLOBAL}
+        Order deny,allow
+        Allow from all
+    </Directory>
+</VirtualHost>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+```
   - cd to /var/www/dvjudge and run git clone on this repo
-  - Setup the DB.
+  - Modify /dvjudge/settings.cfg as follows:
+```
+# Configuration settings of the virtual judge server environment.
+DATABASE = '/dvjudge.db'
+DEBUG = False
+SECRET_KEY = '<get some key from random.org>'
+```
+  - Setup the DB by running deploy.py
+  - Restart apache2
+  - Navigate to your URL to check it works.
 
 ##Project Details
 [Google Drive](https://drive.google.com/drive/folders/0BxD6wDvDG5hRfklTaUxrM0VNV2pqcm9sazFiNjhHQ3paSHRNN3JnODlLazU2d3B1Yjh6WDA)  
