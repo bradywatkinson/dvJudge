@@ -33,9 +33,12 @@ def show_specific_submission(id):
     if 'logged_in' not in session or session['logged_in'] == False:
         abort(401)
     # look up DB for this partciular submission
-    cur = query_db('''select s.id, user_id, challenge_id, timestamp, status, status_info, c.name '''
+    cur = query_db('''select s.id, user_id, challenge_id, timestamp, status, status_info, c.name, s.code '''
                    ''' from submissions s join challenges c on s.challenge_id = c.id where s.id = ?''', [id], one=True)
-    _id = cur[0]
+    if cur is not None:
+        _id = cur[0]
+    else:
+        abort(404)
 
     # Convert user_id to username
     cur2 = query_db('select username from users where id = ?', [cur[1]], one=True)
@@ -43,11 +46,15 @@ def show_specific_submission(id):
         user_id = cur2[0]
     else:
         abort(401)
+    
+    # If the user doesn't own this submission, 401 unauth.
+    if 'user' not in session or session['user'] != user_id:
+        abort(401)
  
     problem_name = cur[6]
     timestamp    = cur[3]
     status       = cur[4]
     status_info  = cur[5]
-
+    code         = cur[7]
     # Send it to the page
-    return render_template('submission.html', id=_id, user_id=user_id, problem_name=problem_name, timestamp=timestamp, status=status, status_info=status_info)
+    return render_template('submission.html', id=_id, user_id=user_id, problem_name=problem_name, timestamp=timestamp, status=status, status_info=status_info, code=code)

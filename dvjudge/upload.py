@@ -40,10 +40,6 @@ def upload():
             flags['length'] = True
             return render_template('upload_challenge.html', challenge_name=challenge_name, description=description, input_=input_,
                     output_=output_, tests=tests, input_desc=input_desc, output_desc=output_desc, categories=categories, flags=flags)
-        elif not alphanum(challenge_name):
-            flags['special']  = True
-            return render_template('upload_challenge.html', challenge_name=challenge_name, description=description, input_=input_,
-                    output_=output_, tests=tests, input_desc=input_desc, output_desc=output_desc, categories=categories, flags=flags)
 
         # Check if the challenge_name already exists in the db
         cur = query_db('select * from challenges where name = ?', [challenge_name], one=True)

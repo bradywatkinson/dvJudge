@@ -163,6 +163,10 @@ class FlaskrTestCase(unittest.TestCase):
         assert('error') in rv.data
         assert('printf') in rv.data
 
+        rv = self.logout()
+        # Added functionality where users can only see their own submissions,
+        # so we need to login as dannyeei to see this submission.
+        rv = self.login('typical', 'typical')
         rv = self.app.get('/submissions/4', follow_redirects=True)
         assert('Status: Compile Error') in rv.data
 
@@ -338,6 +342,16 @@ class FlaskrTestCase(unittest.TestCase):
         assert('C') in rv.data
         assert('<td>Java</td>') not in rv.data # There's a false positive for Java in a comment relating to minified Javascript
 
+    # Test you can't view someone else's submissions
+    def test_view_unauth_submission(self):
+        self.login('admin', 'default')
+        rv = self.app.get('/submissions/1', follow_redirects=True)
+        assert('Accepted') not in rv.data
+        assert('This is a status info') not in rv.data
+        assert('I would have like a compile error or something in here') not in rv.data
+
+        assert('Unauthorized') in rv.data
+
     # Test database imported specific submission is working as intended
     def test_specific_submission(self):
         self.login('dannyeei', 'daniel')
@@ -346,6 +360,37 @@ class FlaskrTestCase(unittest.TestCase):
         assert('This is a status info') in rv.data
         assert('I would have like a compile error or something in here') in rv.data
         assert('Blab blah you failed some testcases man') not in rv.data
+    
+    # Test that submitted code is retrievable via viewing the specific submission
+    def test_submitted_code_saved(self):
+        self.login('admin','default')
+
+        code = '''#include<iostream>
+                    using namespace std;
+                    int main()
+                    {
+                     long int sum=0;
+                     int n;
+                     cin>>n;
+                     for(int num=1;num<=n;num++)
+                     {
+                      sum=sum+num;
+                     }
+                     cout<<sum;
+                    }'''
+
+        # Submit the code
+        rv = self.app.post('/submit?challenge_id=2',data=dict(
+            editor=code,
+            language = 'C++'
+            ),follow_redirects=True)
+        
+        # This may break if you add submissions to the test DB 
+        rv = self.app.get('/submissions/5')
+        
+        # We can't just assert code is there because special characters are escaped
+        assert("long int sum=0") in rv.data
+        assert("sum=sum+num;") in rv.data
 
     # Test creating playlists works
     def test_show_playlist(self):
