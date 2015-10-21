@@ -9,10 +9,12 @@ UNSW comp4920 Major Project "D[tbd] V[tbd] online Judge"
   - Navigate to http://localhost:5000
 
 ## Production Setup
-  - Install git, Flask, other python dependancies etc.
+  - Install git
+  - Install python-setuptools
   - Install apache2
-  - Install mod_wsgi
-  - Add a wsgi file as follows:
+  - Install mod_wsgi (libapache2-mod-wsgi)
+  - easy_install flask (to install flask)
+  - Add a wsgi file to /var/www/dvjudge/dvjudge.wsgi as follows:
 ```
 import sys, os
 sys.path.insert(0, '/var/www/dvjudge/dvJudge')
@@ -48,6 +50,7 @@ SECRET_KEY = '<get some key from random.org>'
   - Setup the DB by running deploy.py
   - Restart apache2
   - Navigate to your URL to check it works.
+  - Now setup the jail so that submissions work
 
 ##Project Details
 [Google Drive](https://drive.google.com/drive/folders/0BxD6wDvDG5hRfklTaUxrM0VNV2pqcm9sazFiNjhHQ3paSHRNN3JnODlLazU2d3B1Yjh6WDA)  
