@@ -126,6 +126,7 @@ def run_c(code, username, input_tests, expected_output):
        
     else: 
         error_warning = compiled.communicate()[0]
+        error_warning = re.sub(chroot+username+"/"+username, "program", error_warning)
         output='Error message: '+ error_warning+ "\n"
         status = 'Compile Error'
 
@@ -182,6 +183,7 @@ def run_java(code, username, input_tests, expected_output):
        
     else: 
         error_warning = compiled.communicate()[0]
+        error_warning = re.sub(chroot+username+"/"+username, "program", error_warning)
         output='Error message: '+ error_warning+ "\n"
         status = 'Compile Error'
     return {'output': output, 'status':status}
@@ -222,6 +224,7 @@ def run_c_plus(code, username, input_tests, expected_output):
        
     else: 
         error_warning = compiled.communicate()[0]
+        error_warning = re.sub(chroot+username+"/"+username, "program", error_warning)
         output='Error message: '+ error_warning+ "\n"
         status = 'Compile Error'
 
@@ -253,6 +256,7 @@ def run_python(code, username, input_tests, expected_output):
         expected = " ".join(expected.split())
         prog_output = " ".join(prog_output.split())
         if prog_output != expected:
+            prog_output = re.sub(chroot+username+"/"+username, "program", prog_output)
             if 'Traceback' in prog_output or 'SyntaxError' in prog_output or 'IndentationError' in prog_output:
                 output = prog_output
                 status = 'Compile Error'
@@ -262,4 +266,5 @@ def run_python(code, username, input_tests, expected_output):
                 "Program output:" + prog_output
                 status = 'Incorrect'
                 break
+
     return {'output': output, 'status':status}
