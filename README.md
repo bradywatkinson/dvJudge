@@ -72,9 +72,9 @@ SECRET_KEY = '<get some key from random.org>'
   users=demouser
   groups=sbuild
   root-groups=root
-  - Now setup the jail so that submissions work
-
+  
   ```
+- Now setup the jail so that submissions work
 - Populate the chroot environment with a skeleton operating system
 ```
 sudo debootstrap --variant=buildd --arch amd64 trusty /jail/ http://mirror.cc.columbia.edu/pub/linux/ubuntu/archive/
