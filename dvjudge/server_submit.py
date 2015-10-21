@@ -5,12 +5,13 @@ import subprocess
 import os.path
 import random
 import re
-
 import json
 
+path = '/test/tmp/'
+chroot = '/tmp/'
 @app.route('/submit', methods=['POST'])
 def submit_specific_challenge():
-
+    
     skip = False 
     language = request.form.get('language')
     #if user is logged in the compiled file will be under the username
@@ -41,8 +42,10 @@ def submit_specific_challenge():
     challenge_info = {'challenge_id': challenge_id, 'name': name, 'description': description, 'sample_tests': sample_tests, 'input_desc': input_desc, 'output_desc': output_desc}
      # get the code from the form
     code = request.form['editor']
+    session['code'] = code
+    session['language'] = language
     # create a directory for current submission
-    directory = subprocess.Popen(['mkdir', username], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    directory = subprocess.Popen(['mkdir', path + username], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     directory.wait()
     if language == 'C':
         result = run_c(code=code, username = username, input_tests = input_tests, expected_output = expected_output)
@@ -54,12 +57,12 @@ def submit_specific_challenge():
         result = run_java(code=code, username = username, input_tests = input_tests, expected_output = expected_output)
     else:
         result = {'output': 'Unknown language', 'status':'Error'}
-
     # if not a default user, the one that is just trying out the website
+
     new_solved_challenges = ""
     if not skip:
-        update_db("insert into submissions (user_id, challenge_id, status, status_info, language, code)\
-    values (?, ?, ?, ?, ?, ?);",[user_id,challenge_id,result['status'],result['output'],language,code])
+        update_db("insert into submissions (user_id, challenge_id, status, status_info, language, code) values (?, ?, ?, ?, ?, ?)",
+            [user_id,challenge_id,result['status'],result['output'],language,code])
         # Check to see if the user has completed this challenge
         lookup = query_db("select solved_challenges from users where id = ?", [user_id], one=True)
         done = False
@@ -78,30 +81,25 @@ def submit_specific_challenge():
                 new_solved_challenges += "|" + str(challenge_info["challenge_id"])
 
             update_db("update users set solved_challenges = ? where id = ?", [new_solved_challenges, user_id])
-
     #clean up
-    subprocess.Popen(['rm', '-rf', username], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)   
+    subprocess.Popen(['rm', '-rf', path + username], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)   
     if len(result['output']) > 2069:
         result['output'] = result['output'][:2069] 
     session['output'] = result['output']
-    session['code'] = code
-    session['language'] = language
-
     return redirect(url_for('browse_specific_challenge', challenge_name=name))
 
 
 def run_c(code, username, input_tests, expected_output):
     #open a file to dump code for submission submission
-    submission = open('./'+username+'/'+ username +'.c','w')
+    submission = open(path+username+'/'+ username +'.c','w')
     submission.write(code)
     submission.close()
-
     #compile the code with gcc
-    compiled = subprocess.Popen(['gcc', '-o', './'+username+'/'+ username , './'+username+'/'+ username +'.c'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    compiled = subprocess.Popen(['sudo','chroot','/test/','gcc', '-o', chroot+username+'/'+ username , chroot+username+'/'+ username +'.c'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     compiled.wait()
-
+    
     #if the file has compiled run it otherwise display the warning
-    if os.path.isfile('./'+username+'/'+ username):
+    if os.path.isfile(path+username+'/'+ username):
         status = 'Accepted'
         output = "All tests passed. "
         # run with tests
@@ -110,7 +108,7 @@ def run_c(code, username, input_tests, expected_output):
         for test in tests:
             #output = output+ "Testing "+test+"\n"
             #include timeout for tjandra
-            run = subprocess.Popen(['gtimeout','5s','./'+username+'/'+ username], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            run = subprocess.Popen(['sudo','chroot','/test/','timeout','5s',chroot+username+'/'+ username], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             #run = subprocess.Popen('./submissions/submission', stdin=test, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
@@ -147,16 +145,16 @@ def run_java(code, username, input_tests, expected_output):
         return {'output': output, 'status':status}
 
     #open a file to dump code for submission submission
-    submission = open('./'+username+'/'+ class_name +'.java','w')
+    submission = open(path+username+'/'+ class_name +'.java','w')
     submission.write(code)
     submission.close()
 
     #compile the code with gcc
-    compiled = subprocess.Popen(['javac', './'+username+'/'+ class_name+'.java'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    compiled = subprocess.Popen(['sudo','chroot','/test/','javac', chroot+username+'/'+ class_name+'.java'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     compiled.wait()
 
     #if the file has compiled run it otherwise display the warning
-    if os.path.isfile('./'+username+'/'+ class_name+'.class'):
+    if os.path.isfile(path+username+'/'+ class_name+'.class'):
         status = 'Accepted'
         output = "All tests passed. "
         # run with tests
@@ -165,7 +163,7 @@ def run_java(code, username, input_tests, expected_output):
         for test in tests:
             #output = output+ "Testing "+test+"\n"
             #include timeout for tjandra
-            run = subprocess.Popen(['gtimeout','5s','java','-cp','./'+username+'/',class_name], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            run = subprocess.Popen(['sudo','chroot','/test/','timeout','5s','java','-cp',chroot+username+'/',class_name], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             #run = subprocess.Popen('./submissions/submission', stdin=test, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
@@ -190,16 +188,16 @@ def run_java(code, username, input_tests, expected_output):
 
 def run_c_plus(code, username, input_tests, expected_output):
     #open a file to dump code for submission submission
-    submission = open('./'+username+'/'+ username +'.cpp','w')
+    submission = open(path + username+'/'+ username +'.cpp','w')
     submission.write(code)
     submission.close()
 
     #compile the code with gcc
-    compiled = subprocess.Popen(['g++', '-o', './'+username+'/'+ username , './'+username+'/'+ username +'.cpp'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    compiled = subprocess.Popen(['sudo','chroot','/test/','g++', '-o', chroot+username+'/'+ username , chroot+username+'/'+ username +'.cpp'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     compiled.wait()
 
     #if the file has compiled run it otherwise display the warning
-    if os.path.isfile('./'+username+'/'+ username):
+    if os.path.isfile(path+username+'/'+ username):
         status = 'Accepted'
         output = "All tests passed. "
         # run with tests
@@ -208,10 +206,8 @@ def run_c_plus(code, username, input_tests, expected_output):
         for test in tests:
             #output = output+ "Testing "+test+"\n"
             #include timeout for tjandra
-            run = subprocess.Popen(['gtimeout','5s','./'+username+'/'+ username], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            run = subprocess.Popen(['sudo','chroot','/test/','timeout','1s',chroot+username+'/'+ username], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             #run = subprocess.Popen('./submissions/submission', stdin=test, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
-
             prog_output = run.communicate(test)[0]
             # the number of inputs must correspond to the number of outputs in the database
             #otherwise an error will occur 
@@ -234,7 +230,7 @@ def run_c_plus(code, username, input_tests, expected_output):
 def run_python(code, username, input_tests, expected_output):
  #open a file to dump code for submission submission
 
-    submission = open('./'+username+'/'+ username +'.py','w')
+    submission = open(path+username+'/'+ username +'.py','w')
     submission.write(code)
     submission.close()
 
@@ -247,7 +243,7 @@ def run_python(code, username, input_tests, expected_output):
     for test in tests:
         #output = output+ "Testing "+test+"\n"
         #include timeout for tjandra
-        run = subprocess.Popen(['gtimeout','1s','python','./'+username+'/'+ username+'.py'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        run = subprocess.Popen(['sudo','chroot','/test/','timeout','1s','python',chroot+username+'/'+ username+'.py'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         #run = subprocess.Popen('./submissions/submission', stdin=test, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         prog_output = run.communicate(test)[0]
         run.wait()
@@ -266,5 +262,4 @@ def run_python(code, username, input_tests, expected_output):
                 "Program output:" + prog_output
                 status = 'Incorrect'
                 break
-   
     return {'output': output, 'status':status}
