@@ -18,30 +18,34 @@ insert into challenges (name,description,input,output,sample_tests,input_desc,ou
 	values ('Number of As','Given an input string, print the number of upper and lowercase As that occur.',"AAAbcdaaa","6","Input: abACad123; Output: 3","Any string of characters","A single integer", 2);
 
 -- Accounts
+-- dannyeei:daniel
 insert into users (username, email, password, salt)
 	values ('dannyeei', 'danielslater811@hotmail.com', 'd9bdde89547d18f0d6bd72d9a17133ae2cb023357357f51c5d226cbf2d02a056e89102bed4c29e0f2827a952027c9e0a3c2b3545735f0a1c643427d81fc75281', 'thisissamplesalt');
 
+-- typical:typical
 insert into users (username, email, password, salt)
 	values ('typical', 'typical@hotmail.com', 'dcaa9d20adff97448541892dd0f13536e3379e2503b03b67411a69d902237d02b17dc74a9f955f831532d449104004f8151b52f09ddf8c2b18e1d78dc720ade1', 'saltandpepper');
 
+-- admin:default
 insert into users (username, email, password, salt)
 	values ('admin', 'admin@hotmail.com', '0b491227c0328e4c87c03fe4749b0b3a78d6da7094f5ef249b99caa759c6f1b1b6c952abb73e9448c5468fb7635f2d90a2f83b14e466c95b19b100fb9aec3c19', 'yumyumsaltinmytum');
 
+-- stanley:default
 insert into users (username, email, password, salt, solved_challenges)
 	values ('stanley', 'stanleyhon348@gmail.com', '0b491227c0328e4c87c03fe4749b0b3a78d6da7094f5ef249b99caa759c6f1b1b6c952abb73e9448c5468fb7635f2d90a2f83b14e466c95b19b100fb9aec3c19', 'yumyumsaltinmytum', '1|6');
 
-    -- Submissions
-insert into submissions (user_id, challenge_id, status, status_info, language)
-    values ('1', 1, 'Accepted', 'This is a status info\nI would have like a compile error or something in here', 'Python');
+-- Submissions
+insert into submissions (user_id, challenge_id, status, status_info, language, code)
+    values ('1', 1, 'Accepted', 'This is a status info\nI would have like a compile error or something in here', 'Python', 'blergh blah code here goes ');
 
-insert into submissions (user_id, challenge_id, status, status_info, language)
-    values ('1', 2, 'Incorrect', 'Blab blah you failed some testcases man', 'C++');
+insert into submissions (user_id, challenge_id, status, status_info, language, code)
+    values ('1', 2, 'Incorrect', 'Blab blah you failed some testcases man', 'C++', 'code of a thingy');
 
-insert into submissions (user_id, challenge_id, status, status_info, language)
-    values ('1', 1, 'Compile Error', 'Do you even C?', 'C');
+insert into submissions (user_id, challenge_id, status, status_info, language, code)
+    values ('1', 1, 'Compile Error', 'Do you even C?', 'C', 'some code c code whatever');
 
-insert into submissions (user_id, challenge_id, status, status_info, language)
-    values ('2', 1, 'Compile Error', 'Do you even C?', 'C');
+insert into submissions (user_id, challenge_id, status, status_info, language, code)
+    values ('2', 1, 'Compile Error', 'Do you even C?', 'C', 'code blerlkjsdf');
 
 -- Playlists
 insert into playlists (id, name, owner_id, challenges)
@@ -55,5 +59,25 @@ insert into playlists (id, name, owner_id, challenges)
 
 insert into playlists (id, name, owner_id, challenges)
     values (3, "different playlist", 2, "1|2|3|4");
+
+
+-- Categories
+insert into categories (name, challenges)
+    values ("Beginner", "1|2");
+
+insert into categories (name, challenges)
+    values ("Data Structures", "5|6");
+
+insert into categories (name, challenges)
+    values ("Algorithms", "3|4");
+
+insert into categories (name, challenges)
+    values ("Security", "1|2|3|4");
+
+insert into categories (name, challenges)
+    values ("Artificial Intelligence", "");
+
+insert into categories (name, challenges)
+    values ("Mathematics", "");
 
 

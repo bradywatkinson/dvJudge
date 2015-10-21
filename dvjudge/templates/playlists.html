@@ -1,6 +1,9 @@
 {% extends "layout.html" %}
 {% block body %}
-
+<head>
+  <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='rowsort.js') }}"></script>
+</head>
 <body>
   <h1>{{ session.user }}'s Playlists
   {% if playlists is not none %}

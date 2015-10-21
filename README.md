@@ -9,20 +9,94 @@ UNSW comp4920 Major Project "D[tbd] V[tbd] online Judge"
   - Navigate to http://localhost:5000
 
 ## Production Setup
-  - Install apache
-  - Install mod_wsgi
-  - Activate mod_wsgi
-  - Add a wsgi file as follows:
+  - Install git
+  - Install python-setuptools
+  - Install apache2
+  - Install mod_wsgi (libapache2-mod-wsgi)
+  - easy_install flask (to install flask)
+  - Add a wsgi file to /var/www/dvjudge/dvjudge.wsgi as follows:
 ```
 import sys, os
 sys.path.insert(0, '/var/www/dvjudge/dvJudge')
 os.chdir('/var/www/dvjudge/dvJudge')
 from dvjudge import app as application
 ```
-  - Add a virtualhost entry for dvjudge using the configuration found [Here](http://flask.pocoo.org/docs/0.10/deploying/mod_wsgi/)
-  - cd to /var/www/dvjudge and run git clone on this repo
-  - Setup the DB.
+  - Add a virtualhost entry for dvjudge using the configuration as follows (modify for needs):
+```
+<VirtualHost *>
+    ServerName stanleyhon.cloudapp.net
 
+    WSGIDaemonProcess dvjudge user=azureuser group=azureuser threads=5
+    WSGIScriptAlias / /var/www/dvjudge/dvjudge.wsgi
+
+    <Directory /var/www/dvjudge>
+        WSGIProcessGroup dvjudge 
+        WSGIApplicationGroup %{GLOBAL}
+        Order deny,allow
+        Allow from all
+    </Directory>
+</VirtualHost>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+```
+  - cd to /var/www/dvjudge and run git clone on this repo
+  - Modify /dvjudge/settings.cfg as follows:
+```
+# Configuration settings of the virtual judge server environment.
+DATABASE = '/dvjudge.db'
+DEBUG = False
+SECRET_KEY = '<get some key from random.org>'
+```
+  - Setup the DB by running deploy.py
+  - Restart apache2
+  - Navigate to your URL to check it works.
+  - Install debootstrap
+  ```
+  sudo apt-get update
+  sudo apt-get install dchroot debootstrap
+  ```
+  - Create jail folder
+  ```
+  sudo mkdir /jail
+  ```
+  - Create configuration options
+  ```
+  sudo nano /etc/schroot/schroot.conf
+  ```
+  - Add the following lines, modifying for your server
+  ```
+  [trusty]
+  description=Ubuntu Trusty
+  location=/jail
+  priority=3
+  users=demouser
+  groups=sbuild
+  root-groups=root
+  
+  ```
+- Now setup the jail so that submissions work
+- Populate the chroot environment with a skeleton operating system
+```
+sudo debootstrap --variant=buildd --arch amd64 trusty /jail/ http://mirror.cc.columbia.edu/pub/linux/ubuntu/archive/
+```
+- Make sure our host fstab is aware of some pseudo-systems in our guest. Add lines like these to the bottom of your fstab
+```
+sudo nano /etc/fstab
+proc /jail/proc proc defaults 0 0
+sysfs /jail/sys sysfs defaults 0 0
+```
+- Mount these filesystems within our guest
+```
+sudo mount proc /jail/proc -t proc
+sudo mount sysfs /jail/sys -t sysfs
+```
+- Chroot into the jail and install necessery compilers and interpreters
+```
+sudo chroot /jail/ /bin/bash
+apt-get install python
+apt-get install default-jre
+apt-get install default-jdk
+```
 ##Project Details
 [Google Drive](https://drive.google.com/drive/folders/0BxD6wDvDG5hRfklTaUxrM0VNV2pqcm9sazFiNjhHQ3paSHRNN3JnODlLazU2d3B1Yjh6WDA)  
 [Jira](https://dvjudge.atlassian.net/projects/DVJ/summary)

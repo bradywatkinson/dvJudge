@@ -24,13 +24,40 @@
     </div>
 
   {% if session.logged_in %}
+  {% if flags.empty %}
+    <div class="alert alert-info alert-dismissable">
+      <a class="panel-close close" data-dismiss="alert">×</a> 
+      Please insert a valid challenge name.
+    </div>
+  {% elif flags.length %}
+    <div class="alert alert-info alert-dismissable">
+      <a class="panel-close close" data-dismiss="alert">×</a> 
+      Challenge names cannot exceed 70 characters.
+    </div>
+  {% elif flags.special %}
+    <div class="alert alert-info alert-dismissable">
+      <a class="panel-close close" data-dismiss="alert">×</a> 
+      Challenge names cannot contain special characters.
+    </div>
+  {% elif flags.conflict %}
+    <div class="alert alert-info alert-dismissable">
+      <a class="panel-close close" data-dismiss="alert">×</a> 
+      Challenge already exists with that name.
+    </div>
+  {% elif flags.success %}
+    <div class="alert alert-info alert-dismissable">
+      <a class="panel-close close" data-dismiss="alert">×</a> 
+      Challenge successfully added.
+    </div>
+  {% endif %}
+
   <div class="container">
     <form action="{{ url_for('upload') }}" method=post class=upload-challenge, class="form-horizontal">
       <div class="form-group">
         <label for="challenge_name" class="col-sm-2 control-label">Challenge Name</label>
         <div class="col-sm-10">
           {% if challenge_name %}
-            <input name="challenge_name" class="form-control" id="challenge_name" value={{challenge_name}}>
+            <input name="challenge_name" class="form-control" id="challenge_name" value="{{challenge_name}}">
           {% else %}
             <input name="challenge_name" class="form-control" id="challenge_name" placeholder="Challenge Name">
           {% endif %}
@@ -62,14 +89,27 @@
       </div>
       <div class="form-group">
         <label for="output_desc" class="col-sm-2 control-label">Output Description</label>
-        <div class="col-sm-10">
+        <div class="col-sm-10" style="margin-bottom:2%">
           <input name="output_desc" class="form-control" id="output_desc" placeholder="Output Description">
         </div>
       </div>
+      <div class="form-group">
+        <label for="categories" class="col-sm-2 control-label">Categories</label>
+        <div align="center" id="categories">
+        {% for category in categories %}
+          <label style="margin-left: 2%; font-weight: normal;"><input type="checkbox" name="{{ category.name }}" value="{{ category.name }}"> {{ category.name }}</label>
+          {% if loop.index % 3 == 0 %}
+            <br>
+          {% endif %}
+        {% endfor %}
+        </div>
+      </div>
+      <br />
       <label for="tests" class="col-sm-2 control-label">Sample Tests</label>
         <div class="col-sm-10">
           <textarea name="tests" class="form-control" rows="3" id="tests" placeholder="Add Sample Tests Here"></textarea>
         </div>
+      <br />
       </div>
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-8">
@@ -82,5 +122,15 @@
     <div class="container">
       <p> You need to be <a href="#signup" data-toggle="modal" data-target=".bs-modal-sm">logged in</a> to create a challenge </p>
   {% endif %}
+<style>
+#categories {
+  text-align: center;
+  margin-left: 16%;
+}
+.col-sm-10 {
+  margin-bottom: 1%;
+}
+</style>
+
 
 {% endblock %}

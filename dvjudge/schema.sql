@@ -29,7 +29,8 @@ create table submissions (
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
 	status text not null,
     status_info text not null,
-    language text not null
+    language text not null,
+    code text not null
 );
 
 drop table if exists challenge_comments;
@@ -79,5 +80,8 @@ create table comment_downvotes(
 	comment_id integer not null
 );
 
-
-
+drop table if exists categories;
+create table categories (
+    name text not null,
+    challenges text not null
+);
