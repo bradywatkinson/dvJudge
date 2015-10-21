@@ -7,8 +7,9 @@ import random
 import re
 import json
 
-path = '/test/tmp/'
+path = '/jail/tmp/'
 chroot = '/tmp/'
+jail = '/jail/'
 @app.route('/submit', methods=['POST'])
 def submit_specific_challenge():
     
@@ -95,7 +96,7 @@ def run_c(code, username, input_tests, expected_output):
     submission.write(code)
     submission.close()
     #compile the code with gcc
-    compiled = subprocess.Popen(['sudo','chroot','/test/','gcc', '-o', chroot+username+'/'+ username , chroot+username+'/'+ username +'.c'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    compiled = subprocess.Popen(['sudo','chroot',jail,'gcc', '-o', chroot+username+'/'+ username , chroot+username+'/'+ username +'.c'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     compiled.wait()
     
     #if the file has compiled run it otherwise display the warning
@@ -108,7 +109,7 @@ def run_c(code, username, input_tests, expected_output):
         for test in tests:
             #output = output+ "Testing "+test+"\n"
             #include timeout for tjandra
-            run = subprocess.Popen(['sudo','chroot','/test/','timeout','5s',chroot+username+'/'+ username], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            run = subprocess.Popen(['sudo','chroot',jail,'timeout','5s',chroot+username+'/'+ username], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             #run = subprocess.Popen('./submissions/submission', stdin=test, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
@@ -151,7 +152,7 @@ def run_java(code, username, input_tests, expected_output):
     submission.close()
 
     #compile the code with gcc
-    compiled = subprocess.Popen(['sudo','chroot','/test/','javac', chroot+username+'/'+ class_name+'.java'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    compiled = subprocess.Popen(['sudo','chroot',jail,'javac', chroot+username+'/'+ class_name+'.java'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     compiled.wait()
 
     #if the file has compiled run it otherwise display the warning
@@ -164,7 +165,7 @@ def run_java(code, username, input_tests, expected_output):
         for test in tests:
             #output = output+ "Testing "+test+"\n"
             #include timeout for tjandra
-            run = subprocess.Popen(['sudo','chroot','/test/','timeout','5s','java','-cp',chroot+username+'/',class_name], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            run = subprocess.Popen(['sudo','chroot',jail,'timeout','5s','java','-cp',chroot+username+'/',class_name], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             #run = subprocess.Popen('./submissions/submission', stdin=test, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
@@ -195,7 +196,7 @@ def run_c_plus(code, username, input_tests, expected_output):
     submission.close()
 
     #compile the code with gcc
-    compiled = subprocess.Popen(['sudo','chroot','/test/','g++', '-o', chroot+username+'/'+ username , chroot+username+'/'+ username +'.cpp'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    compiled = subprocess.Popen(['sudo','chroot',jail,'g++', '-o', chroot+username+'/'+ username , chroot+username+'/'+ username +'.cpp'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     compiled.wait()
 
     #if the file has compiled run it otherwise display the warning
@@ -208,7 +209,7 @@ def run_c_plus(code, username, input_tests, expected_output):
         for test in tests:
             #output = output+ "Testing "+test+"\n"
             #include timeout for tjandra
-            run = subprocess.Popen(['sudo','chroot','/test/','timeout','1s',chroot+username+'/'+ username], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            run = subprocess.Popen(['sudo','chroot',jail,'timeout','1s',chroot+username+'/'+ username], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             #run = subprocess.Popen('./submissions/submission', stdin=test, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             prog_output = run.communicate(test)[0]
             # the number of inputs must correspond to the number of outputs in the database
@@ -246,7 +247,7 @@ def run_python(code, username, input_tests, expected_output):
     for test in tests:
         #output = output+ "Testing "+test+"\n"
         #include timeout for tjandra
-        run = subprocess.Popen(['sudo','chroot','/test/','timeout','1s','python',chroot+username+'/'+ username+'.py'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        run = subprocess.Popen(['sudo','chroot',jail,'timeout','1s','python',chroot+username+'/'+ username+'.py'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         #run = subprocess.Popen('./submissions/submission', stdin=test, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         prog_output = run.communicate(test)[0]
         run.wait()

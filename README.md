@@ -48,7 +48,52 @@ SECRET_KEY = '<get some key from random.org>'
   - Setup the DB by running deploy.py
   - Restart apache2
   - Navigate to your URL to check it works.
+  - Install debootstrap
+  ```
+  sudo apt-get update
+  sudo apt-get install dchroot debootstrap
+  ```
+  - Create jail folder
+  ```
+  sudo mkdir /jail
+  ```
+  - Create configuration options
+  ```
+  sudo nano /etc/schroot/schroot.conf
+  ```
+  - Add the following lines, modifying for your server
+  ```
+  [trusty]
+  description=Ubuntu Trusty
+  location=/jail
+  priority=3
+  users=demouser
+  groups=sbuild
+  root-groups=root
 
+  ```
+- Populate the chroot environment with a skeleton operating system
+```
+sudo debootstrap --variant=buildd --arch amd64 trusty /jail/ http://mirror.cc.columbia.edu/pub/linux/ubuntu/archive/
+```
+- Make sure our host fstab is aware of some pseudo-systems in our guest. Add lines like these to the bottom of your fstab
+```
+sudo nano /etc/fstab
+proc /jail/proc proc defaults 0 0
+sysfs /jail/sys sysfs defaults 0 0
+```
+- Mount these filesystems within our guest
+```
+sudo mount proc /jail/proc -t proc
+sudo mount sysfs /jail/sys -t sysfs
+```
+- Chroot into the jail and install necessery compilers and interpreters
+```
+sudo chroot /jail/ /bin/bash
+apt-get install python
+apt-get install default-jre
+apt-get install default-jdk
+```
 ##Project Details
 [Google Drive](https://drive.google.com/drive/folders/0BxD6wDvDG5hRfklTaUxrM0VNV2pqcm9sazFiNjhHQ3paSHRNN3JnODlLazU2d3B1Yjh6WDA)  
 [Jira](https://dvjudge.atlassian.net/projects/DVJ/summary)
