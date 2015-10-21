@@ -37,7 +37,7 @@
   {% elif flags.special %}
     <div class="alert alert-info alert-dismissable">
       <a class="panel-close close" data-dismiss="alert">×</a> 
-      Challenge names can only contain alphanumeric characters, hyphens and underscores.
+      Challenge names cannot contain special characters.
     </div>
   {% elif flags.conflict %}
     <div class="alert alert-info alert-dismissable">
@@ -57,7 +57,7 @@
         <label for="challenge_name" class="col-sm-2 control-label">Challenge Name</label>
         <div class="col-sm-10">
           {% if challenge_name %}
-            <input name="challenge_name" class="form-control" id="challenge_name" value={{challenge_name}}>
+            <input name="challenge_name" class="form-control" id="challenge_name" value="{{challenge_name}}">
           {% else %}
             <input name="challenge_name" class="form-control" id="challenge_name" placeholder="Challenge Name">
           {% endif %}

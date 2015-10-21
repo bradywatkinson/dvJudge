@@ -40,6 +40,11 @@ def upload():
             flags['length'] = True
             return render_template('upload_challenge.html', challenge_name=challenge_name, description=description, input_=input_,
                     output_=output_, tests=tests, input_desc=input_desc, output_desc=output_desc, categories=categories, flags=flags)
+        elif not whitelist(challenge_name):
+            flags['special']  = True
+            return render_template('upload_challenge.html', challenge_name=challenge_name, description=description, input_=input_,
+                output_=output_, tests=tests, input_desc=input_desc, output_desc=output_desc, categories=categories, flags=flags)
+
 
         # Check if the challenge_name already exists in the db
         cur = query_db('select * from challenges where name = ?', [challenge_name], one=True)
@@ -80,5 +85,5 @@ def add_challenge(challenge_name, description, input_, output_, tests,input_desc
     g.db.commit()
 
 
-def alphanum(strg, search=re.compile(r'[^A-Za-z0-9_-]').search):
-    return not bool(search(strg))
+def whitelist(strg):
+    return not re.search('[^A-Za-z0-9_-][^\*\^\.\%\:\;\&\#]^\s', strg)

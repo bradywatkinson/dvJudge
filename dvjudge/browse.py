@@ -36,9 +36,3 @@ def browse_search():
     results = [challenge for challenge in challenges if name.lower() in challenge["name"].lower()]
     # Pass only those on
     return render_template('browse.html', challenges=results, searchterm=request.form.get('searchterm'))
-
-
-@app.route('/test', methods=['POST'])
-def test():
-    name = request.form.get('del')
-    return "Hello" + name
