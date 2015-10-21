@@ -1,5 +1,10 @@
 {% extends "layout.html" %}
 {% block body %}
+{% for error in errors %}
+  <div class="alert alert-error error"><a class="close" data-dismiss="alert">×</a>
+    {{ error }}
+  </div>
+{% endfor %}
 <div class="container">
   <div class="form-group">
     <div class ="col-equ-height col-md-8 personal-info" style="display: inline-block; margin: 2px">

@@ -11,22 +11,21 @@ def new_forum(forum_problem):
 	if request.method == 'POST':
 		post_question = request.form['question']
 		post_body = request.form['postbody']
-		error = ""
+		errors = []
 		if not post_question:
-			error += "Please enter a question"
+			errors.append("Please enter a question")
 		if len(post_question) < 6:
-			error += "Your question needs to be longer than 6 characters"
+			errors.append("Your question needs to be longer than 6 characters")
 		if len(post_question) > 60:
-			error += "Your question exceeds the 60 character limit"
+			errors.append("Your question exceeds the 60 character limit")
 		if not post_body:
-			error += "Please give details on your question"
+			errors.append("Please give details on your question")
 		if len(post_body) > 400:
-			error += "Over the 400 character limit for question descriptions"
+			errors.append("Over the 400 character limit for question descriptions")
 		if len(post_body) < 12:
-			error += "Please enter at least a 12 character description"
-		if error != "":
-			error += "Goes through here"
-			return render_template('new_forum.html', error=error)
+			errors.append("Please enter at least a 12 character description")
+		if len(errors) != 0:
+			return render_template('new_forum.html', error=errors)
 		else:
 			g.db.execute("insert into forum_page (problem_id, original_poster, post_name, post_body) values (?, ?, ?, ?)", [forum_problem, session['user'], post_question, post_body])
 			g.db.commit()
