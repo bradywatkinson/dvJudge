@@ -66,7 +66,8 @@ def show_playlists():
                     id_list = [int(s) for s in challenge_ids.split('|')]
 
                     for id in id_list:
-                        challenge_list.append(challenges[id-1])
+                        if id <= len(challenges):
+                            challenge_list.append(challenges[id-1])
             else:
                 playlists = None
                 selection = None

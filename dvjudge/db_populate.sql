@@ -19,25 +19,25 @@ insert into challenges (name,description,input,output,sample_tests,input_desc,ou
 
 -- Daniel added challenges
 insert into challenges (name,description,input,output,sample_tests,input_desc,output_desc,com_flag)
-    values ('Sort an array','Given an input of 6 numbers, print the input in sorted order.',"6 2 5 1 4 3","1 2 3 4 5 6","Input: 6 2 5 1 4 3; Output: 1 2 3 4 5 6","Any 6 integers","Six integers", 2);
+    values ('Sort an array','Given an input of 6 numbers, print the input in sorted order.',"6 2 5 1 4 3","1 2 3 4 5 6","Input: 6 2 5 1 4 3; Output: 1 2 3 4 5 6","Any 6 integers","Six integers", 0);
 
 insert into challenges (name,description,input,output,sample_tests,input_desc,output_desc,com_flag)
-    values ('N to the power of N','Given an input print that number to the power of itself.',"4","256","Input:4; Output: 256","An integer","A single integer", 2);
+    values ('N to the power of N','Given an input print that number to the power of itself.',"4","256","Input:4; Output: 256","An integer","A single integer", 0);
 
 insert into challenges (name,description,input,output,sample_tests,input_desc,output_desc,com_flag)
-    values ('Sum input','Sum input numbers until EOF is entered.',"1 2 3 4 5 6 7 8 9 5","50","Input: 1 2 3 4 5 6 7 8 9 5; Output: 50","Any number of integers","A single integer", 2);
+    values ('Sum input','Sum input numbers until EOF is entered.',"1 2 3 4 5 6 7 8 9 5","50","Input: 1 2 3 4 5 6 7 8 9 5; Output: 50","Any number of integers","A single integer", 0);
 
 insert into challenges (name,description,input,output,sample_tests,input_desc,output_desc,com_flag)
-    values ('Print N by M box','Given two numbers as input, print a box of "#" with n rows and m columns.',"4 4","####\n####\n####\n####\n","Input: 4 4; Output: ####\n####\n####\n####\n","Two integers","A box of hashes with n rows and m columns", 2);
+    values ('Print N by M box','Given two numbers as input, print a box of "#" with n rows and m columns.',"4 4","####\n####\n####\n####\n","Input: 4 4; Output: ####\n####\n####\n####\n","Two integers","A box of hashes with n rows and m columns", 0);
 
 insert into challenges (name,description,input,output,sample_tests,input_desc,output_desc,com_flag)
-    values ('Print "Hello world!"','Given no input print the string "Hello world!".',"","Hello world!","Input: ; Output: Hello World!","None","Hello world!", 2);
+    values ('Print "Hello world!"','Given no input print the string "Hello world!".',"","Hello world!","Input: ; Output: Hello World!","None","Hello world!", 0);
 
 insert into challenges (name,description,input,output,sample_tests,input_desc,output_desc,com_flag)
-    values ('Celsius to Fahrenheit','Given degrees celsius print out the equivalent temperature in degrees Fahrenheit. The formula is F = C * (9/5) + 32.',"20","68","Input: 20; Output: 68","A single integer","A single integer", 2);
+    values ('Celsius to Fahrenheit','Given degrees celsius print out the equivalent temperature in degrees Fahrenheit. The formula is F = C * (9/5) + 32.',"20","68","Input: 20; Output: 68","A single integer","A single integer", 0);
 
 insert into challenges (name,description,input,output,sample_tests,input_desc,output_desc,com_flag)
-    values ('Print string backwards','Given a string print it backwards.',"Hello","olleH","Input: Hello; Output: olleH","A string","A string", 2);
+    values ('Print string backwards','Given a string print it backwards.',"Hello","olleH","Input: Hello; Output: olleH","A string","A string", 0);
 
 -- Accounts
 -- dannyeei:daniel

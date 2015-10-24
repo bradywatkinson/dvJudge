@@ -80,6 +80,8 @@ class FlaskrTestCase(unittest.TestCase):
         self.login('admin', 'default')
         rv = self.app.post('/community/upload', data=dict(
             challenge_name='testchallengename',
+            input_='test',
+            output_='test',
             description='testchallengedescription'
         ), follow_redirects=True)
         rv = self.app.get('/community/browse')
@@ -93,7 +95,65 @@ class FlaskrTestCase(unittest.TestCase):
     def test_submit_solution(self):
         self.login('admin', 'default')
         rv = self.app.post('/community/upload', data=dict(
+            challenge_name='',
+            input_='',
+            output_='',
+            description='this is a challenge'
+        ), follow_redirects=True)
+        assert ('Please insert a valid challenge name.') in rv.data
+
+        rv = self.app.post('/community/upload', data=dict(
+            challenge_name='     ',
+            input_='',
+            output_='',
+            description='this is a challenge'
+        ), follow_redirects=True)
+        assert ('Please insert a valid challenge name.') in rv.data
+
+        rv = self.app.post('/community/upload', data=dict(
+            challenge_name='aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+            input_='',
+            output_='',
+            description='this is a challenge'
+        ), follow_redirects=True)
+        assert ('Challenge names cannot exceed 70 characters.') in rv.data
+
+        rv = self.app.post('/community/upload', data=dict(
+            challenge_name='`echo $PATH`',
+            input_='',
+            output_='',
+            description='this is a challenge'
+        ), follow_redirects=True)
+        assert ('Challenge names cannot contain special characters.') in rv.data
+
+        rv = self.app.post('/community/upload', data=dict(
             challenge_name='challenge name test',
+            input_='',
+            output_='a',
+            description='this is a challenge'
+        ), follow_redirects=True)
+        assert ('Input field must not be empty.') in rv.data
+
+        rv = self.app.post('/community/upload', data=dict(
+            challenge_name='challenge name test',
+            input_='a',
+            output_='',
+            description='this is a challenge'
+        ), follow_redirects=True)
+        assert ('Output field must not be empty.') in rv.data
+
+        rv = self.app.post('/community/upload', data=dict(
+            challenge_name='Count to N',
+            input_='a',
+            output_='a',
+            description='this is a challenge'
+        ), follow_redirects=True)
+        assert ('Challenge already exists with that name.') in rv.data
+
+        rv = self.app.post('/community/upload', data=dict(
+            challenge_name='challenge name test',
+            input_='test',
+            output_='test',
             description='this is a challenge'
         ), follow_redirects=True)
         
@@ -101,23 +161,31 @@ class FlaskrTestCase(unittest.TestCase):
         assert ('challenge name test') in rv.data
         assert ('this is a challenge') in rv.data
 
-    def test_browse_search(self):
+    def test_browse_post(self):
         # Add some challenges via upload challenge
         self.login('admin', 'default')
         rv = self.app.post('/community/upload', data=dict(
             challenge_name='1 - Count to N',
+            input_='1',
+            output_='1',
             description='testchallengedescription'
         ), follow_redirects=True)
         rv = self.app.post('/community/upload', data=dict(
             challenge_name='2 - Sum to N',
+            input_='1',
+            output_='1',
             description='testchallengedescription'
         ), follow_redirects=True)
         rv = self.app.post('/community/upload', data=dict(
             challenge_name='3 - Sum to N^2',
+            input_='1',
+            output_='1',
             description='testchallengedescription'
         ), follow_redirects=True)
         rv = self.app.post('/community/upload', data=dict(
             challenge_name='4 - Subtract 5 from N',
+            input_='10',
+            output_='5',
             description='testchallengedescription'
         ), follow_redirects=True)
         
@@ -755,6 +823,53 @@ class FlaskrTestCase(unittest.TestCase):
         assert("0") in rv.data
         rv = self.app.post('/forums/1/1/+/1', follow_redirects=True)
         assert("1") in rv.data
+
+
+    #tests to check admin challenge management
+    def test_move_challenges(self):
+        self.login('admin', 'default')
+        rv = self.app.get('/community/browse', follow_redirects=True)
+        assert("Sort an array") not in rv.data
+        assert("N to the power of N") not in rv.data
+        rv = self.app.get('/browse', follow_redirects=True)
+        assert("Sort an array") in rv.data
+        assert("N to the power of N") in rv.data
+        assert("Valve cant program") not in rv.data
+        data = {}
+        data['remove'] = "Remove from Browse Page"
+        data['Sort an array'] = 'on'
+        data['N to the power of N'] = 'on'
+        rv = self.app.post('/browse', data=data, follow_redirects=True)
+        assert("Sort an array") not in rv.data
+        assert("N to the power of N") not in rv.data
+        rv = self.app.get('/community/browse', follow_redirects=True)
+        assert("Sort an array") in rv.data
+        assert("N to the power of N") in rv.data
+        assert("Valve cant program") in rv.data
+        data = {}
+        data['add'] = "Add to Browse Page"
+        data['Valve cant program'] = 'on'
+        rv = self.app.post('/community/browse', data=data, follow_redirects=True)
+        assert("Sort an array") in rv.data
+        assert("N to the power of N") in rv.data
+        assert("Valve cant program") not in rv.data
+        rv = self.app.get('/browse', follow_redirects=True)
+        assert("Valve cant program") in rv.data
+
+    #tests to check that admin can delete a challenge
+    def test_delete_challenges(self):
+        self.login('admin', 'default')
+        rv = self.app.get('/browse', follow_redirects=True)
+        assert("Sort an array") in rv.data
+        data = {}
+        data['delete_chal'] = "Sort an array"
+        rv = self.app.post('/browse', data=data, follow_redirects=True)
+        assert("Sort an array") not in rv.data
+        rv = self.app.get('/community/browse', follow_redirects=True)
+        assert("Valve cant program") in rv.data
+        data['delete_chal'] = "Valve cant program"
+        rv = self.app.post('/community/browse', data=data, follow_redirects=True)
+        assert("Valve cant program") not in rv.data
 
 
 if __name__ == '__main__':

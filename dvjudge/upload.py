@@ -29,23 +29,28 @@ def upload():
         flags['special']  = False
         flags['conflict'] = False
         flags['success'] = False
+        flags['inempty'] = False
+        flags['outempty'] = False
 
         # Check if challenge_name is empty
         temp = re.sub('[\s+]', '', challenge_name)
+        in_temp = re.sub('[\s+]', '', input_)
+        out_temp = re.sub('[\s+]', '', output_)
         if not challenge_name or not temp:
             flags['empty'] = True
-            return render_template('upload_challenge.html', challenge_name=challenge_name, description=description, input_=input_,
-                    output_=output_, tests=tests, input_desc=input_desc, output_desc=output_desc, categories=categories, flags=flags)
         elif len(challenge_name) > 70:
             flags['length'] = True
-            return render_template('upload_challenge.html', challenge_name=challenge_name, description=description, input_=input_,
-                    output_=output_, tests=tests, input_desc=input_desc, output_desc=output_desc, categories=categories, flags=flags)
         elif not whitelist(challenge_name):
             flags['special']  = True
+        elif not input_ or not in_temp:
+            flags['inempty'] = True
+        elif not output_ or not out_temp:
+            flags['outempty'] = True
+
+        if flags['empty'] or flags['length'] or flags['special'] or flags['inempty'] or flags['outempty']:
             return render_template('upload_challenge.html', challenge_name=challenge_name, description=description, input_=input_,
                 output_=output_, tests=tests, input_desc=input_desc, output_desc=output_desc, categories=categories, flags=flags)
-
-
+        
         # Check if the challenge_name already exists in the db
         cur = query_db('select * from challenges where name = ?', [challenge_name], one=True)
         if cur is None:
@@ -86,4 +91,6 @@ def add_challenge(challenge_name, description, input_, output_, tests,input_desc
 
 
 def whitelist(strg):
-    return not re.search('[^A-Za-z0-9_-][^\*\^\.\%\:\;\&\#]^\s', strg)
+    temp = re.sub('[\s+]', '', strg)
+    temp = re.sub('[\w+]', '', temp)
+    return not re.search('[^\-\*\^\.\%\:\;\&\#]', temp)

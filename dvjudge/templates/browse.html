@@ -9,6 +9,7 @@
       <div class="checkbox">
         <h5>Filter By:</h5>
         <form action="{{ url_for('browse') }}" method=post class="form-horizontal">
+          <button type="submit" style="float:right; margin-right: 10%" class="btn btn-default btn-sml">Update Filters</button>
           {% if no_completed %}
             <label><input type="checkbox" name="no_completed" checked=True>Hide Completed</label>
           {% else %}
@@ -22,47 +23,109 @@
             {% endif %}
           {% endfor %}
           </div>
-          <button type="submit" class="btn btn-default btn-sml">Update Filters</button>
         </form>
       </div>
     {% endif %}
   </div>
+  <br />
 
-  <div class="bs-example">
-      <table class="table table-striped">
-          <thead>
+  {% if session.user == "admin" %}
+    <form method="POST">
+      {% if not categories %}
+        <input type="submit" name="add" class="btn btn-primary" onsubmit="{{ url_for( 'community_browse_post' ) }}" style="float:left; margin-left: 1%" value="Add to Browse Page">
+      {% else %}
+        <input type="submit" name="remove" class="btn btn-primary" onsubmit="{{ url_for( 'browse_post' ) }}" style="float:left; margin-left: 1%" value="Remove from Browse Page">
+      {% endif %}
+      <div class="bs-example">
+          <table class="table table-striped">
+              <thead>
+                  <tr>
+                      <th width="5%"></th>
+                      <th width="50%">Title</th>
+                      <th width="28%">Submitter</th>
+                      <th width="8%">Completed</th>
+                      <th width="9%"></th>
+                  </tr>
+              </thead>
+              <tbody>
+                <ul class=challenges>
+                {% for challenge in challenges %}
+                <tr>
+                  <td><label><input type="checkbox" name="{{ challenge.name }}"></input></label></td>
+                  <td><a href="{{ url_for('browse_specific_challenge', challenge_name=challenge.name) }}">{{ challenge.name }}</a></td>
+                  <td>DVJUDGE</td>
+                  {% if challenge.completed %}
+                    <td>Yes</td>
+                  {% else %}
+                    <td>No</td>
+                  {% endif %}
+                  </form>
+                  {% if categories %}
+                    <td>
+                      <form action="{{ url_for('browse_post') }}" method="POST" 
+                      onsubmit="return confirm('Are you sure you want to delete \'{{ challenge.name }}\'?');">
+                        <div align="center">
+                          <input type="submit" class="btn btn-delete btn-sm btn-danger" value="Delete">
+                        </div>
+                        <input type="hidden" name="delete_chal" value="{{ challenge.name }}"/>
+                      </form>
+                    </td>
+                  {% else %}
+                    <form action="{{ url_for('community_browse_post') }}" method="POST" 
+                    onsubmit="return confirm('Are you sure you want to delete \'{{ challenge.name }}\'?');">
+                      <td><div align="center">
+                        <input type="submit" class="btn btn-delete btn-sm btn-danger" value="Delete">
+                      </div></td>
+                      <input type="hidden" name="delete_chal" value="{{ challenge.name }}"/>
+                    </form>
+                  {% endif %}
+                </tr>
+                {% endfor %}
+                </ul>
+              </tbody>
+          </table>
+      </div>
+    </form>
+    <br>
+
+  {% else%}
+    <div class="bs-example">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th width="5%">#</th>
+                    <th width="50%">Title</th>
+                    <th width="28%">Submitter</th>
+                    <th width="17%">Completed</th>
+                </tr>
+            </thead>
+            <tbody>
+              <ul class=challenges>
+              {% for challenge in challenges %}
               <tr>
-                  <th width="5%">#</th>
-                  <th width="50%">Title</th>
-                  <th width="30%">Submitter</th>
-                  <th width="15%">Completed</th>
+                {# Both of the following links should link to browse/<challenge_name> #}
+                <td><b><a href="{{ url_for('browse_specific_challenge', challenge_name=challenge.name) }}">{{ challenge.id }}</a></b></td>
+                <td><a href="{{ url_for('browse_specific_challenge', challenge_name=challenge.name) }}">{{ challenge.name }}</a></td>
+                <td>DVJUDGE</td>
+                {% if challenge.completed %}
+                  <td>Yes</td>
+                {% else %}
+                  <td>No</td>
+                {% endif %}
               </tr>
-          </thead>
-          <tbody>
-            <ul class=challenges>
-            {% for challenge in challenges %}
-            <tr>
-              {# Both of the following links should link to browse/<challenge_name> #}
-              <td><b><a href="{{ url_for('browse_specific_challenge', challenge_name=challenge.name) }}">{{ challenge.id }}</a></b></td>
-              <td><a href="{{ url_for('browse_specific_challenge', challenge_name=challenge.name) }}">{{ challenge.name }}</a></td>
-              <td>DVJUDGE</td>
-              {% if challenge.completed %}
-                <td>Yes</td>
-              {% else %}
-                <td>No</td>
-              {% endif %}
-            </tr>
-            {% endfor %}
-            </ul>
-          </tbody>
-      </table>
-  </div>
+              {% endfor %}
+              </ul>
+            </tbody>
+        </table>
+    </div>
+  {% endif %}
+  <br>
+
+
 <style>
 label {
   margin-left: 1.5%;
-
 }
-
 </style>
 
 {% endblock %}                             

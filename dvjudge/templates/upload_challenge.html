@@ -1,7 +1,5 @@
 {% extends "layout.html" %}
 {% block body %}
-  
-
     <div class="jumbotron">
       <div class="container">
         <h1>Upload Challenge</h1>
@@ -16,7 +14,11 @@
             <p>Use this form to upload a challenge to the dvJudge Community! Uploaded challenges can be accessed from the "Community Challenge" page</p>
           </div>
           <div id="IO" class="tab-pane fade">
-            <p><b>Name:</b> Summing 1..n</p>
+            <p><b>Name: </b>Count to N^2</p>
+            <p><b>Description: </b>Print the square numbers from 1 to N.</p>
+            <p><b>Input Description: </b>A single integer.</p>
+            <p><b>Output Description: </b>A single line containing the sequence of integers from 1 to N^2, i.e. 1 4 9 ... N^2</p>
+            <p><b>Sample Tests: </b> Input: 4 Output: 1 4 9 16</p>
           </div>
         </div>
 
@@ -44,6 +46,16 @@
       <a class="panel-close close" data-dismiss="alert">×</a> 
       Challenge already exists with that name.
     </div>
+  {% elif flags.inempty %}
+    <div class="alert alert-info alert-dismissable">
+      <a class="panel-close close" data-dismiss="alert">×</a> 
+      Input field must not be empty.
+    </div>
+  {% elif flags.outempty %}
+    <div class="alert alert-info alert-dismissable">
+      <a class="panel-close close" data-dismiss="alert">×</a> 
+      Output field must not be empty.
+    </div>
   {% elif flags.success %}
     <div class="alert alert-info alert-dismissable">
       <a class="panel-close close" data-dismiss="alert">×</a> 
@@ -66,31 +78,56 @@
       <div class="form-group">
         <label for="description" class="col-sm-2 control-label">Description</label>
         <div class="col-sm-10">
-          <textarea name="description" class="form-control" rows="3" id="description" placeholder="Description..."></textarea>
+          {% if description %}
+            <textarea name="description" class="form-control" rows="3" id="description">{{ description }}</textarea>
+          {% else %}
+            <textarea name="description" class="form-control" rows="3" id="description" placeholder="Challenge Description"></textarea>
+          {% endif %}
         </div>
       </div>
       <div class="form-group">
-        <label for="input_" class="col-sm-2 control-label">Input</label>
+        <label for="input_" class="col-sm-2 control-label">Input
+          <br>(<i>Delimit tests with </i>'|')
+        </label>
         <div class="col-sm-10">
-          <textarea name="input_" class="form-control" rows="3" id="input_" placeholder="The input..."></textarea>
+          {% if input_ %}
+            <textarea name="input_" class="form-control" rows="3" id="input_">{{ input_ }}</textarea>
+          {% else %}
+            <textarea name="input_" class="form-control" rows="3" id="input_" placeholder="Input 1|Input 2|Input 3"></textarea>
+          {% endif %}
         </div>
       </div>
       <div class="form-group">
-        <label for="output_" class="col-sm-2 control-label">Ouput</label>
+        <label for="output_" class="col-sm-2 control-label">Output
+          <br>(<i>Delimit tests with </i>'|')
+        </label>
         <div class="col-sm-10">
-          <textarea name="output_" class="form-control" rows="3" id="output_" placeholder="What you expect"></textarea>
+          {% if output_ %}
+            <textarea name="output_" class="form-control" rows="3" id="output_">{{ output_ }}</textarea>
+          {% else %}
+            <textarea name="output_" class="form-control" rows="3" id="output_"
+          placeholder="Output 1|Output 2|Output 3"></textarea>
+          {% endif %}
         </div>
       </div>
       <div class="form-group">
         <label for="tnput_desc" class="col-sm-2 control-label">Input Description</label>
         <div class="col-sm-10">
-          <input name="input_desc" class="form-control" id="input_desc" placeholder="Input Description">
+          {% if input_desc %}
+            <input name="input_desc" class="form-control" id="tnput_desc" value="{{ input_desc }}">
+          {% else %}
+            <input name="input_desc" class="form-control" id="tnput_desc" placeholder="Input Description">
+          {% endif %}
         </div>
       </div>
       <div class="form-group">
         <label for="output_desc" class="col-sm-2 control-label">Output Description</label>
         <div class="col-sm-10" style="margin-bottom:2%">
-          <input name="output_desc" class="form-control" id="output_desc" placeholder="Output Description">
+          {% if output_desc %}
+            <input name="output_desc" class="form-control" id="output_desc" value="{{ output_desc }}">
+          {% else %} 
+            <input name="output_desc" class="form-control" id="output_desc" placeholder="Output Description">
+          {% endif %}
         </div>
       </div>
       <div class="form-group">
@@ -107,7 +144,11 @@
       <br />
       <label for="tests" class="col-sm-2 control-label">Sample Tests</label>
         <div class="col-sm-10">
-          <textarea name="tests" class="form-control" rows="3" id="tests" placeholder="Add Sample Tests Here"></textarea>
+          {% if tests %}
+            <textarea name="tests" class="form-control" rows="3" id="tests">{{ tests }}</textarea>
+          {% else %}
+            <textarea name="tests" class="form-control" rows="3" id="tests" placeholder="Tests to be displayed on the challenge page"></textarea>
+          {% endif %}
         </div>
       <br />
       </div>
