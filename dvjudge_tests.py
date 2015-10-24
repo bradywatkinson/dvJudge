@@ -150,7 +150,61 @@ class FlaskrTestCase(unittest.TestCase):
         assert ('2 - Sum to N') not in rv.data
         assert ('3 - Sum to N^2') in rv.data
         assert ('4 - Subtract 5 from N') not in rv.data
+       
+    # Tests filters filter down to the correct results
+    def test_browse_filters(self): 
+        rv = self.login('typical', 'typical')
+        # No filters means all 4 visible
+        rv = self.app.get('/browse', data=dict(), follow_redirects=True)
+        assert ("Count to N") in rv.data
+        assert ("Sum to N") in rv.data
+        assert ("Invert Case") in rv.data
+        assert ("Number of As") in rv.data
+
+        # Beginners only
+        rv = self.app.post('/browse', data=dict(
+                    Beginner="on"), follow_redirects=True)
+
+        assert ("Count to N") in rv.data
+        assert ("Sum to N") in rv.data
+        assert ("Invert Case") not in rv.data
+        assert ("Number of As") not in rv.data
+
+        # Test Mathematics alone - no results
+        rv = self.app.post('/browse', data=dict(
+                    Mathematics="on"), follow_redirects=True)
         
+        assert ("Count to N") not in rv.data
+        assert ("Sum to N") not in rv.data
+        assert ("Invert Case") not in rv.data
+        assert ("Number of As") not in rv.data
+        assert ("Yes") not in rv.data
+        assert ("No") not in rv.data
+
+        # Test Mathematics with Security
+        rv = self.app.post('/browse', data=dict(
+                    Mathematics="on",
+                    Security="on"), follow_redirects=True)
+        
+        assert ("Count to N") in rv.data
+        assert ("Sum to N") in rv.data
+        assert ("Invert Case") not in rv.data
+        assert ("Number of As") not in rv.data
+
+        # Test "Hide Completed" with Mathematics and Security
+        # - Count to N disappear, Sum to N should remain
+        rv = self.logout()
+        rv = self.login('stanley', 'default')
+        rv = self.app.post('/browse', data=dict(
+                    Mathematics="on",
+                    Security="on",
+                    no_completed="on"), follow_redirects=True)
+        
+        assert ("Count to N") not in rv.data
+        assert ("Sum to N") in rv.data
+        assert ("Invert Case") not in rv.data
+        assert ("Number of As") not in rv.data
+
         #testing code submission
     def test_c_submission(self):
         self.login('admin','default')
