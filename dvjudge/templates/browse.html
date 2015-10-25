@@ -13,9 +13,13 @@
         {% endif %}
       </div>
       <div style="display:inline-block; margin:15px">
-        <form class="navbar-form" role="search" action="{{ url_for('browse') }}" method=post>
+        {% if com_flag == 1 %}
+          <form class="navbar-form" role="search" action="/community/browse" method=post>
+        {% else %}
+          <form class="navbar-form" role="search" action="{{ url_for('browse') }}" method=post>
+        {% endif %}
           <div class="form-group">
-            {% if searchterm %} 
+        {% if searchterm %} 
           <input type="text" name="searchterm" value="{{searchterm}}" class="form-control">
         {% else %}
           <input type="text" name="searchterm" class="form-control">
@@ -50,7 +54,7 @@
   {% if session.user == "admin" %}
     <form method="POST">
       {% if com_flag == 1 %}
-        <input type="submit" name="add" class="btn btn-primary" onsubmit="{{ url_for( 'community_browse_post' ) }}" style="float:left; margin-left: 1%" value="Add to Browse Page">
+        <input type="submit" name="add" class="btn btn-primary" onsubmit="{{ url_for( 'community_browse_post' ) }}" style="float:left; margin-left: 1%" value="Add to Browse Page" method=post>
       {% else %}
         <input type="submit" name="remove" class="btn btn-primary" onsubmit="{{ url_for( 'browse_post' ) }}" style="float:left; margin-left: 1%" value="Remove from Browse Page">
       {% endif %}
