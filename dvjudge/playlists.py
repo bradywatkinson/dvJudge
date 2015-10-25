@@ -92,10 +92,10 @@ def show_playlist_challenges(playlist_id):
     if cur is not None:
         playlist_name = cur[1]
         challenge_ids = cur[3]
-        cur = query_db('select id, name from challenges')
+        cur = query_db('select id, name, submitter_id from challenges')
         # Produce an array of hashes that looks something like:
-        # [{id->'1', name->'some challenge name'}, {other hash}]
-        all_challenges = [dict(id=row[0],name=row[1]) for row in cur]  
+        # [{id->'1', name->'some challenge name', submitter_id->5}, {other hash}]
+        all_challenges = [dict(id=row[0],name=row[1],submitter_id=row[2]) for row in cur]  
         challenges = []
         if challenge_ids:
             # Obtain a list of in order challenge ids for a playlist
@@ -103,7 +103,7 @@ def show_playlist_challenges(playlist_id):
             for id in id_list:
                 for challenge in all_challenges:
                     if challenge['id'] == id:
-                        challenges.append(challenge)
+                        challenges.append(dict(id=challenge['id'],name=challenge['name'],submitter_id=challenge['submitter_id']))
                         break
 
         # Add completion status
@@ -115,12 +115,17 @@ def show_playlist_challenges(playlist_id):
                         if str(displayed_challenge["id"]) == completed_challenge:
                             displayed_challenge["completed"] = 1 # The HTML page just checks for the existance of this key-value pair
 
+        # Convert user_ids to usernames
+        for challenge in challenges:
+            lookup = query_db("select username from users where id = ?", [challenge["submitter_id"]], one=True)
+            if lookup is not None:
+                challenge["submitter_id"] = lookup[0]
+            else:
+                challenge["submitter_id"] = "DvJudge"
 
         return render_template('browse.html', challenges=challenges, playlist_name=playlist_name)
-
     else:
         abort(404)
-
 
 @app.route('/new_playlist', methods=['GET'])
 def show_playlist_form():

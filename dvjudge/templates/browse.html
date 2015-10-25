@@ -125,7 +125,7 @@
                 {# Both of the following links should link to browse/<challenge_name> #}
                 <td><b><a href="{{ url_for('browse_specific_challenge', challenge_name=challenge.name) }}">{{ challenge.id }}</a></b></td>
                 <td><a href="{{ url_for('browse_specific_challenge', challenge_name=challenge.name) }}">{{ challenge.name }}</a></td>
-                <td>DVJUDGE</td>
+                <td><a href="/profile/{{ challenge.submitter_id }}">{{ challenge.submitter_id }}</a></td>
                 {% if challenge.completed %}
                   <td>Yes</td>
                 {% else %}
@@ -139,8 +139,6 @@
     </div>
   {% endif %}
   <br>
-
-
 <style>
 label {
   margin-left: 1.5%;

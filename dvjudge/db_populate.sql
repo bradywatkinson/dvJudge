@@ -1,18 +1,18 @@
 -- Challenges
-insert into challenges (name,description,input,output,sample_tests,input_desc,output_desc,com_flag)
-	values ('Count to N','Create a program that prints "1..n"',"5","1 2 3 4 5","Input: 10; Output: 1 2 3 4 5 6 7 8 9 10","A single integer — the (comparatic) something of something","A single line containing the sequence of integers from 1 to n, i.e. 1 2 3 ... n-1 n",2);
+insert into challenges (name,description,input,output,sample_tests,input_desc,output_desc,com_flag,submitter_id)
+	values ('Count to N','Create a program that prints "1..n"',"5","1 2 3 4 5","Input: 10; Output: 1 2 3 4 5 6 7 8 9 10","A single integer — the (comparatic) something of something","A single line containing the sequence of integers from 1 to n, i.e. 1 2 3 ... n-1 n",2,1);
 
-insert into challenges (name,description,input,output,sample_tests,input_desc,output_desc,com_flag)
-	values ('Sum to N','Create a program that prints sum 1..n',"4","10","Input: 10; Output: 55","A single integer — the (comparatic) something of something","A single integer — the sum of the integers from 1..n",2);
+insert into challenges (name,description,input,output,sample_tests,input_desc,output_desc,com_flag,submitter_id)
+	values ('Sum to N','Create a program that prints sum 1..n',"4","10","Input: 10; Output: 55","A single integer — the (comparatic) something of something","A single integer — the sum of the integers from 1..n",2,2);
 
-insert into challenges (name,description,input,output,sample_tests,input_desc,output_desc,com_flag)
-	values ('Dota 2 is a great game','This is a description',"4","10","Input: 10; Output: 55","A single integer — the (comparatic) something of something","A single integer — the sum of the integers from 1..n",1);
+insert into challenges (name,description,input,output,sample_tests,input_desc,output_desc,com_flag,submitter_id)
+	values ('Dota 2 is a great game','This is a description',"4","10","Input: 10; Output: 55","A single integer — the (comparatic) something of something","A single integer — the sum of the integers from 1..n",1,3);
 
-insert into challenges (name,description,input,output,sample_tests,input_desc,output_desc,com_flag)
-	values ('Valve cant program','This is a different description',"4","10","Input: 10; Output: 55","A single integer — the (comparatic) something of something","A single integer — the sum of the integers from 1..n",1);
+insert into challenges (name,description,input,output,sample_tests,input_desc,output_desc,com_flag,submitter_id)
+	values ('Valve cant program','This is a different description',"4","10","Input: 10; Output: 55","A single integer — the (comparatic) something of something","A single integer — the sum of the integers from 1..n",1,4);
 
-insert into challenges (name,description,input,output,sample_tests,input_desc,output_desc,com_flag)
-	values ('Invert Case','Given an input string, print the string with all the letters with their cases swapped.',"AbCd1234.","aBcD1234.","Input: AbC123; Output: aBc123","Any string of characters","Same input string with letter cases swapped", 2);
+insert into challenges (name,description,input,output,sample_tests,input_desc,output_desc,com_flag,submitter_id)
+	values ('Invert Case','Given an input string, print the string with all the letters with their cases swapped.',"AbCd1234.","aBcD1234.","Input: AbC123; Output: aBc123","Any string of characters","Same input string with letter cases swapped", 2, 4);
 
 insert into challenges (name,description,input,output,sample_tests,input_desc,output_desc,com_flag)
 	values ('Number of As','Given an input string, print the number of upper and lowercase As that occur.',"AAAbcdaaa","6","Input: abACad123; Output: 3","Any string of characters","A single integer", 2);

@@ -5,7 +5,7 @@ create table users (
 	email text not null,
 	password text not null,
 	salt text not null,
-    solved_challenges text
+    solved_challenges text 
 );
 
 drop table if exists challenges;
@@ -18,7 +18,8 @@ create table challenges (
 	sample_tests text,
 	input_desc text,
 	output_desc text,
-	com_flag integer
+	com_flag integer,
+    submitter_id integer not null DEFAULT 3
 );
 
 drop table if exists submissions;

@@ -540,14 +540,19 @@ class FlaskrTestCase(unittest.TestCase):
         assert("Count to N") not in rv.data
         assert("Sum to N") not in rv.data
 
-    # Test display playlist page
-    def test_no_playlist(self):
+    # Test playlist IDs
+    # Also tests Contributor field has the names of the contributors of the challenges
+    def test_playlist_id(self):
         rv = self.app.get('/playlists/0', follow_redirects=True)
         # Check dropdown menu is operational
         assert("Count to N") in rv.data
+        assert("dannyeei") in rv.data
         assert("Sum to N") in rv.data
+        assert("typical") in rv.data
         assert("Invert Case") in rv.data
+        assert("stanley") in rv.data
         assert("Number of As") in rv.data
+        assert("admin") in rv.data
         assert("Dota 2 is a great game") not in rv.data
 
     # Test reorder playlist
