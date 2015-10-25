@@ -46,3 +46,4 @@ import dvjudge.challenge
 import dvjudge.forums
 import dvjudge.comments
 import dvjudge.playlists
+import dvjudge.error_handling

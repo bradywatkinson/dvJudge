@@ -31,7 +31,7 @@ def new_forum(forum_problem):
 @app.route('/forums/<forum_problem>', methods=['GET'])
 def forums_browse(forum_problem):
 	cur = g.db.cursor()
-	cur.execute('select original_poster, post_name, post_time, id from forum_page where problem_id=?', str(forum_problem))
+	cur.execute('select original_poster, post_name, post_time, id from forum_page where problem_id=?', (str(forum_problem),))
 	forum_posts = {}
 	logged_in = False
 	if 'user' in session:
