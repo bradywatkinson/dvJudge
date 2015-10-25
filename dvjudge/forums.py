@@ -14,16 +14,8 @@ def new_forum(forum_problem):
 		errors = []
 		if not post_question:
 			errors.append("Please enter a question")
-		if len(post_question) < 6:
-			errors.append("Your question needs to be longer than 6 characters")
-		if len(post_question) > 60:
-			errors.append("Your question exceeds the 60 character limit")
 		if not post_body:
 			errors.append("Please give details on your question")
-		if len(post_body) > 400:
-			errors.append("Over the 400 character limit for question descriptions")
-		if len(post_body) < 12:
-			errors.append("Please enter at least a 12 character description")
 		if len(errors) != 0:
 			return render_template('new_forum.html', error=errors)
 		else:
