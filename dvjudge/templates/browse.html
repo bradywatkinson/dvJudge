@@ -1,10 +1,14 @@
 {% extends "layout.html" %}
 {% block body %}
   <div class="container">
-    {% if not categories %}
-      <h2>Browse Community Challenges</h2>
+    {% if playlist_name %}
+      <h2>{{ playlist_name }}</h2>
     {% else %}
-      <h2>Browse Challenges</h2>
+      {% if com_flag == 1 %}
+        <h2>Browse Community Challenges</h2>
+      {% else %}
+        <h2>Browse Challenges</h2>
+      {% endif %}
       <br>
       <div class="checkbox">
         <h5>Filter By:</h5>

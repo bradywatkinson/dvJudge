@@ -66,8 +66,12 @@ def show_playlists():
                     id_list = [int(s) for s in challenge_ids.split('|')]
 
                     for id in id_list:
-                        if id <= len(challenges):
-                            challenge_list.append(challenges[id-1])
+                        for challenge in challenges:
+                            if challenge['id'] == id:
+                                challenge_list.append(challenge)
+                                break
+                        #if id <= len(challenges):
+                        #    challenge_list.append(challenges[id-1])
             else:
                 playlists = None
                 selection = None
@@ -86,6 +90,7 @@ def show_playlist_challenges(playlist_id):
     # Retrieve the requested playlist
     cur = query_db('select * from playlists where id = ?', [playlist_id], one=True)
     if cur is not None:
+        playlist_name = cur[1]
         challenge_ids = cur[3]
         cur = query_db('select id, name from challenges')
         # Produce an array of hashes that looks something like:
@@ -98,10 +103,20 @@ def show_playlist_challenges(playlist_id):
             for id in id_list:
                 for challenge in all_challenges:
                     if challenge['id'] == id:
-                        challenges.append(dict(id=challenge['id'],name=challenge['name']))
+                        challenges.append(challenge)
                         break
 
-        return render_template('browse.html', challenges=challenges)
+        # Add completion status
+        if 'user' in session:
+            lookup = query_db("select solved_challenges from users where username = ?", [session['user']], one=True)
+            if lookup is not None and lookup[0] is not None:
+                for completed_challenge in lookup[0].split('|'):
+                    for displayed_challenge in challenges:
+                        if str(displayed_challenge["id"]) == completed_challenge:
+                            displayed_challenge["completed"] = 1 # The HTML page just checks for the existance of this key-value pair
+
+
+        return render_template('browse.html', challenges=challenges, playlist_name=playlist_name)
 
     else:
         abort(404)

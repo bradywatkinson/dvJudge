@@ -23,7 +23,7 @@ def browse():
                     if str(displayed_challenge["id"]) == completed_challenge:
                         displayed_challenge["completed"] = 1 # The HTML page just checks for the existance of this key-value pair
 
-    return render_template('browse.html', challenges=challenges, categories=categories)
+    return render_template('browse.html', challenges=challenges, categories=categories, com_flag=0)
 
 @app.route('/browse', methods=['POST'])
 def browse_post():
@@ -143,5 +143,5 @@ def browse_post():
             # List comprehension: Matching problems only
             challenges = [x for x in challenges if str(x["id"]) not in lookup[0].split('|')] 
 
-    return render_template('browse.html', challenges=challenges, categories=categories, no_completed=no_completed)
+    return render_template('browse.html', challenges=challenges, categories=categories, no_completed=no_completed, com_flag=0)
         

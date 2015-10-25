@@ -866,11 +866,15 @@ class FlaskrTestCase(unittest.TestCase):
         rv = self.app.post('/browse', data=data, follow_redirects=True)
         assert("Sort an array") not in rv.data
         rv = self.app.get('/community/browse', follow_redirects=True)
-        assert("Valve cant program") in rv.data
-        data['delete_chal'] = "Valve cant program"
+        assert("Dota 2 is a great game") in rv.data
+        data['delete_chal'] = "Dota 2 is a great game"
         rv = self.app.post('/community/browse', data=data, follow_redirects=True)
-        assert("Valve cant program") not in rv.data
-
+        assert("Dota 2 is a great game") not in rv.data
+        rv = self.logout()
+        self.login('dannyeei', 'daniel')
+        rv = self.app.get('/playlists', follow_redirects=True)
+        assert("Count to N") in rv.data
+        assert("Dota 2 is a great game") not in rv.data
 
 if __name__ == '__main__':
     unittest.main()

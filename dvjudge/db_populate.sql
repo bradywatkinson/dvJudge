@@ -41,8 +41,8 @@ insert into challenges (name,description,input,output,sample_tests,input_desc,ou
 
 -- Accounts
 -- dannyeei:daniel
-insert into users (username, email, password, salt)
-	values ('dannyeei', 'danielslater811@hotmail.com', 'd9bdde89547d18f0d6bd72d9a17133ae2cb023357357f51c5d226cbf2d02a056e89102bed4c29e0f2827a952027c9e0a3c2b3545735f0a1c643427d81fc75281', 'thisissamplesalt');
+insert into users (username, email, password, salt, solved_challenges)
+	values ('dannyeei', 'danielslater811@hotmail.com', 'd9bdde89547d18f0d6bd72d9a17133ae2cb023357357f51c5d226cbf2d02a056e89102bed4c29e0f2827a952027c9e0a3c2b3545735f0a1c643427d81fc75281', 'thisissamplesalt', '1');
 
 -- typical:typical
 insert into users (username, email, password, salt)
