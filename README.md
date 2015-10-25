@@ -2,7 +2,8 @@
 UNSW comp4920 Major Project "D[tbd] V[tbd] online Judge"
 
 ## Developer Setup
-  - Install Flask
+  - Install Flask with ```pip install flask```
+  - Install sqlite3 with ```sudo apt-get install sqlite3```
   - Pull the code from git
   - run `python dvjudge/deploy.py` to setup the database on your machine
   - run `python runserver.py` to start the webserver
