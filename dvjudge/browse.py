@@ -5,8 +5,16 @@ from comments import get_comments, post_comment
 
 @app.route('/browse', methods=['GET'])
 def browse():
-    # com_flag of 2 signfies admin chosen challenges that can be attempted by anyone
-    cur = query_db('select id, name, submitter_id from challenges where com_flag = 0 or com_flag = 2')
+    vals = do_browse(com=False)
+    return render_template('browse.html', challenges=vals[0], categories=vals[1], com_flag=False)
+
+def do_browse(com=False):
+    if com is False:
+        # com_flag of 2 signfies admin chosen challenges that can be attempted by anyone
+        cur = query_db('select id, name, submitter_id from challenges where com_flag = 0 or com_flag = 2')
+    else:
+        cur = query_db('select id, name, submitter_id from challenges where com_flag = 1')
+
     challenges = [dict(id=row[0],name=row[1],submitter_id=row[2]) for row in cur]
 
     # Retrieve category names
@@ -31,14 +39,26 @@ def browse():
         else:
             challenge["submitter_id"] = "DvJudge"
 
-    return render_template('browse.html', challenges=challenges, categories=categories, com_flag=False)
+    return (challenges, categories)
+    # if com is False:
+    #     return render_template('browse.html', challenges=challenges, categories=categories, com_flag=True)
+    # return render_template('browse.html', challenges=challenges, categories=categories, com_flag=False)
 
 @app.route('/browse', methods=['POST'])
 def browse_post():
+    vals = do_browse_post(com=False)
+    return render_template('browse.html', challenges=vals[0], searchterm=vals[1], categories=vals[2], no_completed=vals[3], com_flag=False)
+    # return render_template('browse.html', challenges=vals[0], categories=vals[1], com_flag=False)
+    # return render_template('browse.html', challenges=challenges, searchterm=None, categories=categories, no_completed=None, com_flag=False)
+
+def do_browse_post(com=False):
     # User is searching
     if request.form.get('searchterm') is not None: # Search passes a search term
         name = request.form.get('searchterm')
-        cur = query_db('select id, name, submitter_id from challenges where com_flag = 0  or com_flag = 2')
+        if com is False:
+            cur = query_db('select id, name, submitter_id from challenges where com_flag = 0 or com_flag = 2')
+        else:
+            cur = query_db('select id, name, submitter_id from challenges where com_flag = 1')
         # Produce an array of hashes that looks something like:
         # [{id->'1', name->'some challenge name'}, {other hash}]  
         challenges = [dict(id=row[0],name=row[1],submitter_id=row[2]) for row in cur]
@@ -62,12 +82,20 @@ def browse_post():
             else:
                 challenge["submitter_id"] = "DvJudge"
 
+            
+        cur = query_db('select name from categories');
+        if cur:
+            categories = [dict(name=row[0]) for row in cur]
         # Pass only those on
-        return render_template('browse.html', challenges=results, searchterm=request.form.get('searchterm'), com_flag=False)
+        return (results, request.form.get('searchterm'), categories, None)
+
     # Admin request to move challenges
     elif request.form.get('remove') is not None:
         if session['user'] == "admin":
-            cur = query_db('select id, name from challenges where com_flag = 0  or com_flag = 2')
+            if com is False:
+                cur = query_db('select id, name from challenges where com_flag = 0 or com_flag = 2')
+            else:
+                cur = query_db('select id, name from challenges where com_flag = 1')
             # Produce an array of hashes that looks something like:
             # [{id->'1', name->'some challenge name'}, {other hash}]  
             challenges = [dict(id=row[0],name=row[1]) for row in cur]
@@ -80,15 +108,21 @@ def browse_post():
                 if move_name:
                     move = "update challenges set com_flag=1 where name=?;"
                     update_db(move, [challenge['name']])
-            cur = query_db('select id, name from challenges where com_flag = 0 or com_flag = 2')
+            if com is False:
+                cur = query_db('select id, name from challenges where com_flag = 0 or com_flag = 2')
+            else:
+                cur = query_db('select id, name from challenges where com_flag = 1')
             challenges = [dict(id=row[0],name=row[1]) for row in cur]
-            return render_template('browse.html', challenges=challenges, categories=categories, com_flag=False)
+            return (challenges, None, categories, None)
 
     # Admin request to delete challenge
     elif request.form.get('delete_chal') is not None:
         if session['user'] == "admin":
             update_db('delete from challenges where name=?',[request.form.get('delete_chal')])
-            cur = query_db('select id, name from challenges where com_flag = 0 or com_flag = 2')
+            if com is False:
+                cur = query_db('select id, name from challenges where com_flag = 0 or com_flag = 2')
+            else:
+                cur = query_db('select id, name from challenges where com_flag = 1')
             # Produce an array of hashes that looks something like:
             # [{id->'1', name->'some challenge name'}, {other hash}]  
             challenges = [dict(id=row[0],name=row[1]) for row in cur]
@@ -96,7 +130,7 @@ def browse_post():
             if cur:
                 categories = [dict(name=row[0]) for row in cur]
 
-            return render_template('browse.html', challenges=challenges, categories=categories, com_flag=False)
+            return (challenges, None, categories, None)
 
     else: # If there's no searchterm and we get a post, it's probably filtering.
         
@@ -133,7 +167,10 @@ def browse_post():
                     abort(500)
 
         # Now pull all the problems and only keep matching_problems
-        cur = query_db('select id, name, submitter_id from challenges where com_flag = 0 or com_flag = 2')
+        if com is False:
+            cur = query_db('select id, name, submitter_id from challenges where com_flag = 0 or com_flag = 2')
+        else:
+            cur = query_db('select id, name, submitter_id from challenges where com_flag = 1')
         # Produce an array of hashes that looks something like:
         # [{id->'1', name->'some challenge name'}, {other hash}]  
         challenges = [dict(id=row[0],name=row[1],submitter_id=row[2]) for row in cur]
@@ -167,5 +204,5 @@ def browse_post():
                         if str(displayed_challenge["id"]) == completed_challenge:
                             displayed_challenge["completed"] = 1 # The HTML page just checks for the existance of this key-value pair
 
-        return render_template('browse.html', challenges=challenges, categories=categories, no_completed=no_completed, com_flag=False)
+        return (challenges, None, categories, None)
         
