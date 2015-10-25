@@ -11,7 +11,7 @@ from flask import Flask, request, session, g, redirect, url_for, \
 import os
 
 # the allowable
-ALLOWED_EXTENSIONS = set(['jpg', 'jpeg'])
+ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'png'])
 
 @app.route('/profile/<user>', methods=['GET'])
 def public_profile(user):
@@ -85,18 +85,21 @@ def updateprofile():
     return redirect(url_for('profile'))
 
 def allowed_file(filename):
+    print filename.rsplit('.', 1)[1]
+    print ALLOWED_EXTENSIONS
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 @app.route('/updateprofilepic', methods=['POST'])
 def updateprofilepic():
     file = request.files['file']
-        
-    
     # save the file
     if file and allowed_file(file.filename):
-        filename = str(session['userid'])+"_profilepic.jpg"
-        file.save(os.path.join(os.getcwd()+"/dvjudge/static", filename))
-        session['profilepic']=True;
+        imagename = str(session['userid'])+"_profilepic."+file.filename.rsplit('.', 1)[1]
+        file.save(os.path.join(os.getcwd()+"/dvjudge/static", imagename))
+        session['image']=imagename;
 
-    session['image'] = session['image'] = '%s_profilepic.jpg' % session['userid']
+        update_db('''update users set image = ? where id = ?''', [imagename, session['userid']])
+    else:
+        flash('That file type is not supported','error')
+
     return redirect(url_for('profile'))

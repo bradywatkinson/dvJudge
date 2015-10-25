@@ -39,3 +39,7 @@ dvJudge/static/jquery-2.1.4.js
 dvJudge/static/js/*
 dvjudge/static/*.jpg
 dvjudge/static/*.jpeg
+dvjudge/static/*.jpg
+dvjudge/static/*.png
+static/*.jpg
+static/*.png

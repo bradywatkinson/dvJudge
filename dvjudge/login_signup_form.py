@@ -15,7 +15,7 @@ def login_signup_form():
         #retrieve username and password
         username = request.form['username']
         password = request.form['password']
-        user_pass = query_db('select id, username, password, salt from users where username = ? or email = ?',[username,username], one=True)
+        user_pass = query_db('select id, username, password, salt, image from users where username = ? or email = ?',[username,username], one=True)
         if user_pass is not None:
             #print user_pass
             hashed_password = hashlib.sha512(password + user_pass[3]).hexdigest()
@@ -23,11 +23,7 @@ def login_signup_form():
                 session['userid'] = user_pass[0]
                 session['logged_in'] = True
                 session['user'] = username
-                if os.path.isfile('dvjudge/static/%s_profilepic.jpg' % user_pass[0]):
-                    session['image'] = '%s_profilepic.jpg' % user_pass[0]
-                else:
-                    # print 'static/%s_profilepic.jpg' % user_pass[0]
-                    session['image'] = 'default_profile.jpg'
+                session['image'] = user_pass[4]
                 flash('You were logged in','alert')
             else:
                 error += "Username and password do not match"
@@ -60,7 +56,7 @@ def login_signup_form():
             
             session['user'] = username
             session['userid'] = query_db('''select last_insert_rowid()''')[0][0];
-            session['image'] = "default_profile.jpg";
+            session['image'] = "default_profile.jpg"
             
             flash('You were logged in','alert')
     if error != "":
