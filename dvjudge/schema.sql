@@ -5,7 +5,8 @@ create table users (
 	email text not null,
 	password text not null,
 	salt text not null,
-    solved_challenges text 
+    solved_challenges text,
+    image text DEFAULT "default_profile.jpg" 
 );
 
 drop table if exists challenges;
