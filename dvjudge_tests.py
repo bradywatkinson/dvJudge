@@ -155,7 +155,7 @@ class FlaskrTestCase(unittest.TestCase):
             description='this is a challenge'
         ), follow_redirects=True)
         
-        rv = self.app.get('/community/browse/challenge%20name%20test')
+        rv = self.app.get('/browse/challenge%20name%20test')
         assert ('challenge name test') in rv.data
         assert ('this is a challenge') in rv.data
 
