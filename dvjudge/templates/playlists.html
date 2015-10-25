@@ -65,7 +65,7 @@
       </div>
       <div align="right">
         <input type="hidden" name="selected_name" value="{{ selection.name }}"/>
-        <input type="submit" name="reorder" id="sub" value="Submit Changes" class="btn btn-submit btn-default"/>
+        <input type="hidden" name="auto" id="auto" value=""/>
       </div>
     </form>
   {% else %}
@@ -100,15 +100,5 @@ select {
 }
 
 </style>
-<script type="text/javascript">
-// Fill form with new order
-$('#order-form').submit(function() {
-  new_list = reorder_form();
-  for (var i = 0; i < new_list.length; i++) {
-    var elem = document.getElementById(new_list[i]);
-    elem.value = i.toString();
-  }
-});
-</script>
 
 {% endblock %} 

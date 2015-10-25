@@ -37,8 +37,8 @@ def show_playlists():
                 challenges = [dict(id=row[0],name=row[1]) for row in cur]
                 challenge_list = []
                 # Determine whether Submit Changes was pressed
-                to_reorder = request.form.get('reorder')
-                if to_reorder:
+                auto_reorder = request.form.get('auto')
+                if auto_reorder:
                     reorder_entry = {}
                     # Match each challenge to their new order
                     for challenge in challenges:

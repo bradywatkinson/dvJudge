@@ -567,7 +567,7 @@ class FlaskrTestCase(unittest.TestCase):
         data['Dota 2 is a great game'] = "2"
         data['Sum to N'] = "3"
         data['Count to N'] = "4"
-        data['reorder'] = "Submit Changes"
+        data['auto'] = "Auto"
         data['selected_name'] = "different playlist"
 
         # Change challenge ordering

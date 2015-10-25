@@ -12,7 +12,10 @@ $(document).ready(function() {
     //Make diagnosis table sortable
     $("#challenge_list tbody").sortable({
       helper: fixHelperModified,
-      stop: function(event,ui) {renumber_table('#challenge_list')}
+      stop: function(event,ui) {
+        renumber_table('#challenge_list');
+        auto_update();
+      }
     }).disableSelection();
 
 
@@ -23,6 +26,7 @@ $(document).ready(function() {
       if(r) {
         $(this).closest('tr').remove();
         renumber_table(tableID);
+        auto_update();
       }
     });
 });
@@ -35,6 +39,19 @@ function renumber_table(tableID) {
     });
 }
 
+//Auto-update playlist ordering
+function auto_update() {
+  new_list = reorder_form();
+  for (var i = 0; i < new_list.length; i++) {
+    var elem = document.getElementById(new_list[i]);
+    elem.value = i.toString();
+  }
+  var submit = document.getElementById('auto');
+  submit.value = "Auto";
+  document.getElementById("order-form").submit();
+}
+
+// Grab new table order
 function reorder_form() {
   var sorted = [];
   $("#challenge_list tbody tr").each(function() {
