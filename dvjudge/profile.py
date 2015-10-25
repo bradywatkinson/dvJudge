@@ -16,6 +16,7 @@ ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'png'])
 @app.route('/profile/<user>', methods=['GET'])
 def public_profile(user):
     cur = query_db('select * from users where username = ?', [user], one=True)
+    challenges = None
     if cur is not None:
         user_id     = cur[0]
         username    = cur[1]
@@ -23,19 +24,24 @@ def public_profile(user):
         if cur[5] is not None:
             solved_challenges = cur[5]
             query_string = "id = " + solved_challenges.replace("|", " or id = ")
-            print query_string
-            cur = query_db('select id, name from challenges where %s' % query_string)
-            challenges = [dict(id=row[0],name=row[1],completed=True) for row in cur]
-            print challenges
-            return render_template('public_profile.html',userid=user_id,username=username,email=email,challenges=challenges)
+            cur = query_db('select id, name, submitter_id from challenges where %s' % query_string)
+            challenges = [dict(id=row[0],name=row[1],submitter_id=row[2],completed=True) for row in cur]
+            # Convert user_ids to usernames
+            for challenge in challenges:
+                lookup = query_db("select username from users where id = ?", [challenge["submitter_id"]], one=True)
+                if lookup is not None:
+                    challenge["submitter_id"] = lookup[0]
+                else:
+                    challenge["submitter_id"] = "DvJudge"
     else:
         return render_template('user_dne.html',username=user)
 
-    return render_template('public_profile.html',userid=user_id,username=user,email=email)
+    return render_template('public_profile.html',userid=user_id,username=user,email=email,challenges=challenges)
 
 @app.route('/profile', methods=['GET'])
 def profile():
     cur = query_db('select * from users where id = ?', [session['userid']], one=True)
+    challenges = None
     if cur is not None:
         user_id     = cur[0]
         username    = cur[1]
@@ -43,11 +49,17 @@ def profile():
         if cur[5] is not None:
             solved_challenges = cur[5]
             query_string = "id = " + solved_challenges.replace("|", " or id = ")
-            cur = query_db('select id, name from challenges where %s' % query_string)
-            challenges = [dict(id=row[0],name=row[1],completed=True) for row in cur]
-            return render_template('profile.html',userid=user_id,username=username,email=email,challenges=challenges)
+            cur = query_db('select id, name, submitter_id from challenges where %s' % query_string)
+            challenges = [dict(id=row[0],name=row[1],submitter_id=row[2],completed=True) for row in cur]
+            # Convert user_ids to usernames
+            for challenge in challenges:
+                lookup = query_db("select username from users where id = ?", [challenge["submitter_id"]], one=True)
+                if lookup is not None:
+                    challenge["submitter_id"] = lookup[0]
+                else:
+                    challenge["submitter_id"] = "DvJudge"
 
-    return render_template('profile.html',userid=user_id,username=username,email=email)
+    return render_template('profile.html',userid=user_id,username=username,email=email,challenges=challenges)
 
 @app.route('/updateprofile', methods=['POST'])
 def updateprofile():
