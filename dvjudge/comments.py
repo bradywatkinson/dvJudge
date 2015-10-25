@@ -20,6 +20,14 @@ def get_forum_comments(forum_id):
 	cur = g.db.cursor()
 	cur.execute('select username, comment, post_time, comment_id from forum_comment where forum_page=?', [str(forum_id)])
 	comments = [dict(username=row[0],comment=row[1], post_time=row[2], comment_id=row[3], votes=get_forum_net_votes(row[3])) for row in cur]
+	
+	for comment in comments:
+		
+		# get user profile pics
+		cur2 = query_db('select image from users where username=?', [comment["username"]], one=True)
+		if cur2 is not None:
+			comment["image"] = cur2[0]
+	
 	return comments
 
 def get_forum_net_votes(comment_id):
