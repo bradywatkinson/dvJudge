@@ -53,7 +53,7 @@
                 <!-- For testing purposes:
                 {{ problem.name}}: {{ loop.index }} -->
                 <td class="order">{{ loop.index }}</td>
-                <td class="problem"><b><a href="browse/{{ problem.name }}">{{ problem.name }}</a></b></td>
+                <td class="problem"><a href="browse/{{ problem.name }}">{{ problem.name }}</a></td>
                 <td><a href="/profile/{{ problem.submitter_id }}">{{ problem.submitter_id }}</a></td>
                 <td><div align="center"><a class='btn btn-delete btn-sm btn-danger'>Delete</a></div></td>
                 <input type="hidden" name="{{ problem.name }}" id="{{ problem.name }}" value=""/>

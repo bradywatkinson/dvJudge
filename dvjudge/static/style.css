@@ -1,3 +1,7 @@
+body {
+	background: linear-gradient(to bottom, #FFFFFF, rgba(117, 141, 164, 0.2));
+}
+
 /*
 body            { font-family: sans-serif; background: #eee; }
 a, h1, h2       { color: #377ba8; }

@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="bs-example">
+<div id="submissionpage" style="height:200px" class="bs-example">
   <h1>Your submissions:</h1>
     <table class="table table-striped">
         <thead>
@@ -8,7 +8,6 @@
                 <th>Submit Time</th>
                 <th>Question</th>
                 <th>Result</th>
-                <th>Run Time</th>
                 <th>Language</th>
             </tr>
         </thead>
@@ -19,7 +18,6 @@
             <td>{{ submission.timestamp }}</a></td>
             <td><a href="browse/{{ submission.challenge_name }}">{{ submission.challenge_name }}</a></td>
             <td><a href="submissions/{{ submission.id }}">{{ submission.status }}</td>
-            <td>Not yet implemented</td>
             <td>{{ submission.language }}</td>
           </tr>
           {% endfor %}
