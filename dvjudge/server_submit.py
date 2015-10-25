@@ -112,7 +112,7 @@ def run_c(code, username, input_tests, expected_output):
         for test in tests:
             #output = output+ "Testing "+test+"\n"
             #include timeout for tjandra
-            run = subprocess.Popen(['sudo','chroot',non_root,jail,'timeout','5s',chroot+username+'/'+ username], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            run = subprocess.Popen(['sudo','chroot',non_root,jail,'timeout','1s',chroot+username+'/'+ username], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             #run = subprocess.Popen('./submissions/submission', stdin=test, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
@@ -168,7 +168,7 @@ def run_java(code, username, input_tests, expected_output):
         for test in tests:
             #output = output+ "Testing "+test+"\n"
             #include timeout for tjandra
-            run = subprocess.Popen(['sudo','chroot',non_root,jail,'timeout','5s','java','-cp',chroot+username+'/',class_name], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            run = subprocess.Popen(['sudo','chroot',non_root,jail,'timeout','1s','java','-cp',chroot+username+'/',class_name], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             #run = subprocess.Popen('./submissions/submission', stdin=test, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 

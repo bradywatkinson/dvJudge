@@ -110,7 +110,7 @@ def run_c(code, username, input_tests, expected_output):
         for test in tests:
             #output = output+ "Testing "+test+"\n"
             #include timeout for tjandra
-            run = subprocess.Popen(['gtimeout','5s','./'+username+'/'+ username], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            run = subprocess.Popen(['gtimeout','1s','./'+username+'/'+ username], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             #run = subprocess.Popen('./submissions/submission', stdin=test, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
@@ -165,7 +165,7 @@ def run_java(code, username, input_tests, expected_output):
         for test in tests:
             #output = output+ "Testing "+test+"\n"
             #include timeout for tjandra
-            run = subprocess.Popen(['gtimeout','5s','java','-cp','./'+username+'/',class_name], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            run = subprocess.Popen(['gtimeout','1s','java','-cp','./'+username+'/',class_name], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             #run = subprocess.Popen('./submissions/submission', stdin=test, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
@@ -208,7 +208,7 @@ def run_c_plus(code, username, input_tests, expected_output):
         for test in tests:
             #output = output+ "Testing "+test+"\n"
             #include timeout for tjandra
-            run = subprocess.Popen(['gtimeout','5s','./'+username+'/'+ username], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            run = subprocess.Popen(['gtimeout','1s','./'+username+'/'+ username], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             #run = subprocess.Popen('./submissions/submission', stdin=test, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
