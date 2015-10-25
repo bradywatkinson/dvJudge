@@ -119,8 +119,8 @@ def run_c(code, username, input_tests, expected_output):
             #otherwise an error will occur 
             expected = outputs.pop(0)
             expected = " ".join(expected.split())
-            prog_output = " ".join(prog_output.split())
-            if prog_output != expected:
+            received = " ".join(prog_output.split())
+            if received != expected:
                 output = "Test failed.\nProvided input: " + test +"\n"+"Expected output: "+ expected+"\n"+\
                  "Program output:" + prog_output
                 status = 'Incorrect'
@@ -174,8 +174,8 @@ def run_java(code, username, input_tests, expected_output):
             #otherwise an error will occur 
             expected = outputs.pop(0)
             expected = " ".join(expected.split())
-            prog_output = " ".join(prog_output.split())
-            if prog_output != expected:
+            received = " ".join(prog_output.split())
+            if received != expected:
                 output = "Test failed.\nProvided input: " + test +"\n"+"Expected output: "+ expected+"\n"+\
                  "Program output:" + prog_output
 
@@ -217,8 +217,8 @@ def run_c_plus(code, username, input_tests, expected_output):
             #otherwise an error will occur 
             expected = outputs.pop(0)
             expected = " ".join(expected.split())
-            prog_output = " ".join(prog_output.split())
-            if prog_output != expected:
+            received = " ".join(prog_output.split())
+            if received != expected:
                 output = "Test failed.\nProvided input: " + test +"\n"+"Expected output: "+ expected+"\n"+\
                  "Program output:" + prog_output
                 status = 'Incorrect'
@@ -255,8 +255,8 @@ def run_python(code, username, input_tests, expected_output):
         #otherwise an error will occur 
         expected = outputs.pop(0)
         expected = " ".join(expected.split())
-        prog_output = " ".join(prog_output.split())
-        if prog_output != expected:
+        received = " ".join(prog_output.split())
+        if received != expected:
             if 'Traceback' in prog_output or 'SyntaxError' in prog_output or 'IndentationError' in prog_output:
                 output = prog_output
                 status = 'Compile Error'
