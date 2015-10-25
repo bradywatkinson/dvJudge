@@ -587,11 +587,11 @@ class FlaskrTestCase(unittest.TestCase):
         data = {}
         data['playlist_name'] = ""
         rv = self.app.post('/new_playlist', data=data, follow_redirects=True)
-        assert ("Please insert a valid username.") in rv.data
+        assert ("Please insert a valid playlist name.") in rv.data
 
         data['playlist_name'] = "          "
         rv = self.app.post('/new_playlist', data=data, follow_redirects=True)
-        assert ("Please insert a valid username.") in rv.data
+        assert ("Please insert a valid playlist name.") in rv.data
 
         data['playlist_name'] = "Stanley Sux"
         data['Count to N'] = "1"

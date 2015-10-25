@@ -50,7 +50,7 @@
 
   {% if session.user == "admin" %}
     <form method="POST">
-      {% if not categories %}
+      {% if com_flag == 1 %}
         <input type="submit" name="add" class="btn btn-primary" onsubmit="{{ url_for( 'community_browse_post' ) }}" style="float:left; margin-left: 1%" value="Add to Browse Page">
       {% else %}
         <input type="submit" name="remove" class="btn btn-primary" onsubmit="{{ url_for( 'browse_post' ) }}" style="float:left; margin-left: 1%" value="Remove from Browse Page">
@@ -79,7 +79,7 @@
                     <td>No</td>
                   {% endif %}
                   </form>
-                  {% if categories %}
+                  {% if com_flag == 0 %}
                     <td>
                       <form action="{{ url_for('browse_post') }}" method="POST" 
                       onsubmit="return confirm('Are you sure you want to delete \'{{ challenge.name }}\'?');">

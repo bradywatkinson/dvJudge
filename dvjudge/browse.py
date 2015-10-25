@@ -23,7 +23,7 @@ def browse():
                     if str(displayed_challenge["id"]) == completed_challenge:
                         displayed_challenge["completed"] = 1 # The HTML page just checks for the existance of this key-value pair
 
-    return render_template('browse.html', challenges=challenges, categories=categories, com_flag=0)
+    return render_template('browse.html', challenges=challenges, categories=categories, com_flag=False)
 
 @app.route('/browse', methods=['POST'])
 def browse_post():
@@ -47,7 +47,7 @@ def browse_post():
                             displayed_challenge["completed"] = 1 # The HTML page just checks for the existance of this key-value pair
 
         # Pass only those on
-        return render_template('browse.html', challenges=results, searchterm=request.form.get('searchterm'))
+        return render_template('browse.html', challenges=results, searchterm=request.form.get('searchterm'), com_flag=False)
     # Admin request to move challenges
     elif request.form.get('remove') is not None:
         if session['user'] == "admin":
@@ -66,7 +66,7 @@ def browse_post():
                     update_db(move, [challenge['name']])
             cur = query_db('select id, name from challenges where com_flag = 0 or com_flag = 2')
             challenges = [dict(id=row[0],name=row[1]) for row in cur]
-            return render_template('browse.html', challenges=challenges, categories=categories)
+            return render_template('browse.html', challenges=challenges, categories=categories, com_flag=False)
 
     # Admin request to delete challenge
     elif request.form.get('delete_chal') is not None:
@@ -80,7 +80,7 @@ def browse_post():
             if cur:
                 categories = [dict(name=row[0]) for row in cur]
 
-            return render_template('browse.html', challenges=challenges, categories=categories)
+            return render_template('browse.html', challenges=challenges, categories=categories, com_flag=False)
 
     else: # If there's no searchterm and we get a post, it's probably filtering.
         
@@ -143,5 +143,5 @@ def browse_post():
             # List comprehension: Matching problems only
             challenges = [x for x in challenges if str(x["id"]) not in lookup[0].split('|')] 
 
-    return render_template('browse.html', challenges=challenges, categories=categories, no_completed=no_completed, com_flag=0)
+    return render_template('browse.html', challenges=challenges, categories=categories, no_completed=no_completed, com_flag=False)
         
