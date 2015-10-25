@@ -24,7 +24,7 @@
 {% else %}
 <div class="jumbotron">
     <div class="container-fluid">
-        <h1>Welcome {{ session.user  }}!</h1>
+        <h1>Welcome {{ session.user }}!</h1>
     </div>
 </div>
 <div class="container-fluid">
@@ -36,8 +36,6 @@
             <h3><a href="{{ url_for('upload') }}">Upload Code</a></h3>
         </div>
     </div>
-{% endif %}
-<hr>
-
 </div>
+{% endif %}
 {% endblock %}
