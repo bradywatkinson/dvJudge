@@ -66,6 +66,9 @@ def login_signup_form():
         return redirect(url_for('browse_specific_challenge', challenge_name=request.form['challenge_name']))
     if request.form['page'] == "forums_browse":
         return redirect(url_for('forums_browse', forum_problem=request.form['forum_problem']))
+    # if "forum_question" in request.form:
+    if request.form['page'] == "forums_question":
+        return redirect(url_for('forums_question', forum_problem=request.form['forum_problem'], forum_question=request.form['forum_question']))
     return redirect(url_for(request.form['page']))
 
 @app.route('/logout')

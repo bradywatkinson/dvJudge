@@ -77,6 +77,9 @@
               <input type="hidden" name="challenge_name" value="{{ challenge_info.name }}">
               {% elif forum_problem %}
               <input type="hidden" name="forum_problem" value="{{ forum_problem }}">
+                {% if forum_question %}
+                <input type="hidden" name="forum_question" value="{{ forum_question }}">
+                {% endif %}
               {% endif %}
               <input type="hidden" name="page" value="{{ request.url_rule.endpoint }}">
 
@@ -115,6 +118,9 @@
               <input type="hidden" name="challenge_name" value="{{ challenge_info.name }}">
               {% elif forum_problem %}
               <input type="hidden" name="forum_problem" value="{{ forum_problem }}">
+                {% if forum_question %}
+                  <input type="hidden" name="forum_question" value="{{ forum_question }}">
+                {% endif %}
               {% endif %}
               <input type="hidden" name="page" value="{{ request.url_rule.endpoint }}">
             <fieldset>
