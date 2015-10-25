@@ -31,10 +31,8 @@ def show_playlists():
                             selection = play
 
 
-                cur = query_db('select id, name from challenges')
-                # Produce an array of hashes that looks something like:
-                # [{id->'1', name->'some challenge name'}, {other hash}]  
-                challenges = [dict(id=row[0],name=row[1]) for row in cur]
+                cur = query_db('select id, name, submitter_id from challenges')
+                challenges = [dict(id=row[0],name=row[1],submitter_id=row[2]) for row in cur]
                 challenge_list = []
                 # Determine whether Submit Changes was pressed
                 auto_reorder = request.form.get('auto')
@@ -68,10 +66,16 @@ def show_playlists():
                     for id in id_list:
                         for challenge in challenges:
                             if challenge['id'] == id:
+                                # Convert user_ids to usernames
+                                lookup = query_db("select username from users where id = ?", [challenge["submitter_id"]], one=True)
+                                if lookup is not None:
+                                    challenge["submitter_id"] = lookup[0]
+                                else:
+                                    challenge["submitter_id"] = "DvJudge"
+                                # Add challenges to list
                                 challenge_list.append(challenge)
                                 break
-                        #if id <= len(challenges):
-                        #    challenge_list.append(challenges[id-1])
+
             else:
                 playlists = None
                 selection = None
