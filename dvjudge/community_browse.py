@@ -6,7 +6,14 @@ from core import query_db, update_db
 def community_browse():
     cur = query_db('select id, name from challenges where com_flag = 1')
     challenges = [dict(id=row[0],name=row[1]) for row in cur]
-    return render_template('browse.html', challenges=challenges)
+    # Retrieve category names
+    cur = query_db('select name from categories');
+    if cur:
+        categories = [dict(name=row[0]) for row in cur]
+
+
+
+    return render_template('browse.html', challenges=challenges, categories=categories, com_flag=1)
 
 @app.route('/community/browse', methods=['POST'])
 def community_browse_post():
@@ -14,6 +21,11 @@ def community_browse_post():
     # Produce an array of hashes that looks something like:
     # [{id->'1', name->'some challenge name'}, {other hash}]  
     challenges = [dict(id=row[0],name=row[1]) for row in cur]
+    # Retrieve category names
+    cur = query_db('select name from categories');
+    if cur:
+        categories = [dict(name=row[0]) for row in cur]
+
 
     # User is searching
     if request.form.get('searchterm'):
@@ -42,7 +54,7 @@ def community_browse_post():
             # [{id->'1', name->'some challenge name'}, {other hash}]  
             challenges = [dict(id=row[0],name=row[1]) for row in cur]
 
-    return render_template('browse.html', challenges=challenges)
+    return render_template('browse.html', challenges=challenges, categories=categories, com_flag=1)
 
 
 @app.route('/community/browse/<challenge_name>', methods=['GET'])
