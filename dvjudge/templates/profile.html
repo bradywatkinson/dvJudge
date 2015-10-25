@@ -2,81 +2,121 @@
 {% block body %}
 <body>
 <div class="container">
-    <h1>Edit Profile</h1>
-    <hr>
-    <div class="row row-equ-height">
-      <!-- left column -->
-      <div class="col-equ-height col-md-3">
-        <br>
-        <br>
-        <form enctype=multipart/form-data class="form-horizontal" action="{{ url_for('updateprofilepic') }}" id="image" method=post>
-          <div class="text-center">
-             <img src="{{ url_for('static',filename='%s' % session.image) }}" class="avatar img-circle" alt="avatar" style="width:228px;height:228px;">
-            <h6>Upload a different photo</h6>
-            
-            <input type="file" class="form-control" name="file" required=true>
-            <br>
-            <input type="submit" value="upload">
-          </div>
-        </form>
-      </div>
+  <h1>Edit Profile</h1>
+  <hr>
+  <div class="row row-equ-height">
+    <!-- left column -->
+    <div class="col-equ-height col-md-3">
+      <br>
+      <br>
+      <form enctype=multipart/form-data class="form-horizontal" action="{{ url_for('updateprofilepic') }}" id="image" method=post>
+        <div class="text-center">
+           <img src="{{ url_for('static',filename='%s' % session.image) }}" class="avatar img-circle" alt="avatar" style="width:228px;height:228px;">
+          <h6>Upload a different photo</h6>
+          
+          <input type="file" class="form-control" name="file" required=true>
+          <br>
+          <input type="submit" value="upload">
+        </div>
+      </form>
+    </div>
+    
+    <!-- edit form column -->
+    <div class="col-equ-height col-md-9 personal-info">
+      <h3>Personal info</h3>
       
-      <!-- edit form column -->
-      <div class="col-equ-height col-md-9 personal-info">
-        <h3>Personal info</h3>
-        
-        <form class="form-horizontal" role="form" action="{{ url_for('updateprofile') }}" method=post>
+      <form class="form-horizontal" role="form" action="{{ url_for('updateprofile') }}" method=post>
 
-          <div class="form-group">
-            <label class="col-lg-3 control-label">Email:</label>
-            <div class="col-lg-8">
-              <input class="form-control" type="text" value="{{ email }}" name="email">
-            </div>
+        <div class="form-group">
+          <label class="col-lg-3 control-label">Email:</label>
+          <div class="col-lg-8">
+            <input class="form-control" type="text" value="{{ email }}" name="email">
           </div>
-          <div class="form-group">
-            <label class="col-md-3 control-label">Username:</label>
-            <div class="col-md-8">
-              <input class="form-control" type="text" value="{{ username }}" name="username">
-            </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-3 control-label">Username:</label>
+          <div class="col-md-8">
+            <input class="form-control" type="text" value="{{ username }}" name="username">
           </div>
-          <div class="form-group">
-            <label class="col-md-3 control-label">Password:</label>
-            <div class="col-md-8">
-              <input class="form-control" type="password" placeholder="********" minlength="6" maxlength="20" name="pass1">
-            </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-3 control-label">Password:</label>
+          <div class="col-md-8">
+            <input class="form-control" type="password" placeholder="********" minlength="6" maxlength="20" name="pass1">
           </div>
-          <div class="form-group">
-            <label class="col-md-3 control-label">Confirm password:</label>
-            <div class="col-md-8">
-              <input class="form-control" type="password" placeholder="********" minlength="6" maxlength="20" name="pass2">
-            </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-3 control-label">Confirm password:</label>
+          <div class="col-md-8">
+            <input class="form-control" type="password" placeholder="********" minlength="6" maxlength="20" name="pass2">
           </div>
-          <div class="form-group">
-            <label class="col-md-3 control-label"></label>
-            <div class="col-md-8">
-              <input type="submit" class="btn btn-primary" value="Save Changes">
-              <span></span>
-              <input type="reset" class="btn btn-default" value="Cancel">
-            </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-3 control-label"></label>
+          <div class="col-md-8">
+            <input type="submit" class="btn btn-primary" value="Save Changes">
+            <span></span>
+            <input type="reset" class="btn btn-default" value="Cancel">
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
+    </div>
   </div>
   <br>
-  <div class="col-md-8 col-md-offset-2">
-    <div class = "panel panel-primary">
-      <div class = "panel-heading">
-        <h3 class = "panel-title">Manage My Account</h3>
-      </div>
-     
-      <div class = "panel-body">
-        <div class="row row-equ-height">
-          <div class="col-md-3 col-md-offset-3"><button class="btn btn-primary btn-lg" href="/playlists">My Playlists</button></div>
-          <div class="col-md-3"><button class="btn btn-primary btn-lg" href="/submissions">My Submissions</button></div>
+
+
+  <div class="row row-equ-height">
+    <div class="col-equ-height col-md-3">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">My Account</h3>
+        </div>
+       
+        <div class = "panel-body">
+          <button class="btn btn-primary btn-lg btn-block" href="/playlists">My Playlists</button>
+          <br>
+          <p><button class="btn btn-success btn-lg btn-block" href="/submissions">My Submissions</button>
         </div>
       </div>
     </div>
+
+    <div class="col-equ-height col-md-9">
+      {% if challenges %}
+      <div class="bs-example">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th>Submitter</th>
+              <th>Completed</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ul class=challenges>
+            {% for challenge in challenges %}
+            <tr>
+              {# Both of the following links should link to browse/<challenge_name> #}
+              <td><b><a href="{{ url_for('browse_specific_challenge', challenge_name=challenge.name) }}">{{ challenge.id }}</a></b></td>
+              <td><a href="{{ url_for('browse_specific_challenge', challenge_name=challenge.name) }}">{{ challenge.name }}</a></td>
+              <td>DVJUDGE</td>
+              {% if challenge.completed %}
+                <td>Yes</td>
+              {% else %}
+                <td>No</td>
+              {% endif %}
+            </tr>
+            {% endfor %}
+            </ul>
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <h2> No challenges completed.
+      {% endif %}
+    </div>
   </div>
+<div>
 <hr>
 </body>
 {% endblock %} 

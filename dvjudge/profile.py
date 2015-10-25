@@ -13,6 +13,26 @@ import os
 # the allowable
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg'])
 
+@app.route('/profile/<user>', methods=['GET'])
+def public_profile(user):
+    cur = query_db('select * from users where username = ?', [user], one=True)
+    if cur is not None:
+        user_id     = cur[0]
+        username    = cur[1]
+        email       = cur[2]
+        if cur[5] is not None:
+            solved_challenges = cur[5]
+            query_string = "id = " + solved_challenges.replace("|", " or id = ")
+            print query_string
+            cur = query_db('select id, name from challenges where %s' % query_string)
+            challenges = [dict(id=row[0],name=row[1],completed=True) for row in cur]
+            print challenges
+            return render_template('public_profile.html',userid=user_id,username=username,email=email,challenges=challenges)
+    else:
+        return render_template('user_dne.html',username=user)
+
+    return render_template('public_profile.html',userid=user_id,username=user,email=email)
+
 @app.route('/profile', methods=['GET'])
 def profile():
     cur = query_db('select * from users where id = ?', [session['userid']], one=True)
@@ -20,6 +40,13 @@ def profile():
         user_id     = cur[0]
         username    = cur[1]
         email       = cur[2]
+        if cur[5] is not None:
+            solved_challenges = cur[5]
+            query_string = "id = " + solved_challenges.replace("|", " or id = ")
+            cur = query_db('select id, name from challenges where %s' % query_string)
+            challenges = [dict(id=row[0],name=row[1],completed=True) for row in cur]
+            return render_template('profile.html',userid=user_id,username=username,email=email,challenges=challenges)
+
     return render_template('profile.html',userid=user_id,username=username,email=email)
 
 @app.route('/updateprofile', methods=['POST'])
