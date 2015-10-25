@@ -21,6 +21,7 @@
                   {{ comment.comment }}
                 </div>
                 <p><div style="font-size: 85%; display: inline-block; margin: 5px">
+                  <img src="{{ url_for('static',filename='%s' % comment.image) }}" class="avatar img-circle" alt="avatar" style="width:32px;height:32px;vertical-align:middle;">
                   <a href="/profile/{{ comment.username }}">{{ comment.username }}</a> on {{ comment.post_time }}</p>
                 </div>
               </div>
