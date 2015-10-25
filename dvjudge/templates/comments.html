@@ -11,9 +11,13 @@
             <div style="display: table">
               <div style="display: table-cell; float:left">
                 <form action="" method=post>
-                  <a href="/forums/{{ forum_problem }}/{{ forum_question }}/+/{{ comment.comment_id }}" type="submit" class="form-control">+</a>
+                  {% if logged_in %}
+                    <a href="/forums/{{ forum_problem }}/{{ forum_question }}/+/{{ comment.comment_id }}" type="submit" class="form-control">+</a>
+                  {% endif %}
                   <h4 style="text-align:center">{{ comment.votes }}</h4>
-                  <a href="/forums/{{ forum_problem }}/{{ forum_question }}/-/{{ comment.comment_id }}" type="submit" class="form-control">-</a>
+                  {% if logged_in %}
+                    <a href="/forums/{{ forum_problem }}/{{ forum_question }}/-/{{ comment.comment_id }}" type="submit" class="form-control">-</a>
+                  {% endif %}
                 </form>  
               </div>
               <div style="display: table-cell; float:right; margin: 6px">

@@ -53,6 +53,9 @@ def forum_comment_vote(forum_problem, forum_question, sign, comment_id):
 @app.route('/forums/<forum_problem>/<forum_question>', methods=['GET', 'POST'])
 def forums_question(forum_problem, forum_question):
 	error = ""
+	logged_in = False
+	if 'user' in session:
+		logged_in = True
 	if request.method == 'POST':
 		if 'user' in session:
 			if request.form['comment']:
@@ -65,7 +68,7 @@ def forums_question(forum_problem, forum_question):
 	cur.execute('select original_poster, post_name, post_body, post_time from forum_page where id=?', [str(forum_question)])
 	forum_details = [dict(username=row[0], question=row[1], body=row[2], post_time=row[3]) for row in cur]
 	comments = get_forum_comments(forum_question)
-	return render_template('forum_question.html', forum_problem=forum_problem, forum_question=forum_question, forum_details=forum_details, comments=comments, error=error)
+	return render_template('forum_question.html', forum_problem=forum_problem, forum_question=forum_question, forum_details=forum_details, comments=comments, error=error, logged_in=logged_in)
 
 @app.route('/forums/<forum_problem>', methods=['POST'])
 def forums_search(forum_problem=None):
