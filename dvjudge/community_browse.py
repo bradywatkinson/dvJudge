@@ -12,8 +12,7 @@ def community_browse():
         categories = [dict(name=row[0]) for row in cur]
 
 
-
-    return render_template('browse.html', challenges=challenges, categories=categories, com_flag=1)
+    return render_template('browse.html', challenges=challenges, categories=categories, com_flag=True)
 
 @app.route('/community/browse', methods=['POST'])
 def community_browse_post():
@@ -32,9 +31,8 @@ def community_browse_post():
         # Iterate over challenges, and only keep hashes (i.e. challenges) where the names match up
         name = request.form.get('searchterm')
         results = [challenge for challenge in challenges if name.lower() in challenge['name'].lower()]
-        # Pass only those on
-        com_flag = True
-        return render_template('browse.html', challenges=results, searchterm=request.form.get('searchterm'), com_flag=com_flag)
+        
+        return render_template('browse.html', challenges=results, searchterm=request.form.get('searchterm'), com_flag=True)
     elif request.form.get('add') is not None:
         # Admin request to move challenges
         if session['user'] == "admin":
@@ -54,7 +52,7 @@ def community_browse_post():
             # [{id->'1', name->'some challenge name'}, {other hash}]  
             challenges = [dict(id=row[0],name=row[1]) for row in cur]
 
-    return render_template('browse.html', challenges=challenges, categories=categories, com_flag=1)
+    return render_template('browse.html', challenges=challenges, categories=categories, com_flag=True)
 
 
 @app.route('/community/browse/<challenge_name>', methods=['GET'])
