@@ -42,6 +42,7 @@ import dvjudge.community
 import dvjudge.community_browse
 import dvjudge.login_signup_form
 import dvjudge.submissions
+import dvjudge.profile
 import dvjudge.challenge
 import dvjudge.forums
 import dvjudge.comments

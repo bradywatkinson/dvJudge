@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block body %}
+<body>
+<div class="container">
+  <h1>{{ username }}</h1>
+  <hr>
+  <div class="row row-equ-height">
+    <!-- left column -->
+    <div class="col-equ-height col-md-3">
+      <br>
+      <br>
+        <div class="text-center">
+           <img src="{{ url_for('static',filename='%s' % session.image) }}" class="avatar img-circle" alt="avatar" style="width:228px;height:228px;">
+        </div>
+    </div>
+    
+    <!-- edit form column -->
+    <div class="col-equ-height col-md-9">
+      <div class="bs-example">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Submitter</th>
+                <th>Completed</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ul class=challenges>
+            {% for challenge in challenges %}
+              <tr>
+                {# Both of the following links should link to browse/<challenge_name> #}
+                <td><b><a href="{{ url_for('browse_specific_challenge', challenge_name=challenge.name) }}">{{ challenge.id }}</a></b></td>
+                <td><a href="{{ url_for('browse_specific_challenge', challenge_name=challenge.name) }}">{{ challenge.name }}</a></td>
+                <td>DVJUDGE</td>
+                {% if challenge.completed %}
+                  <td>Yes</td>
+                {% else %}
+                  <td>No</td>
+                {% endif %}
+              </tr>
+            {% endfor %}
+            </ul>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+{% endblock %} 

@@ -24,9 +24,7 @@
 {% else %}
 <div class="jumbotron">
     <div class="container-fluid">
-        <h1>Welcome {{ session.user }}!</h1>
-        <br>
-        <p><a href="{{ url_for('myprofile') }}" target="_blank" class="btn btn-primary">VIEW YOUR PROGRESS</a></p>
+        <h1>Welcome {{ session.user  }}!</h1>
     </div>
 </div>
 <div class="container-fluid">

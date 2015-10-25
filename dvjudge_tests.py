@@ -68,11 +68,9 @@ class FlaskrTestCase(unittest.TestCase):
     def test_login_landing_page(self):
         rv = self.app.get('/')
         assert ('textarea') in rv.data
-        assert ('VIEW YOUR PROGRESS') not in rv.data
         assert ('Upload Code') not in rv.data
         self.login('admin', 'default')
         rv = self.app.get('/')
-        assert ('VIEW YOUR PROGRESS') in rv.data
         assert ('Upload Code') in rv.data
         assert ('SIGN UP TODAY') not in rv.data
 
@@ -662,6 +660,42 @@ class FlaskrTestCase(unittest.TestCase):
         assert ("You have no playlists.") in rv.data
 
 
+    # Update profile tests
+    # This test, tests the update profile method written by Brady on 11 Oct
+    def test_profile(self):
+        self.login('admin', 'default')
+        rv = self.app.get('profile', follow_redirects=True)
+        assert ("admin") in rv.data
+        assert ("admin@hotmail.com") in rv.data
+
+        rv = self.app.post('/updateprofile',data=dict(
+                        username = 'admin', 
+                        email = 'admin1@hotmail.com',
+                        pass1 = "",
+                        pass2 = ""
+                        ), follow_redirects=True)
+        assert ("admin") in rv.data
+        assert ("admin1@hotmail.com") in rv.data
+
+        rv = self.app.post('/updateprofile',data=dict(
+                        username = 'admin1', 
+                        email = 'admin1@hotmail.com',
+                        pass1 = "",
+                        pass2 = ""
+                        ), follow_redirects=True)
+        assert ("admin1") in rv.data
+        assert ("admin1@hotmail.com") in rv.data
+
+        rv = self.app.post('/updateprofile',data=dict(
+                        username = 'admin1', 
+                        email = 'admin1@hotmail.com',
+                        pass1 = "testtest",
+                        pass2 = "testtestx"
+                        ), follow_redirects=True)
+        assert ("admin1") in rv.data
+        assert ("admin1@hotmail.com") in rv.data
+        assert ("Passwords do not match") in rv.data
+
     # Test a challenge shows the correct "add to playlist" buttons in the dropdown
     def test_add_to_playlist(self):
         self.login('dannyeei', 'daniel')
@@ -728,19 +762,19 @@ class FlaskrTestCase(unittest.TestCase):
     # check user stanley has by default challenges 1 6 completed, admin has none.
     def test_completed_challenges(self):
         self.login('stanley', 'default')
-        rv = self.app.get('/myprofile')
+        rv = self.app.get('/profile')
         assert("No challenges completed.") not in rv.data
-        assert("1 6") in rv.data
+        assert("Count to N") in rv.data
         rv = self.logout()
         self.login('admin', 'default')
-        rv = self.app.get('/myprofile')
+        rv = self.app.get('/profile')
         assert("No challenges completed.") in rv.data
         assert("1 3") not in rv.data
 
     # submit an answer for Q1 and Q6, check profile shows those two problems solved.
     def test_completed_challenges_2(self):
         self.login('admin', 'default')
-        rv = self.app.get('/myprofile')
+        rv = self.app.get('/profile')
         assert("No challenges completed.") in rv.data
         
         # Submit problem 1
@@ -780,8 +814,9 @@ class FlaskrTestCase(unittest.TestCase):
         assert('All tests passed.') in rv.data
 
         # Check /myprofile shows 1 2
-        rv = self.app.get('/myprofile')
-        assert("1 2") in rv.data
+        rv = self.app.get('/profile')
+        assert("Count to N") in rv.data
+        assert("Sum to N") in rv.data
         assert("No challenges completed.") not in rv.data
 
     # Test browse page shows completion status correctly

@@ -17,13 +17,11 @@
         width: 600px;
         height: 5px;
     }
-    #editor_div {
+    #editor {
         display: block;
-        margin: auto;
-        width: 600px;
-        height: 300px;
         border: 1px solid #888;
     }
+
 </style>
 
 </head>
@@ -71,10 +69,7 @@
         </div>
       <div class="modal-body">
         <div id="myTabContent" class="tab-content">
-        <!--div class="tab-pane fade in" id="why">
-        <p>We need this information so that you can receive access to the site and its content. Rest assured your information will not be sold, traded, or given to anyone.</p>
-        <p></p><br> Please contact <a mailto:href="JoeSixPack@Sixpacksrus.com"></a>JoeSixPack@Sixpacksrus.com</a> for any other inquiries.</p>
-        </div-->
+
         <div class="tab-pane fade active in" id="signin">
             <form class="form-horizontal" action="{{ url_for('login_signup_form') }}" method=post>
               {% if challenge_info %}
@@ -98,20 +93,9 @@
             <div class="control-group">
               <label class="control-label" for="passwordinput">Password:</label>
               <div class="controls">
-                <input required="" id="passwordinput" name="password" class="form-control" type="password" placeholder="********" class="input-medium" minlength="6" maxlength="20">
+                <input required="" id="passwordinput" name="password" class="form-control" minlength="6" maxlength="20" type="password" placeholder="********" class="input-medium">
               </div>
             </div>
-
-            <!-- Multiple Checkboxes (inline) -->
-            <!--div class="control-group">
-              <label class="control-label" for="rememberme"></label>
-              <div class="controls">
-                <label class="checkbox inline" for="rememberme-0">
-                  <input type="checkbox" name="rememberme" id="rememberme-0" value="Remember me">
-                  Remember me
-                </label>
-              </div>
-            </div-->
 
             <!-- Button -->
             <div class="control-group">
@@ -154,7 +138,7 @@
             <div class="control-group">
               <label class="control-label" for="password">Password:</label>
               <div class="controls">
-                <input id="password" name="password" class="form-control" type="password" placeholder="********" class="input-large" required="" minlength="6" maxlength"20">
+                <input id="password" name="password" class="form-control" type="password" minlength="6" maxlength="20" placeholder="********" class="input-large" required="">
               </div>
             </div>
             
@@ -165,18 +149,6 @@
                 <input id="confirmpassword" class="form-control" name="confirmpassword" type="password" placeholder="********" class="input-large" required="" minlength="6" maxlength="20">
               </div>
             </div>
-            
-            <!-- Multiple Radios (inline) -->
-            <!--br>
-            <div class="control-group">
-              <label class="control-label" for="humancheck">Humanity Check:</label>
-              <div class="controls">
-                <label class="radio inline" for="humancheck-0">
-                  <input type="radio" name="humancheck" id="humancheck-0" value="robot" checked="checked">I'm a Robot</label>
-                <label class="radio inline" for="humancheck-1">
-                  <input type="radio" name="humancheck" id="humancheck-1" value="human">I'm Human</label>
-              </div>
-            </div-->
             
             <!-- Button -->
             <div class="control-group">
@@ -202,15 +174,14 @@
 
 
           {% else %}
+           <li style="padding-top:10px"><img src="{{ url_for('static',filename='%s' % session.image) }}" class="avatar img-circle" alt="avatar" style="width:32px;height:32px;vertical-align:middle;">
             <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ session.user }} <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="/myprofile">Profile</a></li>
+            <li><a href="/profile">Profile</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="#">Messages</a></li>
-            <li><a href="#">Settings</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="#">Separated link</a></li>
+            <li><a href="/submissions">Submissions</a></li>
+            <li><a href="/playlists">My Playlists</a></li>
           </ul>
         </li>
         <li><a href="{{ url_for('logout') }}">Logout</a></li>
@@ -222,6 +193,7 @@
   </div><!-- /.container-fluid -->
 </nav>
 <div class=page>
+
   {% for message in get_flashed_messages(category_filter=['alert']) %}
   <div class="alert alert-info alert-dismissable"><a class="panel-close close" data-dismiss="alert">×</a>
     {{ message }}
@@ -229,6 +201,7 @@
   {% endfor %}
   {% for error in get_flashed_messages(category_filter=['error']) %}
   <div class="alert alert-error error"><a class="close" data-dismiss="alert">×</a>
+    <span class="sr-only">Error:</span>
     {{ error }}
   </div>
   {% endfor %}
@@ -248,11 +221,8 @@
                           <a href="#"> <i class="fa fa-google-plus">   </i> </a>
                     </div>
                 </div>
-                <!--/.row--> 
             </div>
-            <!--/.container--> 
         </div>
-        <!--/.footer-->
         
     <div class="row">
         <div class="col-xs-12">
@@ -261,7 +231,6 @@
             </footer>
         </div>
     </div>
-        <!--/.footer-bottom--> 
     </footer>
   </div>
 </div>

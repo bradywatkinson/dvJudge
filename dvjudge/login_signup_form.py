@@ -3,7 +3,7 @@ from dvjudge import app
 from core import query_db
 import hashlib
 import subprocess
-import os.path
+import os
 import uuid
 
 @app.route('/login_signup_form', methods=['POST'])
@@ -15,12 +15,19 @@ def login_signup_form():
         #retrieve username and password
         username = request.form['username']
         password = request.form['password']
-        user_pass = query_db('select username, password, salt from users where username = ? or email = ?',[username,username], one=True)
+        user_pass = query_db('select id, username, password, salt from users where username = ? or email = ?',[username,username], one=True)
         if user_pass is not None:
-            hashed_password = hashlib.sha512(password + user_pass[2]).hexdigest()
-            if username == user_pass[0] and hashed_password == user_pass[1]:
+            #print user_pass
+            hashed_password = hashlib.sha512(password + user_pass[3]).hexdigest()
+            if username == user_pass[1] and hashed_password == user_pass[2]:
+                session['userid'] = user_pass[0]
                 session['logged_in'] = True
                 session['user'] = username
+                if os.path.isfile('dvjudge/static/%s_profilepic.jpg' % user_pass[0]):
+                    session['image'] = '%s_profilepic.jpg' % user_pass[0]
+                else:
+                    # print 'static/%s_profilepic.jpg' % user_pass[0]
+                    session['image'] = 'default_profile.jpg'
                 flash('You were logged in','alert')
             else:
                 error += "Username and password do not match"
@@ -52,6 +59,8 @@ def login_signup_form():
             session['logged_in'] = True
             
             session['user'] = username
+            session['userid'] = query_db('''select last_insert_rowid()''')[0][0];
+            session['image'] = "default_profile.jpg";
             
             flash('You were logged in','alert')
     if error != "":
@@ -63,29 +72,11 @@ def login_signup_form():
         return redirect(url_for('forums_browse', forum_problem=request.form['forum_problem']))
     return redirect(url_for(request.form['page']))
 
-
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
     session.pop('user', None)
+    session.pop('userid', None)
+    session.pop('image', None)
     flash('You were logged out','alert')
     return redirect(url_for('show_mainpage'))
-
-@app.route('/myprofile')
-def myprofile():
-    if 'user' in session:
-        # Lookup data they need for the profile page
-        data = {}
-        challenge_string = ""
-        cur = query_db('select solved_challenges from users where username = ?', [session['user']], one=True)
-        if cur is not None and cur[0] is not None:
-            solved_challenges = cur[0]
-            # split solved_challenges on '|' character
-            for word in solved_challenges.split('|'):
-                challenge_string = challenge_string + " " + word
-
-        data["solved_challenges"] = challenge_string
-        return render_template('userprofile.html', username=session['user'], data=data)
-    else:
-        flash('You need to login before you can access this page','error')
-        return redirect(url_for('show_mainpage'))
