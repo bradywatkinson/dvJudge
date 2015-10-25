@@ -75,7 +75,7 @@
                 <tr>
                   <td><label><input type="checkbox" name="{{ challenge.name }}"></input></label></td>
                   <td><a href="{{ url_for('browse_specific_challenge', challenge_name=challenge.name) }}">{{ challenge.name }}</a></td>
-                  <td>DVJUDGE</td>
+                  <td><a href="/profile/{{ challenge.submitter_id }}">{{ challenge.submitter_id }}</a></td>
                   {% if challenge.completed %}
                     <td>Yes</td>
                   {% else %}

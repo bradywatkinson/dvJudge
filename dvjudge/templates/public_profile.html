@@ -15,37 +15,36 @@
     </div>
     
     <!-- edit form column -->
-    <div class="col-equ-height col-md-9">
-      <div class="bs-example">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-                <th>#</th>
-                <th>Title</th>
-                <th>Submitter</th>
-                <th>Completed</th>
-            </tr>
-          </thead>
-          <tbody>
-            <ul class=challenges>
-            {% for challenge in challenges %}
+    {% if challenges %}
+      <div class="col-equ-height col-md-9">
+        <div class="bs-example">
+          <h3>Completed Challenges</h3>
+          <table class="table table-striped">
+            <thead>
               <tr>
-                {# Both of the following links should link to browse/<challenge_name> #}
-                <td><b><a href="{{ url_for('browse_specific_challenge', challenge_name=challenge.name) }}">{{ challenge.id }}</a></b></td>
-                <td><a href="{{ url_for('browse_specific_challenge', challenge_name=challenge.name) }}">{{ challenge.name }}</a></td>
-                <td>DVJUDGE</td>
-                {% if challenge.completed %}
-                  <td>Yes</td>
-                {% else %}
-                  <td>No</td>
-                {% endif %}
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>Submitter</th>
               </tr>
-            {% endfor %}
-            </ul>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              <ul class=challenges>
+              {% for challenge in challenges %}
+                <tr>
+                  {# Both of the following links should link to browse/<challenge_name> #}
+                  <td><b><a href="{{ url_for('browse_specific_challenge', challenge_name=challenge.name) }}">{{ challenge.id }}</a></b></td>
+                  <td><a href="{{ url_for('browse_specific_challenge', challenge_name=challenge.name) }}">{{ challenge.name }}</a></td>
+                  <td><a href="/profile/{{ challenge.submitter_id }}">{{ challenge.submitter_id }}</a></td>
+                </tr>
+              {% endfor %}
+              </ul>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    {% else %}
+      <h3>{{ username }} has not completed any challenges.</h3>
+    {% endif %}
   </div>
 </body>
 {% endblock %} 
