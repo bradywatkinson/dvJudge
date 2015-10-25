@@ -48,7 +48,7 @@ DATABASE = '/dvjudge.db'
 DEBUG = False
 SECRET_KEY = '<get some key from random.org>'
 ```
-  - Setup the DB by running deploy.py
+  - Setup the DB by running deploy.py and check that you have write privileges to the database
   - Restart apache2
   - Navigate to your URL to check it works.
   - Install debootstrap
@@ -98,6 +98,9 @@ apt-get install python
 apt-get install default-jre
 apt-get install default-jdk
 ```
+- Add a new user to jail which will run the submissions ```adduser dvj ``` 
+-  Install iptables by runnning ```apt-get install iptables```
+-  Add rule to iptable to disable all outgoing internet activity for the group the dvj group ```iptables -A OUTPUT -m owner --gid-owner dvj -j DROP ```
 ##Project Details
 [Google Drive](https://drive.google.com/drive/folders/0BxD6wDvDG5hRfklTaUxrM0VNV2pqcm9sazFiNjhHQ3paSHRNN3JnODlLazU2d3B1Yjh6WDA)  
 [Jira](https://dvjudge.atlassian.net/projects/DVJ/summary)
