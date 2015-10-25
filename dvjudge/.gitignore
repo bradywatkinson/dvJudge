@@ -37,3 +37,5 @@ dvJudge/static/css/*
 dvJudge/static/fonts/*
 dvJudge/static/jquery-2.1.4.js
 dvJudge/static/js/*
+dvjudge/static/*.jpg
+dvjudge/static/*.jpeg

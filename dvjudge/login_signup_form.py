@@ -3,7 +3,7 @@ from dvjudge import app
 from core import query_db
 import hashlib
 import subprocess
-import os.path
+import os
 import uuid
 
 @app.route('/login_signup_form', methods=['POST'])
@@ -23,6 +23,11 @@ def login_signup_form():
                 session['userid'] = user_pass[0]
                 session['logged_in'] = True
                 session['user'] = username
+                if os.path.isfile('dvjudge/static/%s_profilepic.jpg' % user_pass[0]):
+                    session['image'] = '%s_profilepic.jpg' % user_pass[0]
+                else:
+                    # print 'static/%s_profilepic.jpg' % user_pass[0]
+                    session['image'] = 'default_profile.jpg'
                 flash('You were logged in','alert')
             else:
                 error += "Username and password do not match"
@@ -37,10 +42,6 @@ def login_signup_form():
         if value is not None:
             error += "Username is already taken\n"
         email = request.form['email']
-<<<<<<< HEAD
-        #check if passwords match up
-=======
->>>>>>> master
         password = request.form['password']
         if len(password) < 6:
             error += "Passwords need to be 6 characters or longer"
@@ -59,6 +60,7 @@ def login_signup_form():
             
             session['user'] = username
             session['userid'] = query_db('''select last_insert_rowid()''')[0][0];
+            session['image'] = "default_profile.jpg";
             
             flash('You were logged in','alert')
     if error != "":
@@ -74,5 +76,7 @@ def login_signup_form():
 def logout():
     session.pop('logged_in', None)
     session.pop('user', None)
+    session.pop('userid', None)
+    session.pop('image', None)
     flash('You were logged out','alert')
     return redirect(url_for('show_mainpage'))

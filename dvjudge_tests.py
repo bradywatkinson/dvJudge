@@ -488,7 +488,6 @@ class FlaskrTestCase(unittest.TestCase):
         assert ("You have no playlists.") in rv.data
 
 
-<<<<<<< HEAD
     # Update profile tests
     # This test, tests the update profile method written by Brady on 11 Oct
     def test_profile(self):
@@ -525,7 +524,6 @@ class FlaskrTestCase(unittest.TestCase):
         assert ("admin1@hotmail.com") in rv.data
         assert ("Passwords do not match") in rv.data
 
-=======
     # Test a challenge shows the correct "add to playlist" buttons in the dropdown
     def test_add_to_playlist(self):
         self.login('dannyeei', 'daniel')
@@ -661,7 +659,6 @@ class FlaskrTestCase(unittest.TestCase):
         assert("Yes") in rv.data
         # Also assert it's in twice not just once
         assert(rv.data.count("Yes") == 2)
->>>>>>> master
 
 if __name__ == '__main__':
     unittest.main()
