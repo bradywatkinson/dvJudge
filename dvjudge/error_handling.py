@@ -8,11 +8,11 @@ from dvjudge import app
 def error_500():
 	return render_template("show_mainpage.html")
 
-@app.errorhandler(400)
-def error_400():
-	return render_template("show_mainpage.html")
+# @app.errorhandler(400)
+# def error_400():
+# 	return render_template("show_mainpage.html")
 
-@app.errorhandler(404)
-def error_404():
-	return render_template("show_mainpage.html")
+# @app.errorhandler(404)
+# def error_404():
+# 	return render_template("show_mainpage.html")
 
