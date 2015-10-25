@@ -1,6 +1,8 @@
 {% extends "layout.html" %}
 {% block body %}
   <div class="container">
+
+      <div style="display:inline-block">
       {% if playlist_name %}
         <h2>{{ playlist_name }}</h2>
       {% else %}
@@ -9,7 +11,8 @@
         {% else %}
           <h2>Browse Challenges</h2>
         {% endif %}
-      <div style="">
+      </div>
+      <div style="display:inline-block; margin:15px">
         <form class="navbar-form" role="search" action="{{ url_for('browse') }}" method=post>
           <div class="form-group">
             {% if searchterm %} 
