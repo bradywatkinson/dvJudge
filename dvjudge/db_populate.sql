@@ -102,4 +102,47 @@ insert into categories (name, challenges)
 insert into categories (name, challenges)
     values ("Mathematics", "");
 
+-- Forums
+insert into forum_page (problem_id, original_poster, post_name, post_body)
+    values ("1", "dannyeei", "How do I print something in C?", "I am coding in C and don't know the command for print. If anyone could help me with this it would be much appreciated");
+
+insert into forum_page (problem_id, original_poster, post_name, post_body)
+    values ("1", "typical", "How do I use scanf?", 'I am coding in C and currently am trying to make the value i the value entered. Is scanf("%d", i); correct?');
+
+insert into forum_page (problem_id, original_poster, post_name, post_body)
+    values ("1", "typical", "What is a 'C' and why is it in the top corner?", 'I am coding and see "C" in the top corner of my work. I thought it was an A standard :( what can I do to make it an A?!');
+
+-- Forum comments
+insert into forum_comment (forum_page, username, comment)
+    values ("1", "typical", "You can use the command printf");
+
+insert into forum_comment (forum_page, username, comment)
+    values ("1", "dannyeei", "Thanks! That solved the problem!");
+
+-- Comment upvotes
+insert into comment_upvotes (user_id, comment_id)
+    values ("1", "1");
+
+insert into comment_upvotes (user_id, comment_id)
+    values ("2", "1");
+
+insert into comment_upvotes (user_id, comment_id)
+    values ("3", "1");
+
+insert into comment_upvotes (user_id, comment_id)
+    values ("4", "1");
+
+insert into comment_upvotes (user_id, comment_id)
+    values ("5", "1");
+
+insert into comment_upvotes (user_id, comment_id)
+    values ("1", "2");
+
+insert into comment_upvotes (user_id, comment_id)
+    values ("2", "2");
+
+
+
+
+
 
