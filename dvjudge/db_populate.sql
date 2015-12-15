@@ -43,6 +43,7 @@ insert into challenges (name,description,input,output,sample_tests,input_desc,ou
     values ('Interesting Numbers','John loves numbers. He finds some numbers more interesting than others. If a number is only a multiple of 2,3 or 5, then John find thems interesting. Help John determine if a number is an interesting number',"5|10|70|6750000|47250000","True|True|False|True|False","Input: 2; Output: True","A number which john would like to determine if it is interesting","True if the number is an interesting number and False otherwise", 0);
 
 -- Accounts
+-- NOTE: These accounts are not valid on production, and as such are not a security risk.
 -- dannyeei:daniel
 insert into users (username, email, password, salt, solved_challenges, image)
 	values ('dannyeei', 'danielslater811@hotmail.com', 'd9bdde89547d18f0d6bd72d9a17133ae2cb023357357f51c5d226cbf2d02a056e89102bed4c29e0f2827a952027c9e0a3c2b3545735f0a1c643427d81fc75281', 'thisissamplesalt', '1', '1_profilepic.jpg');
