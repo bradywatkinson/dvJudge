@@ -101,6 +101,12 @@ apt-get install default-jdk
 - Add a new user to jail which will run the submissions ```adduser dvj ``` 
 -  Install iptables by runnning ```apt-get install iptables```
 -  Add rule to iptable to disable all outgoing internet activity for the group the dvj group ```iptables -A OUTPUT -m owner --gid-owner dvj -j DROP ```
+- Modify passwords of the default accounts by using sqlite3 to directly modify the DB, passwords are SHA512(<PLAINTEXT>+<SALT>). Salt is stored in the database.
+```
+sqlite3 /database/dvjudge.db
+update users set salt="<NEWSALT>" where id=1 or id=2 or id=3 or id=4;
+update users set password="<NEW HASHED PASSWORD>" where id=1 or id=2 or id=3 or id=4;
+```
 ##Project Details
 [Google Drive](https://drive.google.com/drive/folders/0BxD6wDvDG5hRfklTaUxrM0VNV2pqcm9sazFiNjhHQ3paSHRNN3JnODlLazU2d3B1Yjh6WDA)  
 [Jira](https://dvjudge.atlassian.net/projects/DVJ/summary)
